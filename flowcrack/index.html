@@ -1,0 +1,1435 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FlowCrack</title>
+<style>
+/* ── Paleta ────────────────────────────────────────────────────────
+   Categorica validada con scripts/validate_palette.js (dataviz):
+   8 ranuras, modo claro y oscuro, todos los checks PASS.
+   El WARN de contraste en claro se cubre con etiquetas directas
+   visibles en cada carril y en cada nodo (regla de relieve).      */
+:root {
+  color-scheme: light;
+  --surface-1:    #fcfcfb;
+  --surface-2:    #f2f2f0;
+  --surface-3:    #e6e6e2;
+  --line:         #d8d8d3;
+  --text-1:       #0b0b0b;
+  --text-2:       #52514e;
+  --text-3:       #86857f;
+  --carril-1: #2a78d6;  /* azul     */
+  --carril-2: #eb6834;  /* naranja  */
+  --carril-3: #1baf7a;  /* aqua     */
+  --carril-4: #eda100;  /* amarillo */
+  --carril-5: #e87ba4;  /* magenta  */
+  --carril-6: #008300;  /* verde    */
+  --carril-7: #4a3aa7;  /* violeta  */
+  --carril-8: #e34948;  /* rojo     */
+  --alerta:   #e34948;  /* estado: reservado a irreversible */
+  --sombra:   0 1px 2px rgba(0,0,0,.06), 0 4px 14px rgba(0,0,0,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface-1: #1a1a19;
+    --surface-2: #242422;
+    --surface-3: #2e2e2b;
+    --line:      #3a3a36;
+    --text-1:    #ffffff;
+    --text-2:    #c3c2b7;
+    --text-3:    #8f8e85;
+    --carril-1: #3987e5;
+    --carril-2: #d95926;
+    --carril-3: #199e70;
+    --carril-4: #c98500;
+    --carril-5: #d55181;
+    --carril-6: #008300;
+    --carril-7: #9085e9;
+    --carril-8: #e66767;
+    --alerta:   #e66767;
+    --sombra:   0 1px 2px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-1: #1a1a19; --surface-2: #242422; --surface-3: #2e2e2b;
+  --line: #3a3a36; --text-1: #fff; --text-2: #c3c2b7; --text-3: #8f8e85;
+  --carril-1: #3987e5; --carril-2: #d95926; --carril-3: #199e70;
+  --carril-4: #c98500; --carril-5: #d55181; --carril-6: #008300;
+  --carril-7: #9085e9; --carril-8: #e66767;
+  --alerta: #e66767;
+  --sombra: 0 1px 2px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.35);
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--surface-1);
+  color: var(--text-1);
+  font: 14px/1.5 ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  display: flex; flex-direction: column;
+}
+
+/* ── Cabecera ─────────────────────────────────────────────────── */
+header {
+  display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+  padding: 14px 20px 12px; border-bottom: 1px solid var(--line);
+}
+h1 { font-size: 17px; font-weight: 650; margin: 0; letter-spacing: -.01em; }
+.meta { color: var(--text-3); font-size: 12.5px; }
+.meta b { color: var(--text-2); font-weight: 600; }
+.spacer { flex: 1 1 auto; }
+
+.controles { display: flex; gap: 6px; flex-wrap: wrap; }
+button {
+  font: inherit; font-size: 12.5px; line-height: 1;
+  padding: 7px 11px; border-radius: 7px;
+  border: 1px solid var(--line); background: var(--surface-2);
+  color: var(--text-2); cursor: pointer;
+}
+button:hover { background: var(--surface-3); color: var(--text-1); }
+button[aria-pressed="true"] { background: var(--text-1); color: var(--surface-1); border-color: var(--text-1); }
+button:focus-visible { outline: 2px solid var(--carril-1); outline-offset: 2px; }
+
+/* ── Lienzo ───────────────────────────────────────────────────── */
+#lienzo { flex: 0 1 auto; overflow: auto; padding: 6px 0 10px; }
+#lienzo.ajustar svg { width: 100%; height: auto; margin: 0 auto; }
+#lienzo.arrastrable { cursor: grab; }
+#lienzo.arrastrando { cursor: grabbing; user-select: none; }
+.zoom-nivel { font-variant-numeric: tabular-nums; min-width: 4ch; text-align: center; }
+
+/* Menu de filtros. <details> nativo: sin JS para abrir y cerrar, y funciona
+   igual bajo file://. */
+.menu { position: relative; }
+.menu > summary {
+  list-style: none; cursor: pointer;
+  font-size: 12.5px; line-height: 1; padding: 7px 11px; border-radius: 7px;
+  border: 1px solid var(--line); background: var(--surface-2); color: var(--text-2);
+}
+.menu > summary::-webkit-details-marker { display: none; }
+.menu > summary:hover { background: var(--surface-3); color: var(--text-1); }
+.menu[open] > summary { background: var(--text-1); color: var(--surface-1); border-color: var(--text-1); }
+.menu-cuerpo {
+  position: absolute; right: 0; top: calc(100% + 6px); z-index: 20;
+  background: var(--surface-1); border: 1px solid var(--line); border-radius: 8px;
+  padding: 8px; min-width: 210px; box-shadow: 0 8px 24px rgba(0,0,0,.14);
+}
+.menu-cuerpo label {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 6px; border-radius: 5px; font-size: 12.5px; color: var(--text-2);
+  cursor: pointer; white-space: nowrap;
+}
+.menu-cuerpo label:hover { background: var(--surface-2); color: var(--text-1); }
+.menu-cuerpo .cuenta { margin-left: auto; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.menu-cuerpo .pie { border-top: 1px solid var(--line); margin-top: 6px; padding-top: 6px; }
+.menu-cuerpo .pie button { width: 100%; }
+svg { display: block; }
+svg text { fill: var(--text-2); }
+
+.carril-fondo:nth-child(even) { fill: var(--surface-2); }
+.carril-nombre { font-size: 11.5px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; }
+.carril-linea { stroke-width: 2; opacity: .3; fill: none; }
+
+/* ── Origen: el nombre del proyecto, de donde nacen todas las vias ── */
+.raiz { cursor: pointer; }
+.raiz-fondo {
+  fill: var(--surface-2); stroke: var(--line); stroke-width: 1;
+  transition: fill .15s, stroke .15s;
+}
+.raiz-txt {
+  font-size: 13px; font-weight: 700; fill: var(--text-1);
+  letter-spacing: .01em; pointer-events: none;
+}
+.raiz-flecha { fill: none; stroke: var(--text-3); stroke-width: 1.8; stroke-linecap: round;
+               stroke-linejoin: round; pointer-events: none; }
+.raiz-nudo   { fill: var(--text-3); pointer-events: none; }
+.raiz:hover .raiz-fondo { fill: var(--surface-3); stroke: var(--text-3); }
+.raiz:hover .raiz-flecha { stroke: var(--text-1); }
+.raiz:focus-visible .raiz-fondo { stroke: var(--carril-1); stroke-width: 2; }
+
+/* El despliegue. Solo se anima mientras dura el cambio de modo: un repintado
+   normal (seleccionar, filtrar) tiene que seguir siendo instantaneo. */
+.animando .nodo { transition: transform .6s cubic-bezier(.4, 0, .2, 1); }
+.animando .vias, .animando .arista, .animando .carril-nombre {
+  animation: aparecer .45s ease-out .25s backwards;
+}
+@keyframes aparecer { from { opacity: 0 } }
+@media (prefers-reduced-motion: reduce) {
+  .animando .nodo { transition: none; }
+  .animando .vias, .animando .arista, .animando .carril-nombre { animation: none; }
+}
+
+.dia-etq { font-size: 11.5px; font-weight: 600; fill: var(--text-3); }
+.ver-cinta { fill: var(--surface-3); stroke: var(--line); stroke-width: 1; }
+.ver-etq   { font-size: 10.5px; font-weight: 700; fill: var(--text-2); letter-spacing: .03em; }
+.ver-linde { stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 4; opacity: .8; }
+.dia-sep { stroke: var(--line); stroke-width: 1; }
+.corte   { stroke: var(--text-3); stroke-width: 1.5; opacity: .5; }
+.corte-txt { font-size: 10px; fill: var(--text-3); }
+
+.arista { fill: none; stroke: var(--text-3); stroke-width: 1.5; opacity: .16; }
+.arista.viva { opacity: .85; stroke-width: 2; }
+
+.nodo { cursor: pointer; }
+.nodo .marca { stroke: var(--surface-1); stroke-width: 2; }
+.nodo .anillo { fill: none; stroke-width: 1.5; opacity: .55; }
+/* halo del color del fondo: mantiene legible una etiqueta que se cruce
+   con una arista o con la linea del carril */
+.nodo .etq {
+  font-size: 11.5px; fill: var(--text-2);
+  stroke: var(--surface-1); stroke-width: 3px; paint-order: stroke fill;
+}
+.carril-fondo-par .etq { stroke: var(--surface-2); }
+.nodo:hover .etq, .nodo.sel .etq { fill: var(--text-1); font-weight: 600; }
+.nodo.sel .marca { stroke: var(--text-1); stroke-width: 2.5; }
+.nodo.apagado { opacity: .2; }
+.nodo.superada .marca { opacity: .4; stroke-dasharray: 2 2; }
+
+/* Cadena causal: al seleccionar, lo que esta fuera de la cadena se atenua y
+   lo que esta dentro se refuerza. Atenuar y no ocultar: el contexto sigue
+   haciendo falta para entender donde cae la cadena. */
+.nodo.fuera { opacity: .3; }
+.nodo.encadenado .marca { stroke: var(--text-1); stroke-width: 2; }
+.nodo.encadenado .etq   { fill: var(--text-1); }
+
+.irrev { stroke: var(--alerta); stroke-width: 2; fill: none; }
+
+.alt-linea { stroke: var(--text-3); stroke-width: 1.5; opacity: .5; }
+.alt-linea.si { stroke: var(--carril-3); opacity: .9; }
+.alt-txt { font-size: 11px; fill: var(--text-2); }
+.alt-txt.no { fill: var(--text-3); text-decoration: line-through; }
+
+/* ── Panel ────────────────────────────────────────────────────── */
+#panel {
+  margin-top: auto;
+  border-top: 1px solid var(--line); background: var(--surface-2);
+  padding: 14px 20px 18px; max-height: 42vh; overflow: auto;
+}
+#panel.vacio { color: var(--text-3); font-size: 13px; }
+.p-cab { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.p-tit { font-size: 15.5px; font-weight: 650; color: var(--text-1); margin: 0; }
+.chip {
+  font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px;
+  background: var(--surface-3); color: var(--text-2); white-space: nowrap;
+}
+.chip.irrev-chip { background: var(--alerta); color: #fff; }
+/* Quien decidio. No se codifica en el nodo: el dibujo ya usa color para el
+   carril, forma para el tipo, tamano para el impacto y anillos para hito e
+   irreversible. Un sexto canal lo volveria ilegible, asi que vive en el panel,
+   en la tabla y en el filtro. */
+.chip.autor-usuario { background: var(--carril-1); color: #fff; }
+.chip.autor-ia      { background: var(--surface-3); color: var(--text-2); border: 1px solid var(--line); }
+.chip.hito-chip  { background: var(--text-1); color: var(--surface-1); }
+.p-cuerpo { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px 26px; }
+.p-bloque h3 {
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--text-3); margin: 0 0 5px;
+}
+.p-bloque p, .p-bloque li { margin: 0 0 5px; color: var(--text-2); font-size: 13px; }
+
+/* Leyenda: la muestra y su explicacion en la misma linea base. */
+ul.ley { list-style: none; padding: 0; margin: 0; }
+ul.ley li { display: flex; align-items: flex-start; gap: 8px; margin: 0 0 6px; }
+ul.ley b { color: var(--text-1); font-weight: 600; }
+svg.mini { flex: 0 0 auto; overflow: visible; margin-top: 1px; }
+.p-bloque ul { margin: 0; padding-left: 16px; }
+.alt-si { color: var(--text-1); font-weight: 600; }
+.alt-no { text-decoration: line-through; color: var(--text-3); }
+.alt-no span { text-decoration: none; }
+a { color: var(--carril-1); }
+code { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 12px; }
+
+/* ── Tabla ────────────────────────────────────────────────────── */
+#tabla { padding: 0 20px 24px; overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-3); }
+[hidden] { display: none !important; }
+
+#aviso { margin: 40px auto; max-width: 46ch; color: var(--text-2); text-align: center; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1 id="titulo">FlowCrack</h1>
+  <span class="meta" id="resumen"></span>
+  <span class="spacer"></span>
+  <div class="controles">
+    <button id="b-hitos"  aria-pressed="false">Solo hitos</button>
+    <button id="b-irrev"  aria-pressed="false">Irreversibles</button>
+    <details id="m-tipos" class="menu">
+      <summary id="s-tipos">Tipos</summary>
+      <div class="menu-cuerpo" id="c-tipos"></div>
+    </details>
+    <details id="m-decidido_por" class="menu">
+      <summary id="s-decidido_por">Quién decidió</summary>
+      <div class="menu-cuerpo" id="c-decidido_por"></div>
+    </details>
+    <button id="b-menos" title="Alejar (Ctrl + rueda)" aria-label="Alejar">−</button>
+    <button id="b-zoom" class="zoom-nivel" title="Zoom actual; pulsa para ajustar al ancho">100%</button>
+    <button id="b-mas"  title="Acercar (Ctrl + rueda)" aria-label="Acercar">+</button>
+    <button id="b-ajuste" aria-pressed="true">Ajustar</button>
+    <button id="b-leyenda" aria-pressed="false">Leyenda</button>
+    <button id="b-abiertas" aria-pressed="false" hidden></button>
+    <button id="b-tabla"  aria-pressed="false">Tabla</button>
+  </div>
+</header>
+
+<div id="lienzo" class="ajustar"></div>
+<div id="tabla" hidden></div>
+<div id="panel" class="vacio">Pulsa una decisión para ver por qué se tomó y qué alternativas se descartaron.</div>
+
+<script src="decisiones.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var D = window.FLOWCRACK;
+  if (!D) {
+    document.getElementById('lienzo').innerHTML =
+      '<p id="aviso">No se encuentra <code>decisiones.js</code>.<br>' +
+      'Genéralo con <code>build.bat</code> (o <code>python build.py</code>).</p>';
+    return;
+  }
+
+  // ── Geometría ────────────────────────────────────────────────
+  // ── Modo de vista ────────────────────────────────────────────
+  // `unico`: todo sobre un solo carril que nace del nombre del proyecto. Es la
+  // vista de entrada — la historia entera de un vistazo, sin pedirle a nadie
+  // que entienda antes que significan seis filas.
+  // `carriles`: se despliega en areas, y cada una NACE DEL MISMO ORIGEN en vez
+  // de empezar en la nada por la izquierda.
+  var modo = 'unico', ALTO_UNICO = 210, posPrevias = null;
+  var NOMBRE = D.proyecto.nombre || 'FlowCrack';
+
+  var M        = { arriba: 34, izq: 108, der: 40, abajo: 18 },
+      ALTO_C   = 62,    // alto de carril
+      RANURA   = 62,    // ancho por decision dentro de un dia
+      HUECO    = 54,    // ancho de un tramo sin actividad (comprimido)
+      // Radios por impacto. El ojo juzga los circulos por AREA, no por radio,
+      // asi que lo que importa es la razon entre areas: antes era 2.9x entre
+      // `mayor` y `parche` y los tres se confundian. Ahora ~6x, con pasos de
+      // radio de 4 y 2.5 px en vez de 2 y 1.5. El tope lo pone el carril: un
+      // `mayor` con anillo de irreversible mide 38 px y los carriles van a 62.
+      R        = { mayor: 11, menor: 7, parche: 4.5 },
+      O        = { x: 0, y: 0 };   // de donde nacen todas las vias
+
+  // El bloque de origen tiene que caber tres cosas en fila: la pastilla con el
+  // nombre, el abanico y los nombres de carril. Se mide a partir del texto real
+  // en vez de fijar un ancho que se queda corto con un nombre largo.
+  var ANCHO_RAIZ = NOMBRE.length * 8.2 + 26;
+  O.x = 10 + ANCHO_RAIZ + 12;
+  var ANCHO_NOM = Math.max.apply(null, [0].concat(
+        (D.carriles || []).map(function (c) { return (c.nombre || '').length * 7.6; }))) + 18;
+  M.izq = O.x + 42 + ANCHO_NOM;
+
+  var carriles   = D.carriles || [],
+      decisiones = (D.decisiones || []).slice(),
+      porId      = {};
+  decisiones.forEach(function (d) { porId[d.id] = d; });
+
+  // Bandas de version: `version` sale de `git describe --tags` al construir.
+  // Si el proyecto no tiene etiquetas viene vacia y no se dibuja ninguna banda
+  // ni se reserva sitio para ellas. Degrada sin romperse.
+  var hayVersiones = decisiones.some(function (d) { return !!d.version; });
+
+  var filtro = { hitos: false, irrev: false }, seleccion = null;
+
+  // ── Enlaces causales ─────────────────────────────────────────
+  // Las aristas son la UNION de `causada_por` y `abre`: son dos formas de
+  // declarar el mismo enlace y ninguna es obligatoria, asi que dibujar solo
+  // una dejaba flechas invisibles. Medido: en FoodCrack, `d001 abre d007`
+  // no aparecia en el dibujo porque d007 no declaraba `causada_por`.
+  var aristas = [], _vistas = {}, haciaDelante = {}, haciaAtras = {};
+  function anota(origen, destino) {
+    var k = origen + '>' + destino;
+    if (_vistas[k] || !porId[origen] || !porId[destino]) return;
+    _vistas[k] = 1;
+    aristas.push({ o: origen, d: destino });
+    (haciaDelante[origen] = haciaDelante[origen] || []).push(destino);
+    (haciaAtras[destino]  = haciaAtras[destino]  || []).push(origen);
+  }
+  decisiones.forEach(function (d) {
+    (d.causada_por || []).forEach(function (o) { anota(o, d.id); });
+    (d.abre || []).forEach(function (y) { anota(d.id, y); });
+  });
+
+  // Cadena causal COMPLETA del nodo activo: no solo sus vecinos, sino todo lo
+  // que lo provoco y todo lo que el provoco, en cascada. Es lo que convierte
+  // el dibujo en una explicacion en vez de en un adorno.
+  function cadenaDe(id) {
+    var nodos = {}, vivas = {};
+    if (!id || !porId[id]) return { nodos: nodos, aristas: vivas, n: 0 };
+    nodos[id] = true;
+    [[haciaAtras, false], [haciaDelante, true]].forEach(function (par) {
+      var mapa = par[0], adelante = par[1], pila = [id];
+      while (pila.length) {
+        var n = pila.pop();
+        (mapa[n] || []).forEach(function (m) {
+          vivas[adelante ? n + '>' + m : m + '>' + n] = true;
+          if (!nodos[m]) { nodos[m] = true; pila.push(m); }
+        });
+      }
+    });
+    var n = 0;
+    for (var k in nodos) if (nodos.hasOwnProperty(k)) n++;
+    return { nodos: nodos, aristas: vivas, n: n };
+  }
+
+  // ── Eje elástico ─────────────────────────────────────────────
+  // X viene del dia y del orden dentro del dia. Los tramos sin
+  // actividad se comprimen a un ancho fijo y se marcan con un corte,
+  // para no fingir que el tiempo transcurrio de forma uniforme.
+  var dias = [];
+  decisiones.forEach(function (d) {
+    var dia = dias[dias.length - 1];
+    if (!dia || dia.fecha !== d.fecha) { dia = { fecha: d.fecha, items: [] }; dias.push(dia); }
+    dia.items.push(d);
+  });
+
+  var x = M.izq, cortes = [];
+  dias.forEach(function (dia, i) {
+    if (i > 0) {
+      var salto = diasEntre(dias[i - 1].fecha, dia.fecha);
+      if (salto > 1) { cortes.push({ x: x + HUECO / 2, dias: salto - 1 }); x += HUECO; }
+      else { x += 16; }
+    }
+    dia.x0 = x;
+    dia.items.forEach(function (d, j) { d._x = x + (j + 0.5) * RANURA; });
+    x += dia.items.length * RANURA;
+    dia.x1 = x;
+  });
+  if (hayVersiones) M.arriba += 20;   // franja para las etiquetas de version
+
+
+  // Tramos consecutivos bajo la misma etiqueta. Las decisiones ya vienen en
+  // orden cronologico, asi que basta con agrupar seguidas.
+  var bandas = [];
+  decisiones.forEach(function (d) {
+    var v = d.version || null, ult = bandas[bandas.length - 1];
+    if (ult && ult.version === v) ult.fin = d;
+    else bandas.push({ version: v, ini: d, fin: d });
+  });
+
+  var ANCHO = x + M.der, ALTO;
+
+  carriles.forEach(function (c, i) { c._y = M.arriba + i * ALTO_C + ALTO_C / 2; });
+  var yDe = {};
+  carriles.forEach(function (c) { yDe[c.id] = c._y; });
+
+  // Las coordenadas Y dependen del modo, asi que se recalculan al cambiarlo.
+  // En `unico` todas las decisiones caen sobre la misma linea: la del origen.
+  function geometria() {
+    if (modo === 'unico') {
+      ALTO = M.arriba + ALTO_UNICO + M.abajo;
+      O.y = M.arriba + ALTO_UNICO / 2;
+      decisiones.forEach(function (d) { d._y = O.y; });
+    } else {
+      ALTO = M.arriba + carriles.length * ALTO_C + M.abajo;
+      O.y = M.arriba + carriles.length * ALTO_C / 2;
+      decisiones.forEach(function (d) {
+        d._y = yDe[d.carril] != null ? yDe[d.carril] : ALTO / 2;
+      });
+    }
+  }
+  geometria();
+
+  function diasEntre(a, b) {
+    return Math.round((new Date(b + 'T00:00:00') - new Date(a + 'T00:00:00')) / 86400000);
+  }
+  function fechaCorta(iso) {
+    var MES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    var p = iso.split('-');
+    return parseInt(p[2], 10) + ' ' + MES[parseInt(p[1], 10) - 1];
+  }
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function color(carrilId) {
+    var i = carriles.findIndex(function (c) { return c.id === carrilId; });
+    return 'var(--carril-' + ((i < 0 ? 0 : i % 8) + 1) + ')';
+  }
+  function visible(d) {
+    if (filtro.hitos && !d.hito) return false;
+    if (filtro.irrev && !d.irreversible) return false;
+    if (filtro.tipos && !filtro.tipos[d.tipo || 'decision']) return false;
+    if (filtro.decidido_por && !filtro.decidido_por[d.decidido_por]) return false;
+    return true;
+  }
+
+  // ── Dibujo ───────────────────────────────────────────────────
+  var NS = 'http://www.w3.org/2000/svg';
+  function el(t, a, txt) {
+    var n = document.createElementNS(NS, t);
+    for (var k in a) if (a[k] != null) n.setAttribute(k, a[k]);
+    if (txt != null) n.textContent = txt;
+    return n;
+  }
+
+  // La FORMA dice que clase de hecho es. Una sola funcion para el dibujo y
+  // para la leyenda: si divergieran, la leyenda mentiria.
+  //   circulo   decision       hubo alternativas y se eligio una
+  //   rombo     hallazgo       no se eligio, se descubrio
+  //   cuadrado  medicion       un hallazgo con cifra
+  //   triangulo hito-externo   pasa fuera y no lo controlas
+  // Lo que ocupa un nodo de verdad: el anillo de hito sobresale 4.5 px y el
+  // de irreversible 8. Medir solo el circulo metia la etiqueta dentro del
+  // anillo, y con la escala nueva se notaba.
+  function radioExterno(d) {
+    var r = R[d.impacto] || R.menor;
+    return r + (d.irreversible ? 8 : (d.hito ? 4.5 : 0));
+  }
+
+  function figura(tipo, r, c) {
+    if (tipo === 'hallazgo') {
+      return el('path', {
+        d: 'M0 ' + (-r - 1) + ' L' + (r + 1) + ' 0 L0 ' + (r + 1) +
+           ' L' + (-r - 1) + ' 0 Z', fill: c, class: 'marca'
+      });
+    }
+    if (tipo === 'medicion') {
+      return el('rect', {
+        x: -r, y: -r, width: r * 2, height: r * 2, rx: 1.5, fill: c, class: 'marca'
+      });
+    }
+    if (tipo === 'hito-externo') {
+      // Le faltaba forma propia: se dibujaba como una decision, asi que el
+      // canal decia codificar el tipo y en ese valor no lo hacia.
+      return el('path', {
+        d: 'M0 ' + (-r - 2) + ' L' + (r + 1.5) + ' ' + (r + 0.5) +
+           ' L' + (-r - 1.5) + ' ' + (r + 0.5) + ' Z', fill: c, class: 'marca'
+      });
+    }
+    return el('circle', { cx: 0, cy: 0, r: r, fill: c, class: 'marca' });
+  }
+
+  // Estado vacio: acaba de instalarse y todavia no hay nada que dibujar.
+  function pintarVacio() {
+    var ab = D.preguntas_abiertas || [],
+        html = '<p id="aviso">Todavía no hay decisiones en este registro.<br>' +
+               'Escribe la primera en <code>decisiones.yaml</code> y vuelve a ' +
+               'ejecutar <code>build.bat</code>.';
+    if (ab.length) {
+      html += '<br><br>Mientras tanto, estas son las <strong>' + ab.length +
+              ' preguntas</strong> que definen el proyecto y siguen sin responder:' +
+              '<br><br>';
+      html += ab.map(function (p) {
+        return '· ' + esc(p.pregunta || p.id) +
+               (p.irreversible ? ' <em>(irreversible)</em>' : '');
+      }).join('<br>');
+    }
+    document.getElementById('lienzo').innerHTML = html + '</p>';
+  }
+
+  // Bloque de origen: el nombre del proyecto, el abanico que sale de el y los
+  // nombres de carril. Va entero en la capa anclada, asi que al desplazarse no
+  // se separa nunca de las vias que nacen de el, y el nombre sigue siendo
+  // pulsable pase lo que pase.
+  function origen() {
+    var g = el('g', { class: 'origen' });
+
+    // Fondo opaco: lo que se desplace por debajo no debe verse.
+    if (modo === 'carriles') {
+      carriles.forEach(function (c, i) {
+        g.appendChild(el('rect', {
+          x: 0, y: M.arriba + i * ALTO_C, width: M.izq, height: ALTO_C,
+          fill: i % 2 === 1 ? 'var(--surface-2)' : 'var(--surface-1)'
+        }));
+      });
+    } else {
+      g.appendChild(el('rect', {
+        x: 0, y: M.arriba - 4, width: M.izq, height: ALTO - M.arriba - M.abajo + 8,
+        fill: 'var(--surface-1)'
+      }));
+    }
+
+    // El abanico: cada via nace del mismo punto. Antes las lineas empezaban en
+    // la nada por la izquierda y no contaban que todo sale del proyecto.
+    var destinos = modo === 'unico' ? [{ _y: O.y, id: null }] : carriles;
+    destinos.forEach(function (c) {
+      var cx = O.x + (M.izq - O.x) * 0.55;
+      g.appendChild(el('path', {
+        d: 'M' + O.x + ' ' + O.y +
+           ' C' + cx + ' ' + O.y + ', ' + cx + ' ' + c._y + ', ' + M.izq + ' ' + c._y,
+        class: 'carril-linea',
+        stroke: c.id ? color(c.id) : 'var(--text-3)'
+      }));
+    });
+
+    if (modo === 'carriles') {
+      carriles.forEach(function (c) {
+        var tc = el('text', {
+          x: M.izq - 8, y: c._y - 7, class: 'carril-nombre',
+          'text-anchor': 'end', fill: color(c.id)
+        }, c.nombre);
+        if (c.descripcion) tc.appendChild(el('title', {}, c.descripcion));
+        g.appendChild(tc);
+      });
+    }
+
+    // El nombre del proyecto es el mando: pulsarlo despliega y repliega.
+    var pw = NOMBRE.length * 8.2 + 26,
+        b = el('g', {
+          class: 'raiz', role: 'button', tabindex: 0,
+          'aria-expanded': modo === 'carriles' ? 'true' : 'false',
+          'aria-label': (modo === 'unico' ? 'Desplegar' : 'Replegar') +
+                        ' las áreas de ' + NOMBRE
+        });
+    b.appendChild(el('rect', {
+      x: 10, y: O.y - 14, width: pw, height: 28, rx: 14, class: 'raiz-fondo'
+    }));
+    b.appendChild(el('text', { x: 22, y: O.y + 4.5, class: 'raiz-txt' }, NOMBRE));
+    b.appendChild(el('path', {
+      d: modo === 'unico'
+        ? 'M' + (pw - 4) + ' ' + (O.y - 3.5) + ' l4 4 l4 -4'     // desplegar
+        : 'M' + (pw - 4) + ' ' + (O.y + 1.5) + ' l4 -4 l4 4',    // replegar
+      class: 'raiz-flecha'
+    }));
+    b.appendChild(el('circle', { cx: O.x, cy: O.y, r: 3.5, class: 'raiz-nudo' }));
+    b.appendChild(el('title', {}, modo === 'unico'
+      ? 'Pulsa para desplegar las áreas del proyecto'
+      : 'Pulsa para volver a una sola línea'));
+
+    b.addEventListener('click', alternaModo);
+    b.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); alternaModo(); }
+    });
+    g.appendChild(b);
+    return g;
+  }
+
+  function pintar() {
+    // Registro recien sembrado: el lienzo en blanco parece averiado. Se dice
+    // que esta vacio y se empuja a lo unico util que hay ya: las preguntas
+    // del proyecto que nadie ha respondido todavia.
+    if (!decisiones.length) return pintarVacio();
+
+    // Si la decision activa no tiene cadena, atenuar el resto no resalta nada
+    // y solo entorpece la lectura: se deja el dibujo entero legible.
+    var cad = cadenaDe(seleccion), hayCadena = cad.n > 1;
+
+    // Nodos que tienen que viajar desde su posicion anterior. Se dibujan donde
+    // estaban y se sueltan en el fotograma siguiente: el navegador interpola.
+    var porMover = [];
+
+    // Orden de lo visible, para medir el sitio de los rotulos.
+    var vis = decisiones.filter(visible), idxVis = {};
+    vis.forEach(function (o, i) { idxVis[o.id] = i; });
+
+    var svg = el('svg', {
+      viewBox: '0 0 ' + ANCHO + ' ' + ALTO,
+      width: ANCHO, height: ALTO,
+      role: 'img',
+      'aria-label': 'Cronología de decisiones de ' + (D.proyecto.nombre || '')
+    });
+
+    // Fondo alterno de carriles: solo tiene sentido cuando hay filas.
+    if (modo === 'carriles') {
+      carriles.forEach(function (c, i) {
+        if (i % 2 === 1) {
+          svg.appendChild(el('rect', {
+            x: 0, y: M.arriba + i * ALTO_C, width: ANCHO, height: ALTO_C,
+            fill: 'var(--surface-2)'
+          }));
+        }
+      });
+    }
+
+    // Tramo horizontal de las vias, desde donde acaba el bloque de origen.
+    var gVias = el('g', { class: 'vias' });
+    if (modo === 'unico') {
+      gVias.appendChild(el('path', {
+        d: 'M' + M.izq + ' ' + O.y + ' L' + (ANCHO - M.der + 10) + ' ' + O.y,
+        class: 'carril-linea', stroke: 'var(--text-3)'
+      }));
+    } else {
+      carriles.forEach(function (c) {
+        gVias.appendChild(el('path', {
+          d: 'M' + M.izq + ' ' + c._y + ' L' + (ANCHO - M.der + 10) + ' ' + c._y,
+          class: 'carril-linea', stroke: color(c.id)
+        }));
+      });
+    }
+    svg.appendChild(gVias);
+
+    // Bandas de version: una cinta arriba con la etiqueta de git, mas una
+    // linea de frontera a toda altura donde cambia. Se pinta como cinta y no
+    // como fondo a toda altura porque el fondo pelearia con las franjas
+    // alternas de los carriles y ninguna de las dos se leeria bien.
+    bandas.forEach(function (b) {
+      if (!b.version) return;
+      var x0 = b.ini._x - (R[b.ini.impacto] || R.menor) - 12,
+          x1 = b.fin._x + (R[b.fin.impacto] || R.menor) + 12;
+      svg.appendChild(el('rect', {
+        x: x0, y: 6, width: Math.max(x1 - x0, 2), height: 15, rx: 3,
+        class: 'ver-cinta'
+      }));
+      svg.appendChild(el('text', {
+        x: (x0 + x1) / 2, y: 17, class: 'ver-etq', 'text-anchor': 'middle'
+      }, b.version));
+      svg.appendChild(el('line', {
+        x1: x0, y1: 6, x2: x0, y2: ALTO - M.abajo, class: 'ver-linde'
+      }));
+    });
+
+    // eje: etiqueta de dia y separadores
+    dias.forEach(function (dia) {
+      svg.appendChild(el('text', {
+        x: (dia.x0 + dia.x1) / 2, y: M.arriba - 14, class: 'dia-etq', 'text-anchor': 'middle'
+      }, fechaCorta(dia.fecha) + '  ·  ' + dia.items.length));
+      svg.appendChild(el('line', {
+        x1: dia.x0 - 8, y1: M.arriba - 8, x2: dia.x1 - 8, y2: M.arriba - 8, class: 'dia-sep'
+      }));
+    });
+    cortes.forEach(function (c) {
+      [-4, 4].forEach(function (dx) {
+        svg.appendChild(el('path', {
+          d: 'M' + (c.x + dx) + ' 26 l6 -6 M' + (c.x + dx) + ' ' + (ALTO - 6) + ' l6 -6',
+          class: 'corte'
+        }));
+      });
+      svg.appendChild(el('text', {
+        x: c.x + 3, y: 18, class: 'corte-txt', 'text-anchor': 'middle'
+      }, c.dias + 'd'));
+    });
+
+    // aristas causales, por debajo de los nodos
+    var gA = el('g', {});
+    aristas.forEach(function (a) {
+      var o = porId[a.o], d = porId[a.d];
+      if (!visible(o) || !visible(d)) return;
+      var viva = !!cad.aristas[a.o + '>' + a.d],
+          mx = (o._x + d._x) / 2;
+      gA.appendChild(el('path', {
+        d: 'M' + o._x + ' ' + o._y + ' C' + mx + ' ' + o._y + ', ' + mx + ' ' + d._y +
+           ', ' + d._x + ' ' + d._y,
+        class: 'arista' + (viva ? ' viva' : ''),
+        stroke: viva ? color(o.carril) : null
+      }));
+    });
+    svg.appendChild(gA);
+
+    // nodos
+    decisiones.forEach(function (d) {
+      var enCadena = !!cad.nodos[d.id];
+      var g = el('g', {
+        class: 'nodo' + (seleccion === d.id ? ' sel' : '') +
+               (hayCadena && enCadena && seleccion !== d.id ? ' encadenado' : '') +
+               (hayCadena && !enCadena ? ' fuera' : '') +
+               (visible(d) ? '' : ' apagado') +
+               (d.estado === 'superada' ? ' superada' : ''),
+        tabindex: visible(d) ? 0 : -1,
+        role: 'button',
+        'aria-label': d.titulo
+      });
+      g.dataset.id = d.id;
+
+      // Las formas se dibujan en el origen local y el grupo lleva el
+      // `transform`: asi el cambio de modo se anima transicionando una sola
+      // propiedad en vez de reposicionar cada figura a mano.
+      var desdeY = (posPrevias && posPrevias[d.id] != null) ? posPrevias[d.id] : d._y;
+      g.setAttribute('transform', 'translate(' + d._x + ',' + desdeY + ')');
+      if (desdeY !== d._y) porMover.push([g, d._x, d._y]);
+
+      var r = R[d.impacto] || R.menor, c = color(d.carril);
+
+      if (d.hito) {
+        g.appendChild(el('circle', { cx: 0, cy: 0, r: r + 4.5, class: 'anillo', stroke: c }));
+      }
+      if (d.irreversible) {
+        g.appendChild(el('circle', { cx: 0, cy: 0, r: r + 8, class: 'irrev' }));
+      }
+
+      g.appendChild(figura(d.tipo, r, c));
+
+      // Etiquetas selectivas. Poner las 23 produce colisiones ilegibles, asi
+      // que solo se rotulan las que importan (hito, irreversible, la
+      // seleccionada) y las que tienen sitio de sobra. El resto aparece al
+      // pasar por encima y en el panel.
+      // El sitio libre se mide contra el vecino de la MISMA LINEA. Con todo en
+      // un solo carril eso es la decision siguiente sin mas: mirar solo las del
+      // mismo carril hacia creer que habia hueco y las rotulaba encima unas de
+      // otras. Y como ahi sobra alto, los rotulos alternan arriba y abajo, lo
+      // que duplica el sitio: el vecino que estorba es el de dos mas alla.
+      var sig, arriba = true;
+      if (modo === 'unico') {
+        var i = idxVis[d.id];
+        sig = (i == null) ? null : vis[i + 2];
+        arriba = (i % 2 === 0);
+      } else {
+        sig = decisiones.filter(function (o) {
+          return o.carril === d.carril && o._x > d._x && visible(o);
+        })[0];
+      }
+      var libre = (sig ? sig._x - d._x - radioExterno(sig) - 12
+                       : ANCHO - d._x - M.der);
+      var caben = Math.floor((libre - r - 6) / 6.1);
+      // Al seleccionar, toda la cadena se rotula: la gracia es poder LEER la
+      // historia completa de un vistazo, no solo ver por donde pasa.
+      var obligatoria = d.hito || d.irreversible || seleccion === d.id ||
+                        (hayCadena && enCadena);
+      if (caben >= 10 || (obligatoria && caben >= 6)) {
+        var t = d.titulo.length > caben ? d.titulo.slice(0, caben - 1) + '…' : d.titulo;
+        g.appendChild(el('text', {
+          x: radioExterno(d) + 6, y: arriba ? -9 : 16, class: 'etq'
+        }, t));
+      }
+      g.appendChild(el('title', {}, d.titulo));   // rotulo nativo al pasar por encima
+
+      g.addEventListener('click', function () { seleccionar(d.id); });
+      g.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); seleccionar(d.id); }
+      });
+      svg.appendChild(g);
+    });
+
+    // Abanico de alternativas del nodo seleccionado. Va en una capa aparte,
+    // encima de todo y con fondo propio, porque se despliega sobre carriles
+    // vecinos y sin eso resulta ilegible.
+    if (seleccion && porId[seleccion] && (porId[seleccion].alternativas || []).length) {
+      svg.appendChild(abanico(porId[seleccion]));
+    }
+
+    // La capa anclada lleva el bloque de origen entero: nombre, abanico y
+    // nombres de carril. Encima de todo, porque nada debe cruzarla.
+    var gFranja = el('g', { class: 'franja' });
+    gFranja.appendChild(origen());
+    svg.appendChild(gFranja);
+
+    aplicarEscala(svg);
+
+    var l = document.getElementById('lienzo');
+    l.innerHTML = '';
+    l.appendChild(svg);
+    fijaFranja();
+
+    // El despliegue: los nodos estan pintados donde estaban, y aqui se les da
+    // su destino. La clase `animando` es la que enciende las transiciones, para
+    // que un repintado normal (seleccionar, filtrar) siga siendo instantaneo.
+    if (porMover.length) {
+      svg.classList.add('animando');
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          porMover.forEach(function (p) {
+            p[0].setAttribute('transform', 'translate(' + p[1] + ',' + p[2] + ')');
+          });
+        });
+      });
+      window.setTimeout(function () { svg.classList.remove('animando'); }, 900);
+    }
+    posPrevias = null;
+  }
+
+  // Mantiene la franja de nombres pegada al borde izquierdo del lienzo. Se
+  // desplaza en coordenadas del SVG, de ahi la division por la escala.
+  function fijaFranja() {
+    var l = document.getElementById('lienzo'),
+        g = l.querySelector('.franja');
+    if (!g) return;
+    var e = escalaActual() || 1;
+    g.setAttribute('transform', 'translate(' + (l.scrollLeft / e) + ',0)');
+  }
+
+  // ── Zoom y desplazamiento ────────────────────────────────────
+  // `zoom = null` significa "ajustar al ancho". Un factor explicito lo
+  // sustituye. Ajustar no debe AMPLIAR: con pocas decisiones el dibujo se
+  // estiraba hasta desbordar la pantalla de alto, asi que se topa en su
+  // tamano natural.
+  var ZOOMS = [0.4, 0.5, 0.65, 0.8, 1, 1.25, 1.6, 2, 2.6], zoom = null;
+
+  function aplicarEscala(svg) {
+    if (zoom == null) {
+      svg.style.width = '';
+      svg.style.maxWidth = ANCHO + 'px';
+    } else {
+      svg.style.maxWidth = 'none';
+      svg.style.width = Math.round(ANCHO * zoom) + 'px';
+      svg.style.height = 'auto';
+    }
+  }
+
+  function escalaActual() {
+    if (zoom != null) return zoom;
+    var l = document.getElementById('lienzo');
+    return Math.min(1, (l.clientWidth || ANCHO) / ANCHO);   // lo que hace Ajustar
+  }
+
+  function sincronizaEscala() {
+    var l = document.getElementById('lienzo');
+    l.classList.toggle('ajustar', zoom == null);
+    l.classList.toggle('arrastrable', zoom != null);
+    document.getElementById('b-zoom').textContent =
+      Math.round(escalaActual() * 100) + '%';
+    document.getElementById('b-ajuste').setAttribute('aria-pressed', zoom == null);
+  }
+
+  // El punto del dibujo que esta bajo el cursor se queda quieto al ampliar:
+  // sin esto el zoom salta y se pierde de vista lo que se estaba mirando.
+  function cambiaZoom(dir, clienteX) {
+    var l = document.getElementById('lienzo'),
+        antes = escalaActual(), i = 0, mejor = Infinity;
+    ZOOMS.forEach(function (z, k) {
+      var dd = Math.abs(z - antes);
+      if (dd < mejor) { mejor = dd; i = k; }
+    });
+    var nuevo = ZOOMS[Math.max(0, Math.min(ZOOMS.length - 1, i + dir))];
+    if (Math.abs(nuevo - antes) < 1e-6) return;
+
+    var rect = l.getBoundingClientRect(),
+        px = (clienteX == null ? rect.width / 2 : clienteX - rect.left),
+        docX = (l.scrollLeft + px) / antes;
+    zoom = nuevo;
+    sincronizaEscala();
+    pintar();
+    l.scrollLeft = docX * nuevo - px;
+  }
+
+  function ajustar() { zoom = null; sincronizaEscala(); pintar(); }
+
+  // Desplegar y replegar. Se guarda de donde viene cada nodo para que `pintar`
+  // pueda animarlo, y se recalcula la escala porque el alto cambia bastante.
+  function alternaModo() {
+    posPrevias = {};
+    decisiones.forEach(function (d) { posPrevias[d.id] = d._y; });
+    modo = (modo === 'unico') ? 'carriles' : 'unico';
+    geometria();
+    sincronizaEscala();
+    pintar();
+  }
+
+  // Deja a la vista el nodo activo. Hace falta al navegar con teclado y al
+  // llegar por deep-link con el dibujo ampliado.
+  function aLaVista(id) {
+    var d = porId[id];
+    if (!d) return;
+    var l = document.getElementById('lienzo'), e = escalaActual(),
+        x = d._x * e, margen = 120;
+    if (x < l.scrollLeft + margen) l.scrollLeft = Math.max(0, x - margen);
+    else if (x > l.scrollLeft + l.clientWidth - margen)
+      l.scrollLeft = x - l.clientWidth + margen;
+  }
+
+  function abanico(d) {
+    var g    = el('g', { class: 'abanico' }),
+        alts = d.alternativas,
+        sep  = 17,
+        alto = alts.length * sep + 12,
+        r    = R[d.impacto] || R.menor;
+
+    var textos = alts.map(function (a) { return (a.elegida ? '✔ ' : '✗ ') + a.opcion; });
+    var ancho  = Math.max.apply(null, textos.map(function (t) { return t.length * 6.0; })) + 34;
+
+    // se abre hacia el lado con sitio, y se sujeta dentro del lienzo
+    var haciaIzq = (d._x + 30 + ancho) > (ANCHO - 8),
+        x0 = haciaIzq ? d._x - 30 - ancho : d._x + 30,
+        y0 = Math.min(Math.max(d._y - alto / 2, 30), ALTO - alto - 6);
+
+    g.appendChild(el('path', {
+      d: 'M' + d._x + ' ' + d._y + ' L' + (haciaIzq ? x0 + ancho : x0) + ' ' + (y0 + alto / 2),
+      class: 'alt-linea'
+    }));
+    g.appendChild(el('rect', {
+      x: x0, y: y0, width: ancho, height: alto, rx: 7,
+      fill: 'var(--surface-1)', stroke: 'var(--line)', 'stroke-width': 1
+    }));
+
+    alts.forEach(function (a, k) {
+      var yy = y0 + 12 + k * sep;
+      g.appendChild(el('circle', {
+        cx: x0 + 13, cy: yy - 3.5, r: a.elegida ? 4 : 3,
+        fill: a.elegida ? 'var(--carril-3)' : 'none',
+        stroke: a.elegida ? 'none' : 'var(--text-3)', 'stroke-width': 1.5
+      }));
+      g.appendChild(el('text', {
+        x: x0 + 23, y: yy, class: 'alt-txt' + (a.elegida ? '' : ' no')
+      }, a.opcion));
+      g.appendChild(el('title', {}, a.opcion + ' — ' + (a.motivo || '')));
+    });
+    return g;
+  }
+
+  // ── Panel de detalle ─────────────────────────────────────────
+  // `seleccionar` alterna (pulsar dos veces deselecciona); `irA` no, porque al
+  // navegar con teclado apagar el nodo al llegar seria absurdo.
+  function irA(id) {
+    if (!porId[id]) return;
+    seleccion = id;
+    if (history.replaceState) history.replaceState(null, '', '#' + id);
+    var ba = document.getElementById('b-abiertas');
+    if (ba) ba.setAttribute('aria-pressed', 'false');
+    pintar();
+    panel();
+    aLaVista(id);
+  }
+
+  // Deseleccionar tiene que limpiar tambien el hash: si no, al recargar vuelve
+  // a salir seleccionada la decision que acabas de soltar.
+  function deseleccionar() {
+    seleccion = null;
+    if (history.replaceState) history.replaceState(null, '', '#');
+    pintar();
+    panel();
+  }
+
+  function seleccionar(id) {
+    seleccion = (seleccion === id) ? null : id;
+    // el hash permite enlazar a una decision concreta y volver a ella
+    if (history.replaceState) history.replaceState(null, '', seleccion ? '#' + seleccion : '#');
+    var ba = document.getElementById('b-abiertas');
+    if (ba) ba.setAttribute('aria-pressed', 'false');
+    pintar();
+    panel();
+  }
+
+  // ── Leyenda ──────────────────────────────────────────────────
+  // Se genera del vocabulario DECLARADO y de lo que el registro usa de verdad,
+  // no de una lista cableada. Un proyecto sin irreversibles no tiene por que
+  // ver una fila explicando el anillo rojo, y los carriles son suyos.
+  function muestra(svgInterno, ancho) {
+    return '<svg class="mini" width="' + (ancho || 26) + '" height="20" ' +
+           'viewBox="' + (-(ancho || 26) / 2) + ' -10 ' + (ancho || 26) + ' 20" ' +
+           'aria-hidden="true">' + svgInterno + '</svg>';
+  }
+  function figuraHTML(tipo, r, c) {
+    var n = figura(tipo, r, c);
+    return new XMLSerializer().serializeToString(n);
+  }
+
+  function leyenda() {
+    var voc = D.vocabulario || {},
+        usados = {}, impUsados = {}, h = '';
+    decisiones.forEach(function (d) {
+      usados[d.tipo || 'decision'] = true;
+      impUsados[d.impacto || 'menor'] = true;
+    });
+    var gris = 'var(--text-2)';
+
+    function bloque(titulo, filas) {
+      if (!filas.length) return '';
+      return '<div class="p-bloque"><h3>' + titulo + '</h3><ul class="ley">' +
+             filas.join('') + '</ul></div>';
+    }
+    function fila(sw, nombre, desc) {
+      return '<li>' + sw + '<span><b>' + esc(nombre) + '</b>' +
+             (desc ? ' — ' + esc(desc) : '') + '</span></li>';
+    }
+
+    // Forma = que clase de hecho es
+    var tipos = (voc.tipos || {}).valores || {};
+    var fT = Object.keys(tipos).filter(function (t) { return usados[t]; })
+      .map(function (t) { return fila(muestra(figuraHTML(t, 6.5, gris)), t, tipos[t]); });
+    h += bloque('Forma · qué clase de hecho es', fT);
+
+    // Tamano = impacto
+    var imps = (voc.impacto || {}).valores || {};
+    var orden = ['mayor', 'menor', 'parche'];
+    var fI = orden.concat(Object.keys(imps).filter(function (k) { return orden.indexOf(k) < 0; }))
+      .filter(function (k) { return imps[k] && impUsados[k]; })
+      .map(function (k) {
+        return fila(muestra('<circle cx="0" cy="0" r="' + (R[k] || R.menor) +
+                            '" fill="' + gris + '"/>'), k, imps[k]);
+      });
+    h += bloque('Tamaño · impacto', fI);
+
+    // Anillos: solo lo que el registro usa
+    var fA = [];
+    if (decisiones.some(function (d) { return d.hito; })) {
+      fA.push(fila(muestra('<circle cx="0" cy="0" r="6" fill="' + gris + '"/>' +
+        '<circle cx="0" cy="0" r="9" fill="none" stroke="' + gris +
+        '" stroke-width="1.5" opacity=".55"/>'), 'hito',
+        'responde una de las preguntas que definen el proyecto'));
+    }
+    if (decisiones.some(function (d) { return d.irreversible; })) {
+      fA.push(fila(muestra('<circle cx="0" cy="0" r="5.5" fill="' + gris + '"/>' +
+        '<circle cx="0" cy="0" r="9.5" fill="none" stroke="var(--alerta)" ' +
+        'stroke-width="2"/>'), 'irreversible',
+        'deshacerla pierde algo que no se recupera'));
+    }
+    if (decisiones.some(function (d) { return d.estado === 'superada'; })) {
+      fA.push(fila(muestra('<circle cx="0" cy="0" r="6.5" fill="' + gris +
+        '" opacity=".4" stroke="var(--surface-1)" stroke-width="2" ' +
+        'stroke-dasharray="2 2"/>'), 'superada',
+        'otra decision posterior la reemplazo; no se borra'));
+    }
+    h += bloque('Anillos y estado', fA);
+
+    // Color = area
+    var fC = (D.carriles || []).map(function (c) {
+      return fila(muestra('<circle cx="0" cy="0" r="6.5" fill="' + color(c.id) + '"/>'),
+                  c.nombre, c.descripcion);
+    });
+    h += bloque('Color · área de trabajo', fC);
+
+    // Lineas y eje
+    var fL = [];
+    if (aristas.length) {
+      fL.push(fila(muestra('<path d="M-12 6 C0 6, 0 -6, 12 -6" fill="none" stroke="' +
+        gris + '" stroke-width="1.5" opacity=".25"/>', 28), 'enlace causal',
+        'lo de la izquierda provoco lo de la derecha'));
+      fL.push(fila(muestra('<path d="M-12 6 C0 6, 0 -6, 12 -6" fill="none" stroke="' +
+        'var(--carril-1)" stroke-width="2"/>', 28), 'cadena resaltada',
+        'al pulsar una decision se ilumina su cadena entera'));
+    }
+    if (cortes.length) {
+      fL.push(fila(muestra('<path d="M-4 8 l6 -14 M4 8 l6 -14" stroke="' + gris +
+        '" stroke-width="1.5" opacity=".5" fill="none"/>'), 'corte del eje',
+        'un tramo sin actividad, comprimido. El numero son los dias'));
+    }
+    if (hayVersiones) {
+      fL.push(fila(muestra('<rect x="-13" y="-7" width="26" height="14" rx="3" ' +
+        'fill="var(--surface-3)" stroke="var(--line)"/>', 28), 'banda de version',
+        'la etiqueta de git vigente en ese tramo'));
+    }
+    h += bloque('Líneas y eje', fL);
+
+    return h;
+  }
+
+  function panelLeyenda() {
+    var p = document.getElementById('panel');
+    p.className = '';
+    p.innerHTML = '<div class="p-cab"><h2 class="p-tit">Cómo se lee el dibujo</h2>' +
+      '<span class="chip">leyenda</span></div>' +
+      '<div class="p-cuerpo">' + leyenda() + '</div>';
+  }
+
+  function listaIds(ids) {
+    return (ids || []).map(function (i) {
+      var o = porId[i];
+      return o ? '<li>' + esc(o.titulo) + '</li>' : '';
+    }).join('');
+  }
+
+  function panel() {
+    var p = document.getElementById('panel');
+    if (!seleccion) {
+      // Sin nada seleccionado, el panel estaba desaprovechado y es justo el
+      // momento en que hace falta saber que significa cada figura.
+      p.className = '';
+      p.innerHTML = '<div class="p-cab"><h2 class="p-tit">Pulsa una decisión</h2>' +
+        '<span class="meta">para ver por qué se tomó y qué alternativas se descartaron</span>' +
+        '</div><div class="p-cuerpo">' + leyenda() + '</div>';
+      return;
+    }
+    var d = porId[seleccion];
+    p.className = '';
+
+    var chips = '';
+    if (d.hito)          chips += '<span class="chip hito-chip">hito · ' + esc(d.hito) + '</span>';
+    if (d.irreversible)  chips += '<span class="chip irrev-chip">irreversible</span>';
+    chips += '<span class="chip">' + esc(d.impacto) + '</span>';
+    if (d.estado !== 'vigente') chips += '<span class="chip">' + esc(d.estado) + '</span>';
+    if (d.tipo !== 'decision')  chips += '<span class="chip">' + esc(d.tipo) + '</span>';
+    if (d.decidido_por) chips += '<span class="chip autor-' + esc(d.decidido_por) +
+      '">' + (d.decidido_por === 'ia' ? 'decidido por IA' : 'decidido por ti') + '</span>';
+
+    var bloques = '';
+    if (d.porque)   bloques += bloque('Por qué', '<p>' + esc(d.porque) + '</p>');
+    if (d.detalle)  bloques += bloque('Qué', '<p>' + esc(d.detalle) + '</p>');
+
+    if ((d.alternativas || []).length) {
+      bloques += bloque('Alternativas', '<ul>' + d.alternativas.map(function (a) {
+        return '<li class="' + (a.elegida ? 'alt-si' : 'alt-no') + '">' + esc(a.opcion) +
+               '<span> — ' + esc(a.motivo || '') + '</span></li>';
+      }).join('') + '</ul>');
+    }
+    if (d.consecuencia) bloques += bloque('Consecuencia', '<p>' + esc(d.consecuencia) + '</p>');
+    if ((d.causada_por || []).length) bloques += bloque('La causó', '<ul>' + listaIds(d.causada_por) + '</ul>');
+    if ((d.abre || []).length)        bloques += bloque('Abrió', '<ul>' + listaIds(d.abre) + '</ul>');
+    // `supera_a` llega siempre como lista: una decision puede reemplazar a
+    // varias, y el build normaliza el id suelto que tambien se escribe.
+    if ((d.supera_a || []).length)
+      bloques += bloque('Supera a', '<ul>' + listaIds(d.supera_a) + '</ul>');
+
+    var pie = [];
+    pie.push(fechaCorta(d.fecha));
+    if (d.commit)  pie.push('commit <code>' + esc(d.commit) + '</code>');
+    if (d.version) pie.push('versión ' + esc(d.version));
+    if (d.desfase_fechas)
+      pie.push('<b>registrado ' + d.desfase_fechas + ' días después (' + esc(d.fecha_commit) + ')</b>');
+    if (d.espera_hasta) pie.push('espera hasta ' + fechaCorta(d.espera_hasta));
+    if (d.ref) {
+      var base = (D.proyecto.seguimiento || '').replace(/[^/]*$/, '');
+      pie.push('<a href="' + esc(base + d.ref) + '">relato</a>');
+    }
+    bloques += bloque('Registro', '<p>' + pie.join(' · ') + '</p>');
+
+    p.innerHTML =
+      '<div class="p-cab"><h2 class="p-tit">' + esc(d.titulo) + '</h2>' + chips + '</div>' +
+      '<div class="p-cuerpo">' + bloques + '</div>';
+  }
+
+  function panelAbiertas() {
+    var p = document.getElementById('panel'), ab = D.preguntas_abiertas || [];
+    p.className = '';
+    p.innerHTML =
+      '<div class="p-cab"><h2 class="p-tit">Preguntas sin responder</h2>' +
+      '<span class="chip">' + ab.length + ' de ' +
+      (((D.vocabulario || {}).hitos || []).length) + '</span></div>' +
+      '<div class="p-cuerpo">' + bloque('Quedan por decidir',
+        '<ul>' + ab.map(function (q) {
+          return '<li>' + esc(q.pregunta || q.id) +
+            (q.irreversible ? ' <span class="chip irrev-chip">irreversible</span>' : '') +
+            '</li>';
+        }).join('') + '</ul>') +
+      bloque('Qué es esto',
+        '<p>Las preguntas que definen el proyecto se declaran al empezar, en ' +
+        '<code>vocabulario.hitos</code>. Una decisión es un hito cuando responde ' +
+        'una de ellas; las que nadie ha respondido todavía salen aquí.</p>') +
+      '</div>';
+  }
+
+  function bloque(t, html) {
+    return '<div class="p-bloque"><h3>' + t + '</h3>' + html + '</div>';
+  }
+
+  // ── Tabla (alternativa accesible al dibujo) ──────────────────
+  function tabla() {
+    var filas = decisiones.map(function (d) {
+      var carril = (carriles.filter(function (c) { return c.id === d.carril; })[0] || {}).nombre || '';
+      var alts = (d.alternativas || []).map(function (a) {
+        return (a.elegida ? '✔ ' : '✗ ') + a.opcion;
+      }).join('; ');
+      return '<tr><td>' + fechaCorta(d.fecha) + '</td><td>' + esc(carril) + '</td>' +
+        '<td>' + esc(d.titulo) + (d.irreversible ? ' <b>(irreversible)</b>' : '') + '</td>' +
+        '<td>' + esc(d.decidido_por || '') + '</td>' +
+        '<td>' + esc(d.hito || '') + '</td><td>' + esc(d.impacto) + '</td>' +
+        '<td>' + esc(d.porque) + '</td><td>' + esc(alts) + '</td></tr>';
+    }).join('');
+    document.getElementById('tabla').innerHTML =
+      '<table><caption class="meta" style="text-align:left;padding:8px 0">' +
+      'Las mismas decisiones en texto.</caption><thead><tr>' +
+      '<th>Fecha</th><th>Carril</th><th>Decisión</th><th>Quién</th><th>Hito</th><th>Impacto</th>' +
+      '<th>Por qué</th><th>Alternativas</th></tr></thead><tbody>' + filas + '</tbody></table>';
+  }
+
+  // ── Controles ────────────────────────────────────────────────
+  function alterna(id, fn) {
+    var b = document.getElementById(id);
+    b.addEventListener('click', function () {
+      var v = b.getAttribute('aria-pressed') !== 'true';
+      b.setAttribute('aria-pressed', v);
+      fn(v);
+    });
+  }
+  alterna('b-hitos', function (v) { filtro.hitos = v; pintar(); });
+  alterna('b-irrev', function (v) { filtro.irrev = v; pintar(); });
+
+  // ── Menus de filtro ──────────────────────────────────────────
+  // Un solo constructor para todos: los valores salen del vocabulario
+  // DECLARADO del proyecto, no de una lista cableada, y el criterio escrito de
+  // cada uno se usa como rotulo de ayuda de su casilla. Solo se ofrecen los que
+  // aparecen de verdad; filtrar por algo que no existe es ruido.
+  function montaFiltro(clave, etiqueta, valorDe) {
+    var declarados = ((D.vocabulario || {})[clave] || {}).valores || {},
+        cuenta = {};
+    decisiones.forEach(function (d) {
+      var v = valorDe(d);
+      if (v) cuenta[v] = (cuenta[v] || 0) + 1;
+    });
+    var valores = Object.keys(cuenta).sort(function (a, b) { return cuenta[b] - cuenta[a]; });
+
+    var menu = document.getElementById('m-' + clave);
+    if (!menu) return;
+    if (valores.length < 2) { menu.hidden = true; return; }   // filtrar no aporta
+
+    var cuerpo = document.getElementById('c-' + clave),
+        resumen = document.getElementById('s-' + clave);
+
+    valores.forEach(function (v) {
+      var lab = document.createElement('label'),
+          chk = document.createElement('input');
+      chk.type = 'checkbox'; chk.checked = true; chk.value = v;
+      lab.appendChild(chk);
+      lab.appendChild(document.createTextNode(v));
+      var n = document.createElement('span');
+      n.className = 'cuenta'; n.textContent = cuenta[v];
+      lab.appendChild(n);
+      if (declarados[v]) lab.title = declarados[v];   // el criterio escrito
+      cuerpo.appendChild(lab);
+      chk.addEventListener('change', aplica);
+    });
+
+    var pie = document.createElement('div');
+    pie.className = 'pie';
+    var todos = document.createElement('button');
+    todos.textContent = 'Todos';
+    todos.addEventListener('click', function () {
+      cuerpo.querySelectorAll('input').forEach(function (c) { c.checked = true; });
+      aplica();
+    });
+    pie.appendChild(todos);
+    cuerpo.appendChild(pie);
+
+    function aplica() {
+      var marcados = {}, n = 0;
+      cuerpo.querySelectorAll('input').forEach(function (c) {
+        if (c.checked) { marcados[c.value] = true; n++; }
+      });
+      // Ninguno marcado dejaria el dibujo vacio sin decir por que: se trata
+      // como "todos", que es lo que la persona quiere decir al desmarcarlo todo.
+      filtro[clave] = (n === 0 || n === valores.length) ? null : marcados;
+      resumen.textContent = filtro[clave]
+        ? etiqueta + ' · ' + n + '/' + valores.length : etiqueta;
+      pintar();
+    }
+  }
+
+  montaFiltro('tipos', 'Tipos', function (d) { return d.tipo || 'decision'; });
+  montaFiltro('decidido_por', 'Quién decidió', function (d) { return d.decidido_por; });
+
+  // Un clic fuera cierra los menus: si no, se quedan abiertos tapando el dibujo.
+  document.addEventListener('click', function (e) {
+    Array.prototype.forEach.call(
+      document.querySelectorAll('details.menu'), function (m) {
+        if (m.open && !m.contains(e.target)) m.open = false;
+      });
+  });
+  document.getElementById('b-ajuste').addEventListener('click', ajustar);
+  document.getElementById('b-zoom').addEventListener('click', ajustar);
+  document.getElementById('b-menos').addEventListener('click', function () { cambiaZoom(-1); });
+  document.getElementById('b-mas').addEventListener('click', function () { cambiaZoom(1); });
+
+  // Arrastrar para desplazar el eje: con el eje elastico y muchos dias, la
+  // barra de scroll sola es incomoda. No se activa sobre un nodo, que ahi el
+  // gesto que se espera es pulsar.
+  (function () {
+    var l = document.getElementById('lienzo'), x0 = 0, s0 = 0, activo = false;
+    l.addEventListener('scroll', fijaFranja);
+    l.addEventListener('mousedown', function (e) {
+      if (e.button !== 0 || (e.target.closest && e.target.closest('.nodo'))) return;
+      activo = true; x0 = e.clientX; s0 = l.scrollLeft;
+      l.classList.add('arrastrando');
+    });
+    window.addEventListener('mousemove', function (e) {
+      if (activo) l.scrollLeft = s0 - (e.clientX - x0);
+    });
+    window.addEventListener('mouseup', function () {
+      activo = false; l.classList.remove('arrastrando');
+    });
+    // Ctrl + rueda hace zoom; la rueda sola sigue desplazando como siempre.
+    l.addEventListener('wheel', function (e) {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      cambiaZoom(e.deltaY < 0 ? 1 : -1, e.clientX);
+    }, { passive: false });
+  })();
+  var bl = document.getElementById('b-leyenda');
+  bl.addEventListener('click', function () {
+    var act = bl.getAttribute('aria-pressed') !== 'true';
+    bl.setAttribute('aria-pressed', act);
+    if (act) { panelLeyenda(); } else { panel(); }
+  });
+
+  var abiertas = D.preguntas_abiertas || [];
+  if (abiertas.length) {
+    var ba = document.getElementById('b-abiertas');
+    ba.hidden = false;
+    ba.textContent = abiertas.length + ' sin responder';
+    ba.addEventListener('click', function () {
+      var act = ba.getAttribute('aria-pressed') !== 'true';
+      ba.setAttribute('aria-pressed', act);
+      if (act) { seleccion = null; pintar(); panelAbiertas(); }
+      else { panel(); }
+    });
+  }
+
+  alterna('b-tabla', function (v) {
+    document.getElementById('tabla').hidden = !v;
+    document.getElementById('lienzo').hidden = v;
+  });
+  // Con `Ajustar` el porcentaje depende del ancho de la ventana, asi que hay
+  // que recalcularlo al redimensionar o miente.
+  window.addEventListener('resize', function () { if (zoom == null) sincronizaEscala(); });
+
+  // ── Teclado ──────────────────────────────────────────────────
+  // Izquierda y derecha recorren el orden cronologico; arriba y abajo saltan
+  // al carril vecino, al nodo mas cercano en el tiempo. Sin esto, revisar el
+  // registro obliga a apuntar con el raton decision por decision.
+  function visiblesOrdenadas() { return decisiones.filter(visible); }
+
+  function mueve(paso) {
+    var v = visiblesOrdenadas();
+    if (!v.length) return;
+    var i = -1;
+    v.forEach(function (d, k) { if (d.id === seleccion) i = k; });
+    i = (i < 0) ? (paso > 0 ? 0 : v.length - 1)
+                : Math.max(0, Math.min(v.length - 1, i + paso));
+    irA(v[i].id);
+  }
+
+  function mueveCarril(paso) {
+    var actual = porId[seleccion];
+    if (!actual) return mueve(1);
+    var idx = -1;
+    carriles.forEach(function (c, k) { if (c.id === actual.carril) idx = k; });
+    if (idx < 0) return;
+    for (var k = 1; k <= carriles.length; k++) {
+      var j = idx + paso * k;
+      if (j < 0 || j >= carriles.length) continue;
+      var cand = visiblesOrdenadas().filter(function (d) { return d.carril === carriles[j].id; });
+      if (cand.length) {
+        cand.sort(function (a, b) {
+          return Math.abs(a._x - actual._x) - Math.abs(b._x - actual._x);
+        });
+        return irA(cand[0].id);
+      }
+    }
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    if (document.getElementById('tabla').hidden === false) return;  // en tabla manda el navegador
+    if (e.key === 'Escape' && seleccion) { deseleccionar(); return; }
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+    var v = visiblesOrdenadas();
+    switch (e.key) {
+      case 'ArrowRight': e.preventDefault(); mueve(1); break;
+      case 'ArrowLeft':  e.preventDefault(); mueve(-1); break;
+      case 'ArrowDown':  e.preventDefault(); mueveCarril(1); break;
+      case 'ArrowUp':    e.preventDefault(); mueveCarril(-1); break;
+      case 'Home':       if (v.length) { e.preventDefault(); irA(v[0].id); } break;
+      case 'End':        if (v.length) { e.preventDefault(); irA(v[v.length - 1].id); } break;
+      case '+': case '=': e.preventDefault(); cambiaZoom(1); break;
+      case '-':           e.preventDefault(); cambiaZoom(-1); break;
+      case '0':           e.preventDefault(); ajustar(); break;
+    }
+  });
+
+  // ── Arranque ─────────────────────────────────────────────────
+  var hitos = decisiones.filter(function (d) { return d.hito; }).length,
+      irrev = decisiones.filter(function (d) { return d.irreversible; }).length;
+  document.title = (D.proyecto.nombre || 'FlowCrack') + ' · FlowCrack';
+  document.getElementById('titulo').textContent = D.proyecto.nombre || 'FlowCrack';
+  // Sin decisiones no hay rango que enseñar, y pedir dias[0] mataba el script
+  // entero antes de pintar nada.
+  document.getElementById('resumen').innerHTML =
+    '<b>' + decisiones.length + '</b> decisiones · <b>' + hitos + '</b> hitos · <b>' +
+    irrev + '</b> irreversible' + (irrev === 1 ? '' : 's') +
+    (dias.length ? ' · ' + fechaCorta(dias[0].fecha) + ' – ' +
+                   fechaCorta(dias[dias.length - 1].fecha) : '');
+
+  var inicial = (location.hash || '').slice(1);
+  if (inicial && porId[inicial]) seleccion = inicial;
+
+  window.addEventListener('hashchange', function () {
+    var h = (location.hash || '').slice(1);
+    seleccion = porId[h] ? h : null;
+    pintar(); panel();
+  });
+
+  tabla();
+  sincronizaEscala();
+  pintar();
+  panel();
+  if (seleccion) aLaVista(seleccion);
+})();
+</script>
+</body>
+</html>

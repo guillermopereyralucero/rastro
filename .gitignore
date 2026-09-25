@@ -1,0 +1,67 @@
+# --- Secretos. Nada de esto entra en el repo, que es publico. ---
+# El token de ESIOS es personal e intransferible: cada quien pide el suyo
+# en https://www.esios.ree.es/es/pagina/api
+*.env
+.env*
+!.env.ejemplo
+credenciales*
+*credentials*
+*-key.json
+*_key.json
+service-account*.json
+*.pem
+*.p12
+
+# Credenciales de nube
+.gcloud/
+gha-creds-*.json
+
+# --- Documentos personales ---
+*.pdf
+*.docx
+*.xlsx
+
+# --- Terraform ---
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.ejemplo
+crash.log
+
+# --- dbt ---
+target/
+dbt_packages/
+logs/
+profiles.yml
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# --- Datos descargados. El repo lleva el catalogo cacheado (recursos/),
+#     pero las series de datos no: se cargan en BigQuery, no en git. ---
+datos/
+*.jsonl
+*.parquet
+*.db
+*.sqlite3
+
+# --- Sistema y editor ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/

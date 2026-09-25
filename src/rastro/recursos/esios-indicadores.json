@@ -1,0 +1,7940 @@
+{
+ "fuente": "https://api.esios.ree.es/indicators",
+ "descargado": "2026-09-25",
+ "nota": "Catalogo de indicadores de ESIOS (Red Electrica). Solo id y nombre: es el indice que Rastro usa para validar en local que un indicador existe ANTES de salir a la red, tal y como exigen las condiciones de uso del token.",
+ "total": 1983,
+ "indicadores": [
+  {
+   "id": 1,
+   "name": "Generación programada PBF Hidráulica UGH"
+  },
+  {
+   "id": 2,
+   "name": "Generación programada PBF Hidráulica no UGH"
+  },
+  {
+   "id": 3,
+   "name": "Generación programada PBF Turbinación bombeo"
+  },
+  {
+   "id": 4,
+   "name": "Generación programada PBF Nuclear"
+  },
+  {
+   "id": 5,
+   "name": "Generación programada PBF Hulla antracita Anexo II RD 134/2010"
+  },
+  {
+   "id": 6,
+   "name": "Generación programada PBF Hulla sub-bituminosa Anexo II RD 134/2010"
+  },
+  {
+   "id": 7,
+   "name": "Generación programada PBF Hulla antracita"
+  },
+  {
+   "id": 8,
+   "name": "Generación programada PBF Hulla sub-bituminosa"
+  },
+  {
+   "id": 9,
+   "name": "Generación programada PBF Ciclo combinado"
+  },
+  {
+   "id": 10,
+   "name": "Generación programada PBF Fuel"
+  },
+  {
+   "id": 11,
+   "name": "Generación programada PBF Gas Natural - Turbina de vapor"
+  },
+  {
+   "id": 12,
+   "name": "Generación programada PBF Eólica terrestre"
+  },
+  {
+   "id": 13,
+   "name": "Generación programada PBF Eólica marina"
+  },
+  {
+   "id": 14,
+   "name": "Generación programada PBF Solar fotovoltaica"
+  },
+  {
+   "id": 15,
+   "name": "Generación programada PBF Solar térmica"
+  },
+  {
+   "id": 16,
+   "name": "Generación programada PBF Océano y geotérmica"
+  },
+  {
+   "id": 17,
+   "name": "Generación programada PBF Gas Natural Cogeneración"
+  },
+  {
+   "id": 18,
+   "name": "Generación programada PBF Derivados del petróleo ó carbón"
+  },
+  {
+   "id": 19,
+   "name": "Generación programada PBF Subproductos minería"
+  },
+  {
+   "id": 20,
+   "name": "Generación programada PBF Energía residual"
+  },
+  {
+   "id": 21,
+   "name": "Generación programada PBF Biomasa"
+  },
+  {
+   "id": 22,
+   "name": "Generación programada PBF Biogás"
+  },
+  {
+   "id": 23,
+   "name": "Generación programada PBF Residuos domésticos y similares"
+  },
+  {
+   "id": 24,
+   "name": "Generación programada PBF Residuos varios"
+  },
+  {
+   "id": 25,
+   "name": "Generación programada PBF Consumo bombeo"
+  },
+  {
+   "id": 26,
+   "name": "Generación programada PBF Enlace Baleares"
+  },
+  {
+   "id": 27,
+   "name": "Generación programada PBF Genéricas"
+  },
+  {
+   "id": 28,
+   "name": "Generación programada PBF Importación Francia"
+  },
+  {
+   "id": 29,
+   "name": "Generación programada PBF Importación Portugal"
+  },
+  {
+   "id": 30,
+   "name": "Generación programada PBF Importación Marruecos"
+  },
+  {
+   "id": 31,
+   "name": "Generación programada PBF Importación Andorra"
+  },
+  {
+   "id": 32,
+   "name": "Generación programada PBF Exportación Francia"
+  },
+  {
+   "id": 33,
+   "name": "Generación programada PBF Exportación Portugal"
+  },
+  {
+   "id": 34,
+   "name": "Generación programada PBF Exportación Marruecos"
+  },
+  {
+   "id": 35,
+   "name": "Generación programada PBF Exportación Andorra"
+  },
+  {
+   "id": 36,
+   "name": "Generación programada PVP Hidráulica UGH"
+  },
+  {
+   "id": 37,
+   "name": "Generación programada PVP Hidráulica no UGH"
+  },
+  {
+   "id": 38,
+   "name": "Generación programada PVP Turbinación bombeo"
+  },
+  {
+   "id": 39,
+   "name": "Generación programada PVP Nuclear"
+  },
+  {
+   "id": 40,
+   "name": "Generación programada PVP Hulla antracita Anexo II RD 134/2010"
+  },
+  {
+   "id": 41,
+   "name": "Generación programada PVP Hulla sub-bituminosa Anexo II RD 134/2010"
+  },
+  {
+   "id": 42,
+   "name": "Generación programada PVP Hulla antracita"
+  },
+  {
+   "id": 43,
+   "name": "Generación programada PVP Hulla sub-bituminosa"
+  },
+  {
+   "id": 44,
+   "name": "Generación programada PVP Ciclo combinado"
+  },
+  {
+   "id": 45,
+   "name": "Generación programada PVP Fuel"
+  },
+  {
+   "id": 46,
+   "name": "Generación programada PVP Gas Natural - Turbina de vapor"
+  },
+  {
+   "id": 47,
+   "name": "Generación programada PVP Eólica terrestre"
+  },
+  {
+   "id": 48,
+   "name": "Generación programada PVP Eólica marina"
+  },
+  {
+   "id": 49,
+   "name": "Generación programada PVP Solar fotovoltaica"
+  },
+  {
+   "id": 50,
+   "name": "Generación programada PVP Solar térmica"
+  },
+  {
+   "id": 51,
+   "name": "Generación programada PVP Océano y geotérmica"
+  },
+  {
+   "id": 52,
+   "name": "Generación programada PVP Gas Natural Cogeneración"
+  },
+  {
+   "id": 53,
+   "name": "Generación programada PVP Derivados del petróleo ó carbón"
+  },
+  {
+   "id": 54,
+   "name": "Generación programada PVP Subproductos minería"
+  },
+  {
+   "id": 55,
+   "name": "Generación programada PVP Energía residual"
+  },
+  {
+   "id": 56,
+   "name": "Generación programada PVP Biomasa"
+  },
+  {
+   "id": 57,
+   "name": "Generación programada PVP Biogás"
+  },
+  {
+   "id": 58,
+   "name": "Generación programada PVP Residuos domésticos y similares"
+  },
+  {
+   "id": 59,
+   "name": "Generación programada PVP Residuos varios"
+  },
+  {
+   "id": 60,
+   "name": "Generación programada PVP Consumo bombeo"
+  },
+  {
+   "id": 61,
+   "name": "Generación programada PVP Enlace Baleares"
+  },
+  {
+   "id": 62,
+   "name": "Generación programada PVP Genéricas"
+  },
+  {
+   "id": 63,
+   "name": "Generación programada PVP Importación Francia"
+  },
+  {
+   "id": 64,
+   "name": "Generación programada PVP Importación Portugal"
+  },
+  {
+   "id": 65,
+   "name": "Generación programada PVP Importación Marruecos"
+  },
+  {
+   "id": 66,
+   "name": "Generación programada PVP Importación Andorra"
+  },
+  {
+   "id": 67,
+   "name": "Generación programada PVP Exportación Francia"
+  },
+  {
+   "id": 68,
+   "name": "Generación programada PVP Exportación Portugal"
+  },
+  {
+   "id": 69,
+   "name": "Generación programada PVP Exportación Marruecos"
+  },
+  {
+   "id": 70,
+   "name": "Generación programada PVP Exportación Andorra"
+  },
+  {
+   "id": 71,
+   "name": "Generación programada P48 Hidráulica UGH"
+  },
+  {
+   "id": 72,
+   "name": "Generación programada P48 Hidráulica no UGH"
+  },
+  {
+   "id": 73,
+   "name": "Generación programada P48 Turbinación bombeo"
+  },
+  {
+   "id": 74,
+   "name": "Generación programada P48 Nuclear"
+  },
+  {
+   "id": 75,
+   "name": "Generación programada P48 Hulla antracita Anexo II RD 134/2010"
+  },
+  {
+   "id": 76,
+   "name": "Generación programada P48 Hulla sub-bituminosa Anexo II RD 134/2010"
+  },
+  {
+   "id": 77,
+   "name": "Generación programada P48 Hulla antracita"
+  },
+  {
+   "id": 78,
+   "name": "Generación programada P48 Hulla sub-bituminosa"
+  },
+  {
+   "id": 79,
+   "name": "Generación programada P48 Ciclo combinado"
+  },
+  {
+   "id": 80,
+   "name": "Generación programada P48 Fuel"
+  },
+  {
+   "id": 81,
+   "name": "Generación programada P48 Gas Natural - Turbina de vapor"
+  },
+  {
+   "id": 82,
+   "name": "Generación programada P48 Eólica terrestre"
+  },
+  {
+   "id": 83,
+   "name": "Generación programada P48 Eólica marina"
+  },
+  {
+   "id": 84,
+   "name": "Generación programada P48 Solar fotovoltaica"
+  },
+  {
+   "id": 85,
+   "name": "Generación programada P48 Solar térmica"
+  },
+  {
+   "id": 86,
+   "name": "Generación programada P48 Océano y geotérmica"
+  },
+  {
+   "id": 87,
+   "name": "Generación programada P48 Gas Natural Cogeneración"
+  },
+  {
+   "id": 88,
+   "name": "Generación programada P48 Derivados del petróleo ó carbón"
+  },
+  {
+   "id": 89,
+   "name": "Generación programada P48 Subproductos minería"
+  },
+  {
+   "id": 90,
+   "name": "Generación programada P48 Energía residual"
+  },
+  {
+   "id": 91,
+   "name": "Generación programada P48 Biomasa"
+  },
+  {
+   "id": 92,
+   "name": "Generación programada P48 Biogás"
+  },
+  {
+   "id": 93,
+   "name": "Generación programada P48 Residuos domésticos y similares"
+  },
+  {
+   "id": 94,
+   "name": "Generación programada P48 Residuos varios"
+  },
+  {
+   "id": 95,
+   "name": "Generación programada P48 Consumo bombeo"
+  },
+  {
+   "id": 96,
+   "name": "Generación programada P48 Enlace Baleares"
+  },
+  {
+   "id": 97,
+   "name": "Generación programada P48 Genéricas"
+  },
+  {
+   "id": 98,
+   "name": "Generación programada P48 Importación Francia"
+  },
+  {
+   "id": 99,
+   "name": "Generación programada P48 Importación Portugal"
+  },
+  {
+   "id": 100,
+   "name": "Generación programada P48 Importación Marruecos"
+  },
+  {
+   "id": 101,
+   "name": "Generación programada P48 Importación Andorra"
+  },
+  {
+   "id": 102,
+   "name": "Generación programada P48 Exportación Francia"
+  },
+  {
+   "id": 103,
+   "name": "Generación programada P48 Exportación Portugal"
+  },
+  {
+   "id": 104,
+   "name": "Generación programada P48 Exportación Marruecos"
+  },
+  {
+   "id": 105,
+   "name": "Generación programada P48 Exportación Andorra"
+  },
+  {
+   "id": 106,
+   "name": "Generación programada PHF1 Hidráulica UGH"
+  },
+  {
+   "id": 107,
+   "name": "Generación programada PHF1 Hidráulica no UGH"
+  },
+  {
+   "id": 108,
+   "name": "Generación programada PHF1 Turbinación bombeo"
+  },
+  {
+   "id": 109,
+   "name": "Generación programada PHF1 Nuclear"
+  },
+  {
+   "id": 110,
+   "name": "Generación programada PHF1 Hulla antracita Anexo II RD 134/2010"
+  },
+  {
+   "id": 111,
+   "name": "Generación programada PHF1 Hulla sub-bituminosa Anexo II RD 134/2010"
+  },
+  {
+   "id": 112,
+   "name": "Generación programada PHF1 Hulla antracita"
+  },
+  {
+   "id": 113,
+   "name": "Generación programada PHF1 Hulla sub-bituminosa"
+  },
+  {
+   "id": 114,
+   "name": "Generación programada PHF1 Ciclo combinado"
+  },
+  {
+   "id": 115,
+   "name": "Generación programada PHF1 Fuel"
+  },
+  {
+   "id": 116,
+   "name": "Generación programada PHF1 Gas Natural - Turbina de vapor"
+  },
+  {
+   "id": 117,
+   "name": "Generación programada PHF1 Eólica terrestre"
+  },
+  {
+   "id": 118,
+   "name": "Generación programada PHF1 Eólica marina"
+  },
+  {
+   "id": 119,
+   "name": "Generación programada PHF1 Solar fotovoltaica"
+  },
+  {
+   "id": 120,
+   "name": "Generación programada PHF1 Solar térmica"
+  },
+  {
+   "id": 121,
+   "name": "Generación programada PHF1 Océano y geotérmica"
+  },
+  {
+   "id": 122,
+   "name": "Generación programada PHF1 Gas Natural Cogeneración"
+  },
+  {
+   "id": 123,
+   "name": "Generación programada PHF1 Derivados del petróleo ó carbón"
+  },
+  {
+   "id": 124,
+   "name": "Generación programada PHF1 Subproductos minería"
+  },
+  {
+   "id": 125,
+   "name": "Generación programada PHF1 Energía residual"
+  },
+  {
+   "id": 126,
+   "name": "Generación programada PHF1 Biomasa"
+  },
+  {
+   "id": 127,
+   "name": "Generación programada PHF1 Biogás"
+  },
+  {
+   "id": 128,
+   "name": "Generación programada PHF1 Residuos domésticos y similares"
+  },
+  {
+   "id": 129,
+   "name": "Generación programada PHF1 Residuos varios"
+  },
+  {
+   "id": 130,
+   "name": "Generación programada PHF1 Consumo bombeo"
+  },
+  {
+   "id": 131,
+   "name": "Generación programada PHF1 Enlace Baleares"
+  },
+  {
+   "id": 132,
+   "name": "Generación programada PHF1 Genéricas"
+  },
+  {
+   "id": 133,
+   "name": "Generación programada PHF1 Importación Francia"
+  },
+  {
+   "id": 134,
+   "name": "Generación programada PHF1 Importación Portugal"
+  },
+  {
+   "id": 135,
+   "name": "Generación programada PHF1 Importación Marruecos"
+  },
+  {
+   "id": 136,
+   "name": "Generación programada PHF1 Importación Andorra"
+  },
+  {
+   "id": 137,
+   "name": "Generación programada PHF1 Exportación Francia"
+  },
+  {
+   "id": 138,
+   "name": "Generación programada PHF1 Exportación Portugal"
+  },
+  {
+   "id": 139,
+   "name": "Generación programada PHF1 Exportación Marruecos"
+  },
+  {
+   "id": 140,
+   "name": "Generación programada PHF1 Exportación Andorra"
+  },
+  {
+   "id": 141,
+   "name": "Generación programada PHF2 Hidráulica UGH"
+  },
+  {
+   "id": 142,
+   "name": "Generación programada PHF2 Hidráulica no UGH"
+  },
+  {
+   "id": 143,
+   "name": "Generación programada PHF2 Turbinación bombeo"
+  },
+  {
+   "id": 144,
+   "name": "Generación programada PHF2 Nuclear"
+  },
+  {
+   "id": 145,
+   "name": "Generación programada PHF2 Hulla antracita Anexo II RD 134/2010"
+  },
+  {
+   "id": 146,
+   "name": "Generación programada PHF2 Hulla sub-bituminosa Anexo II RD 134/2010"
+  },
+  {
+   "id": 147,
+   "name": "Generación programada PHF2 Hulla antracita"
+  },
+  {
+   "id": 148,
+   "name": "Generación programada PHF2 Hulla sub-bituminosa"
+  },
+  {
+   "id": 149,
+   "name": "Generación programada PHF2 Ciclo combinado"
+  },
+  {
+   "id": 150,
+   "name": "Generación programada PHF2 Fuel"
+  },
+  {
+   "id": 151,
+   "name": "Generación programada PHF2 Gas Natural - Turbina de vapor"
+  },
+  {
+   "id": 152,
+   "name": "Generación programada PHF2 Eólica terrestre"
+  },
+  {
+   "id": 153,
+   "name": "Generación programada PHF2 Eólica marina"
+  },
+  {
+   "id": 154,
+   "name": "Generación programada PHF2 Solar fotovoltaica"
+  },
+  {
+   "id": 155,
+   "name": "Generación programada PHF2 Solar térmica"
+  },
+  {
+   "id": 156,
+   "name": "Generación programada PHF2 Océano y geotérmica"
+  },
+  {
+   "id": 157,
+   "name": "Generación programada PHF2 Gas Natural Cogeneración"
+  },
+  {
+   "id": 158,
+   "name": "Generación programada PHF2 Derivados del petróleo ó carbón"
+  },
+  {
+   "id": 159,
+   "name": "Generación programada PHF2 Subproductos minería"
+  },
+  {
+   "id": 160,
+   "name": "Generación programada PHF2 Energía residual"
+  },
+  {
+   "id": 161,
+   "name": "Generación programada PHF2 Biomasa"
+  },
+  {
+   "id": 162,
+   "name": "Generación programada PHF2 Biogás"
+  },
+  {
+   "id": 163,
+   "name": "Generación programada PHF2 Residuos domésticos y similares"
+  },
+  {
+   "id": 164,
+   "name": "Generación programada PHF2 Residuos varios"
+  },
+  {
+   "id": 165,
+   "name": "Generación programada PHF2 Consumo bombeo"
+  },
+  {
+   "id": 166,
+   "name": "Generación programada PHF2 Enlace Baleares"
+  },
+  {
+   "id": 167,
+   "name": "Generación programada PHF2 Genéricas"
+  },
+  {
+   "id": 168,
+   "name": "Generación programada PHF2 Importación Francia"
+  },
+  {
+   "id": 169,
+   "name": "Generación programada PHF2 Importación Portugal"
+  },
+  {
+   "id": 170,
+   "name": "Generación programada PHF2 Importación Marruecos"
+  },
+  {
+   "id": 171,
+   "name": "Generación programada PHF2 Importación Andorra"
+  },
+  {
+   "id": 172,
+   "name": "Generación programada PHF2 Exportación Francia"
+  },
+  {
+   "id": 173,
+   "name": "Generación programada PHF2 Exportación Portugal"
+  },
+  {
+   "id": 174,
+   "name": "Generación programada PHF2 Exportación Marruecos"
+  },
+  {
+   "id": 175,
+   "name": "Generación programada PHF2 Exportación Andorra"
+  },
+  {
+   "id": 176,
+   "name": "Generación programada PHF3 Hidráulica UGH"
+  },
+  {
+   "id": 177,
+   "name": "Generación programada PHF3 Hidráulica no UGH"
+  },
+  {
+   "id": 178,
+   "name": "Generación programada PHF3 Turbinación bombeo"
+  },
+  {
+   "id": 179,
+   "name": "Generación programada PHF3 Nuclear"
+  },
+  {
+   "id": 180,
+   "name": "Generación programada PHF3 Hulla antracita Anexo II RD 134/2010"
+  },
+  {
+   "id": 181,
+   "name": "Generación programada PHF3 Hulla sub-bituminosa Anexo II RD 134/2010"
+  },
+  {
+   "id": 182,
+   "name": "Generación programada PHF3 Hulla antracita"
+  },
+  {
+   "id": 183,
+   "name": "Generación programada PHF3 Hulla sub-bituminosa"
+  },
+  {
+   "id": 184,
+   "name": "Generación programada PHF3 Ciclo combinado"
+  },
+  {
+   "id": 185,
+   "name": "Generación programada PHF3 Fuel"
+  },
+  {
+   "id": 186,
+   "name": "Generación programada PHF3 Gas Natural - Turbina de vapor"
+  },
+  {
+   "id": 187,
+   "name": "Generación programada PHF3 Eólica terrestre"
+  },
+  {
+   "id": 188,
+   "name": "Generación programada PHF3 Eólica marina"
+  },
+  {
+   "id": 189,
+   "name": "Generación programada PHF3 Solar fotovoltaica"
+  },
+  {
+   "id": 190,
+   "name": "Generación programada PHF3 Solar térmica"
+  },
+  {
+   "id": 191,
+   "name": "Generación programada PHF3 Océano y geotérmica"
+  },
+  {
+   "id": 192,
+   "name": "Generación programada PHF3 Gas Natural Cogeneración"
+  },
+  {
+   "id": 193,
+   "name": "Generación programada PHF3 Derivados del petróleo ó carbón"
+  },
+  {
+   "id": 194,
+   "name": "Generación programada PHF3 Subproductos minería"
+  },
+  {
+   "id": 195,
+   "name": "Generación programada PHF3 Energía residual"
+  },
+  {
+   "id": 196,
+   "name": "Generación programada PHF3 Biomasa"
+  },
+  {
+   "id": 197,
+   "name": "Generación programada PHF3 Biogás"
+  },
+  {
+   "id": 198,
+   "name": "Generación programada PHF3 Residuos domésticos y similares"
+  },
+  {
+   "id": 199,
+   "name": "Generación programada PHF3 Residuos varios"
+  },
+  {
+   "id": 200,
+   "name": "Generación programada PHF3 Consumo bombeo"
+  },
+  {
+   "id": 201,
+   "name": "Generación programada PHF3 Enlace Baleares"
+  },
+  {
+   "id": 202,
+   "name": "Generación programada PHF3 Genéricas"
+  },
+  {
+   "id": 203,
+   "name": "Generación programada PHF3 Importación Francia"
+  },
+  {
+   "id": 204,
+   "name": "Generación programada PHF3 Importación Portugal"
+  },
+  {
+   "id": 205,
+   "name": "Generación programada PHF3 Importación Marruecos"
+  },
+  {
+   "id": 206,
+   "name": "Generación programada PHF3 Importación Andorra"
+  },
+  {
+   "id": 207,
+   "name": "Generación programada PHF3 Exportación Francia"
+  },
+  {
+   "id": 208,
+   "name": "Generación programada PHF3 Exportación Portugal"
+  },
+  {
+   "id": 209,
+   "name": "Generación programada PHF3 Exportación Marruecos"
+  },
+  {
+   "id": 210,
+   "name": "Generación programada PHF3 Exportación Andorra"
+  },
+  {
+   "id": 211,
+   "name": "Generación programada PHF4 Hidráulica UGH"
+  },
+  {
+   "id": 212,
+   "name": "Generación programada PHF4 Hidráulica no UGH"
+  },
+  {
+   "id": 213,
+   "name": "Generación programada PHF4 Turbinación bombeo"
+  },
+  {
+   "id": 214,
+   "name": "Generación programada PHF4 Nuclear"
+  },
+  {
+   "id": 215,
+   "name": "Generación programada PHF4 Hulla antracita Anexo II RD 134/2010"
+  },
+  {
+   "id": 216,
+   "name": "Generación programada PHF4 Hulla sub-bituminosa Anexo II RD 134/2010"
+  },
+  {
+   "id": 217,
+   "name": "Generación programada PHF4 Hulla antracita"
+  },
+  {
+   "id": 218,
+   "name": "Generación programada PHF4 Hulla sub-bituminosa"
+  },
+  {
+   "id": 219,
+   "name": "Generación programada PHF4 Ciclo combinado"
+  },
+  {
+   "id": 220,
+   "name": "Generación programada PHF4 Fuel"
+  },
+  {
+   "id": 221,
+   "name": "Generación programada PHF4 Gas Natural - Turbina de vapor"
+  },
+  {
+   "id": 222,
+   "name": "Generación programada PHF4 Eólica terrestre"
+  },
+  {
+   "id": 223,
+   "name": "Generación programada PHF4 Eólica marina"
+  },
+  {
+   "id": 224,
+   "name": "Generación programada PHF4 Solar fotovoltaica"
+  },
+  {
+   "id": 225,
+   "name": "Generación programada PHF4 Solar térmica"
+  },
+  {
+   "id": 226,
+   "name": "Generación programada PHF4 Océano y geotérmica"
+  },
+  {
+   "id": 227,
+   "name": "Generación programada PHF4 Gas Natural Cogeneración"
+  },
+  {
+   "id": 228,
+   "name": "Generación programada PHF4 Derivados del petróleo ó carbón"
+  },
+  {
+   "id": 229,
+   "name": "Generación programada PHF4 Subproductos minería"
+  },
+  {
+   "id": 230,
+   "name": "Generación programada PHF4 Energía residual"
+  },
+  {
+   "id": 231,
+   "name": "Generación programada PHF4 Biomasa"
+  },
+  {
+   "id": 232,
+   "name": "Generación programada PHF4 Biogás"
+  },
+  {
+   "id": 233,
+   "name": "Generación programada PHF4 Residuos domésticos y similares"
+  },
+  {
+   "id": 234,
+   "name": "Generación programada PHF4 Residuos varios"
+  },
+  {
+   "id": 235,
+   "name": "Generación programada PHF4 Consumo bombeo"
+  },
+  {
+   "id": 236,
+   "name": "Generación programada PHF4 Enlace Baleares"
+  },
+  {
+   "id": 237,
+   "name": "Generación programada PHF4 Genéricas"
+  },
+  {
+   "id": 238,
+   "name": "Generación programada PHF4 Importación Francia"
+  },
+  {
+   "id": 239,
+   "name": "Generación programada PHF4 Importación Portugal"
+  },
+  {
+   "id": 240,
+   "name": "Generación programada PHF4 Importación Marruecos"
+  },
+  {
+   "id": 241,
+   "name": "Generación programada PHF4 Importación Andorra"
+  },
+  {
+   "id": 242,
+   "name": "Generación programada PHF4 Exportación Francia"
+  },
+  {
+   "id": 243,
+   "name": "Generación programada PHF4 Exportación Portugal"
+  },
+  {
+   "id": 244,
+   "name": "Generación programada PHF4 Exportación Marruecos"
+  },
+  {
+   "id": 245,
+   "name": "Generación programada PHF4 Exportación Andorra"
+  },
+  {
+   "id": 246,
+   "name": "Generación programada PHF5 Hidráulica UGH"
+  },
+  {
+   "id": 247,
+   "name": "Generación programada PHF5 Hidráulica no UGH"
+  },
+  {
+   "id": 248,
+   "name": "Generación programada PHF5 Turbinación bombeo"
+  },
+  {
+   "id": 249,
+   "name": "Generación programada PHF5 Nuclear"
+  },
+  {
+   "id": 250,
+   "name": "Generación programada PHF5 Hulla antracita Anexo II RD 134/2010"
+  },
+  {
+   "id": 251,
+   "name": "Generación programada PHF5 Hulla sub-bituminosa Anexo II RD 134/2010"
+  },
+  {
+   "id": 252,
+   "name": "Generación programada PHF5 Hulla antracita"
+  },
+  {
+   "id": 253,
+   "name": "Generación programada PHF5 Hulla sub-bituminosa"
+  },
+  {
+   "id": 254,
+   "name": "Generación programada PHF5 Ciclo combinado"
+  },
+  {
+   "id": 255,
+   "name": "Generación programada PHF5 Fuel"
+  },
+  {
+   "id": 256,
+   "name": "Generación programada PHF5 Gas Natural - Turbina de vapor"
+  },
+  {
+   "id": 257,
+   "name": "Generación programada PHF5 Eólica terrestre"
+  },
+  {
+   "id": 258,
+   "name": "Generación programada PHF5 Eólica marina"
+  },
+  {
+   "id": 259,
+   "name": "Generación programada PHF5 Solar fotovoltaica"
+  },
+  {
+   "id": 260,
+   "name": "Generación programada PHF5 Solar térmica"
+  },
+  {
+   "id": 261,
+   "name": "Generación programada PHF5 Océano y geotérmica"
+  },
+  {
+   "id": 262,
+   "name": "Generación programada PHF5 Gas Natural Cogeneración"
+  },
+  {
+   "id": 263,
+   "name": "Generación programada PHF5 Derivados del petróleo ó carbón"
+  },
+  {
+   "id": 264,
+   "name": "Generación programada PHF5 Subproductos minería"
+  },
+  {
+   "id": 265,
+   "name": "Generación programada PHF5 Energía residual"
+  },
+  {
+   "id": 266,
+   "name": "Generación programada PHF5 Biomasa"
+  },
+  {
+   "id": 267,
+   "name": "Generación programada PHF5 Biogás"
+  },
+  {
+   "id": 268,
+   "name": "Generación programada PHF5 Residuos domésticos y similares"
+  },
+  {
+   "id": 269,
+   "name": "Generación programada PHF5 Residuos varios"
+  },
+  {
+   "id": 270,
+   "name": "Generación programada PHF5 Consumo bombeo"
+  },
+  {
+   "id": 271,
+   "name": "Generación programada PHF5 Enlace Baleares"
+  },
+  {
+   "id": 272,
+   "name": "Generación programada PHF5 Genéricas"
+  },
+  {
+   "id": 273,
+   "name": "Generación programada PHF5 Importación Francia"
+  },
+  {
+   "id": 274,
+   "name": "Generación programada PHF5 Importación Portugal"
+  },
+  {
+   "id": 275,
+   "name": "Generación programada PHF5 Importación Marruecos"
+  },
+  {
+   "id": 276,
+   "name": "Generación programada PHF5 Importación Andorra"
+  },
+  {
+   "id": 277,
+   "name": "Generación programada PHF5 Exportación Francia"
+  },
+  {
+   "id": 278,
+   "name": "Generación programada PHF5 Exportación Portugal"
+  },
+  {
+   "id": 279,
+   "name": "Generación programada PHF5 Exportación Marruecos"
+  },
+  {
+   "id": 280,
+   "name": "Generación programada PHF5 Exportación Andorra"
+  },
+  {
+   "id": 281,
+   "name": "Generación programada PHF6 Hidráulica UGH"
+  },
+  {
+   "id": 282,
+   "name": "Generación programada PHF6 Hidráulica no UGH"
+  },
+  {
+   "id": 283,
+   "name": "Generación programada PHF6 Turbinación bombeo"
+  },
+  {
+   "id": 284,
+   "name": "Generación programada PHF6 Nuclear"
+  },
+  {
+   "id": 285,
+   "name": "Generación programada PHF6 Hulla antracita Anexo II RD 134/2010"
+  },
+  {
+   "id": 286,
+   "name": "Generación programada PHF6 Hulla sub-bituminosa Anexo II RD 134/2010"
+  },
+  {
+   "id": 287,
+   "name": "Generación programada PHF6 Hulla antracita"
+  },
+  {
+   "id": 288,
+   "name": "Generación programada PHF6 Hulla sub-bituminosa"
+  },
+  {
+   "id": 289,
+   "name": "Generación programada PHF6 Ciclo combinado"
+  },
+  {
+   "id": 290,
+   "name": "Generación programada PHF6 Fuel"
+  },
+  {
+   "id": 291,
+   "name": "Generación programada PHF6 Gas Natural - Turbina de vapor"
+  },
+  {
+   "id": 292,
+   "name": "Generación programada PHF6 Eólica terrestre"
+  },
+  {
+   "id": 293,
+   "name": "Generación programada PHF6 Eólica marina"
+  },
+  {
+   "id": 294,
+   "name": "Generación programada PHF6 Solar fotovoltaica"
+  },
+  {
+   "id": 295,
+   "name": "Generación programada PHF6 Solar térmica"
+  },
+  {
+   "id": 296,
+   "name": "Generación programada PHF6 Océano y geotérmica"
+  },
+  {
+   "id": 297,
+   "name": "Generación programada PHF6 Gas Natural Cogeneración"
+  },
+  {
+   "id": 298,
+   "name": "Generación programada PHF6 Derivados del petróleo ó carbón"
+  },
+  {
+   "id": 299,
+   "name": "Generación programada PHF6 Subproductos minería"
+  },
+  {
+   "id": 300,
+   "name": "Generación programada PHF6 Energía residual"
+  },
+  {
+   "id": 301,
+   "name": "Generación programada PHF6 Biomasa"
+  },
+  {
+   "id": 302,
+   "name": "Generación programada PHF6 Biogás"
+  },
+  {
+   "id": 303,
+   "name": "Generación programada PHF6 Residuos domésticos y similares"
+  },
+  {
+   "id": 304,
+   "name": "Generación programada PHF6 Residuos varios"
+  },
+  {
+   "id": 305,
+   "name": "Generación programada PHF6 Consumo bombeo"
+  },
+  {
+   "id": 306,
+   "name": "Generación programada PHF6 Enlace Baleares"
+  },
+  {
+   "id": 307,
+   "name": "Generación programada PHF6 Genéricas"
+  },
+  {
+   "id": 308,
+   "name": "Generación programada PHF6 Importación Francia"
+  },
+  {
+   "id": 309,
+   "name": "Generación programada PHF6 Importación Portugal"
+  },
+  {
+   "id": 310,
+   "name": "Generación programada PHF6 Importación Marruecos"
+  },
+  {
+   "id": 311,
+   "name": "Generación programada PHF6 Importación Andorra"
+  },
+  {
+   "id": 312,
+   "name": "Generación programada PHF6 Exportación Francia"
+  },
+  {
+   "id": 313,
+   "name": "Generación programada PHF6 Exportación Portugal"
+  },
+  {
+   "id": 314,
+   "name": "Generación programada PHF6 Exportación Marruecos"
+  },
+  {
+   "id": 315,
+   "name": "Generación programada PHF6 Exportación Andorra"
+  },
+  {
+   "id": 316,
+   "name": "Generación programada PHF7 Hidráulica UGH"
+  },
+  {
+   "id": 317,
+   "name": "Generación programada PHF7 Hidráulica no UGH"
+  },
+  {
+   "id": 318,
+   "name": "Generación programada PHF7 Turbinación bombeo"
+  },
+  {
+   "id": 319,
+   "name": "Generación programada PHF7 Nuclear"
+  },
+  {
+   "id": 320,
+   "name": "Generación programada PHF7 Hulla antracita Anexo II RD 134/2010"
+  },
+  {
+   "id": 321,
+   "name": "Generación programada PHF7 Hulla sub-bituminosa Anexo II RD 134/2010"
+  },
+  {
+   "id": 322,
+   "name": "Generación programada PHF7 Hulla antracita"
+  },
+  {
+   "id": 323,
+   "name": "Generación programada PHF7 Hulla sub-bituminosa"
+  },
+  {
+   "id": 324,
+   "name": "Generación programada PHF7 Ciclo combinado"
+  },
+  {
+   "id": 325,
+   "name": "Generación programada PHF7 Fuel"
+  },
+  {
+   "id": 326,
+   "name": "Generación programada PHF7 Gas Natural - Turbina de vapor"
+  },
+  {
+   "id": 327,
+   "name": "Generación programada PHF7 Eólica terrestre"
+  },
+  {
+   "id": 328,
+   "name": "Generación programada PHF7 Eólica marina"
+  },
+  {
+   "id": 329,
+   "name": "Generación programada PHF7 Solar fotovoltaica"
+  },
+  {
+   "id": 330,
+   "name": "Generación programada PHF7 Solar térmica"
+  },
+  {
+   "id": 331,
+   "name": "Generación programada PHF7 Océano y geotérmica"
+  },
+  {
+   "id": 332,
+   "name": "Generación programada PHF7 Gas Natural Cogeneración"
+  },
+  {
+   "id": 333,
+   "name": "Generación programada PHF7 Derivados del petróleo ó carbón"
+  },
+  {
+   "id": 334,
+   "name": "Generación programada PHF7 Subproductos minería"
+  },
+  {
+   "id": 335,
+   "name": "Generación programada PHF7 Energía residual"
+  },
+  {
+   "id": 336,
+   "name": "Generación programada PHF7 Biomasa"
+  },
+  {
+   "id": 337,
+   "name": "Generación programada PHF7 Biogás"
+  },
+  {
+   "id": 338,
+   "name": "Generación programada PHF7 Residuos domésticos y similares"
+  },
+  {
+   "id": 339,
+   "name": "Generación programada PHF7 Residuos varios"
+  },
+  {
+   "id": 340,
+   "name": "Generación programada PHF7 Consumo bombeo"
+  },
+  {
+   "id": 341,
+   "name": "Generación programada PHF7 Enlace Baleares"
+  },
+  {
+   "id": 342,
+   "name": "Generación programada PHF7 Genéricas"
+  },
+  {
+   "id": 343,
+   "name": "Generación programada PHF7 Importación Francia"
+  },
+  {
+   "id": 344,
+   "name": "Generación programada PHF7 Importación Portugal"
+  },
+  {
+   "id": 345,
+   "name": "Generación programada PHF7 Importación Marruecos"
+  },
+  {
+   "id": 346,
+   "name": "Generación programada PHF7 Importación Andorra"
+  },
+  {
+   "id": 347,
+   "name": "Generación programada PHF7 Exportación Francia"
+  },
+  {
+   "id": 348,
+   "name": "Generación programada PHF7 Exportación Portugal"
+  },
+  {
+   "id": 349,
+   "name": "Generación programada PHF7 Exportación Marruecos"
+  },
+  {
+   "id": 350,
+   "name": "Generación programada PHF7 Exportación Andorra"
+  },
+  {
+   "id": 351,
+   "name": "Demanda programada PBF Comercializadores mercado libre"
+  },
+  {
+   "id": 352,
+   "name": "Demanda programada PBF Comercializadores de referencia"
+  },
+  {
+   "id": 353,
+   "name": "Demanda programada PBF Consumos directos en mercado"
+  },
+  {
+   "id": 354,
+   "name": "Demanda programada PBF Consumo de Servicios Auxiliares"
+  },
+  {
+   "id": 355,
+   "name": "Demanda programada PBF Corrección eólica"
+  },
+  {
+   "id": 356,
+   "name": "Demanda programada PBF Corrección solar"
+  },
+  {
+   "id": 357,
+   "name": "Demanda programada PBF Corrección REE"
+  },
+  {
+   "id": 358,
+   "name": "Demanda programada PVP Comercializadores mercado libre"
+  },
+  {
+   "id": 359,
+   "name": "Demanda programada PVP Comercializadores de referencia"
+  },
+  {
+   "id": 360,
+   "name": "Demanda programada PVP Consumos directos en mercado"
+  },
+  {
+   "id": 361,
+   "name": "Demanda programada PVP Consumo de Servicios Auxiliares"
+  },
+  {
+   "id": 362,
+   "name": "Demanda programada PVP Corrección eólica"
+  },
+  {
+   "id": 363,
+   "name": "Demanda programada PVP Corrección solar"
+  },
+  {
+   "id": 364,
+   "name": "Demanda programada PVP Corrección REE"
+  },
+  {
+   "id": 365,
+   "name": "Demanda programada P48 Comercializadores mercado libre"
+  },
+  {
+   "id": 366,
+   "name": "Demanda programada P48 Comercializadores de referencia"
+  },
+  {
+   "id": 367,
+   "name": "Demanda programada P48 Consumos directos en mercado"
+  },
+  {
+   "id": 368,
+   "name": "Demanda programada P48 Consumo de Servicios Auxiliares"
+  },
+  {
+   "id": 369,
+   "name": "Demanda programada P48 Corrección eólica"
+  },
+  {
+   "id": 370,
+   "name": "Demanda programada P48 Corrección solar"
+  },
+  {
+   "id": 371,
+   "name": "Demanda programada P48 Corrección REE"
+  },
+  {
+   "id": 372,
+   "name": "Demanda programada PHF1 Comercializadores mercado libre"
+  },
+  {
+   "id": 373,
+   "name": "Demanda programada PHF1 Comercializadores de referencia"
+  },
+  {
+   "id": 374,
+   "name": "Demanda programada PHF1 Consumos directos en mercado"
+  },
+  {
+   "id": 375,
+   "name": "Demanda programada PHF1 Consumo de Servicios Auxiliares"
+  },
+  {
+   "id": 376,
+   "name": "Demanda programada PHF1 Corrección eólica"
+  },
+  {
+   "id": 377,
+   "name": "Demanda programada PHF1 Corrección solar"
+  },
+  {
+   "id": 378,
+   "name": "Demanda programada PHF1 Corrección REE"
+  },
+  {
+   "id": 379,
+   "name": "Demanda programada PHF2 Comercializadores mercado libre"
+  },
+  {
+   "id": 380,
+   "name": "Demanda programada PHF2 Comercializadores de referencia"
+  },
+  {
+   "id": 381,
+   "name": "Demanda programada PHF2 Consumos directos en mercado"
+  },
+  {
+   "id": 382,
+   "name": "Demanda programada PHF2 Consumo de Servicios Auxiliares"
+  },
+  {
+   "id": 383,
+   "name": "Demanda programada PHF2 Corrección eólica"
+  },
+  {
+   "id": 384,
+   "name": "Demanda programada PHF2 Corrección solar"
+  },
+  {
+   "id": 385,
+   "name": "Demanda programada PHF2 Corrección REE"
+  },
+  {
+   "id": 386,
+   "name": "Demanda programada PHF3 Comercializadores mercado libre"
+  },
+  {
+   "id": 387,
+   "name": "Demanda programada PHF3 Comercializadores de referencia"
+  },
+  {
+   "id": 388,
+   "name": "Demanda programada PHF3 Consumos directos en mercado"
+  },
+  {
+   "id": 389,
+   "name": "Demanda programada PHF3 Consumo de Servicios Auxiliares"
+  },
+  {
+   "id": 390,
+   "name": "Demanda programada PHF3 Corrección eólica"
+  },
+  {
+   "id": 391,
+   "name": "Demanda programada PHF3 Corrección solar"
+  },
+  {
+   "id": 392,
+   "name": "Demanda programada PHF3 Corrección REE"
+  },
+  {
+   "id": 393,
+   "name": "Demanda programada PHF4 Comercializadores mercado libre"
+  },
+  {
+   "id": 394,
+   "name": "Demanda programada PHF4 Comercializadores de referencia"
+  },
+  {
+   "id": 395,
+   "name": "Demanda programada PHF4 Consumos directos en mercado"
+  },
+  {
+   "id": 396,
+   "name": "Demanda programada PHF4 Consumo de Servicios Auxiliares"
+  },
+  {
+   "id": 397,
+   "name": "Demanda programada PHF4 Corrección eólica"
+  },
+  {
+   "id": 398,
+   "name": "Demanda programada PHF4 Corrección solar"
+  },
+  {
+   "id": 399,
+   "name": "Demanda programada PHF4 Corrección REE"
+  },
+  {
+   "id": 400,
+   "name": "Demanda programada PHF5 Comercializadores mercado libre"
+  },
+  {
+   "id": 401,
+   "name": "Demanda programada PHF5 Comercializadores de referencia"
+  },
+  {
+   "id": 402,
+   "name": "Demanda programada PHF5 Consumos directos en mercado"
+  },
+  {
+   "id": 403,
+   "name": "Demanda programada PHF5 Consumo de Servicios Auxiliares"
+  },
+  {
+   "id": 404,
+   "name": "Demanda programada PHF5 Corrección eólica"
+  },
+  {
+   "id": 405,
+   "name": "Demanda programada PHF5 Corrección solar"
+  },
+  {
+   "id": 406,
+   "name": "Demanda programada PHF5 Corrección REE"
+  },
+  {
+   "id": 407,
+   "name": "Demanda programada PHF6 Comercializadores mercado libre"
+  },
+  {
+   "id": 408,
+   "name": "Demanda programada PHF6 Comercializadores de referencia"
+  },
+  {
+   "id": 409,
+   "name": "Demanda programada PHF6 Consumos directos en mercado"
+  },
+  {
+   "id": 410,
+   "name": "Demanda programada PHF6 Consumo de Servicios Auxiliares"
+  },
+  {
+   "id": 411,
+   "name": "Demanda programada PHF6 Corrección eólica"
+  },
+  {
+   "id": 412,
+   "name": "Demanda programada PHF6 Corrección solar"
+  },
+  {
+   "id": 413,
+   "name": "Demanda programada PHF6 Corrección REE"
+  },
+  {
+   "id": 414,
+   "name": "Demanda programada PHF7 Comercializadores mercado libre"
+  },
+  {
+   "id": 415,
+   "name": "Demanda programada PHF7 Comercializadores de referencia"
+  },
+  {
+   "id": 416,
+   "name": "Demanda programada PHF7 Consumos directos en mercado"
+  },
+  {
+   "id": 417,
+   "name": "Demanda programada PHF7 Consumo de Servicios Auxiliares"
+  },
+  {
+   "id": 418,
+   "name": "Demanda programada PHF7 Corrección eólica"
+  },
+  {
+   "id": 419,
+   "name": "Demanda programada PHF7 Corrección solar"
+  },
+  {
+   "id": 420,
+   "name": "Demanda programada PHF7 Corrección REE"
+  },
+  {
+   "id": 421,
+   "name": "Programa bilateral PBF Hidráulica UGH"
+  },
+  {
+   "id": 422,
+   "name": "Programa bilateral PBF Hidráulica no UGH"
+  },
+  {
+   "id": 423,
+   "name": "Programa bilateral PBF Turbinación bombeo"
+  },
+  {
+   "id": 424,
+   "name": "Programa bilateral PBF Nuclear"
+  },
+  {
+   "id": 425,
+   "name": "Programa bilateral PBF Hulla antracita Anexo II RD 134/2010"
+  },
+  {
+   "id": 426,
+   "name": "Programa bilateral PBF Hulla sub-bituminosa Anexo II RD 134/2010"
+  },
+  {
+   "id": 427,
+   "name": "Programa bilateral PBF Hulla antracita"
+  },
+  {
+   "id": 428,
+   "name": "Programa bilateral PBF Hulla sub-bituminosa"
+  },
+  {
+   "id": 429,
+   "name": "Programa bilateral PBF Ciclo combinado"
+  },
+  {
+   "id": 430,
+   "name": "Programa bilateral PBF Fuel"
+  },
+  {
+   "id": 431,
+   "name": "Programa bilateral PBF Gas Natural"
+  },
+  {
+   "id": 432,
+   "name": "Programa bilateral PBF Eólica terrestre"
+  },
+  {
+   "id": 433,
+   "name": "Programa bilateral PBF Eólica marina"
+  },
+  {
+   "id": 434,
+   "name": "Programa bilateral PBF Solar fotovoltaica"
+  },
+  {
+   "id": 435,
+   "name": "Programa bilateral PBF Solar térmica"
+  },
+  {
+   "id": 436,
+   "name": "Programa bilateral PBF Océano y geotérmica"
+  },
+  {
+   "id": 437,
+   "name": "Programa bilateral PBF Gas Natural Cogeneración"
+  },
+  {
+   "id": 438,
+   "name": "Programa bilateral PBF Derivados del petróleo ó carbón"
+  },
+  {
+   "id": 439,
+   "name": "Programa bilateral PBF Subproductos minería"
+  },
+  {
+   "id": 440,
+   "name": "Programa bilateral PBF Energía residual"
+  },
+  {
+   "id": 441,
+   "name": "Programa bilateral PBF Biomasa"
+  },
+  {
+   "id": 442,
+   "name": "Programa bilateral PBF Biogás"
+  },
+  {
+   "id": 443,
+   "name": "Programa bilateral PBF Residuos domésticos y similares"
+  },
+  {
+   "id": 444,
+   "name": "Programa bilateral PBF Residuos varios"
+  },
+  {
+   "id": 445,
+   "name": "Programa bilateral PBF Consumo bombeo"
+  },
+  {
+   "id": 446,
+   "name": "Programa bilateral PBF Importación Francia"
+  },
+  {
+   "id": 447,
+   "name": "Programa bilateral PBF Importación Portugal"
+  },
+  {
+   "id": 448,
+   "name": "Programa bilateral PBF Importación Marruecos"
+  },
+  {
+   "id": 449,
+   "name": "Programa bilateral PBF Importación Andorra"
+  },
+  {
+   "id": 450,
+   "name": "Programa bilateral PBF Exportación Francia"
+  },
+  {
+   "id": 451,
+   "name": "Programa bilateral PBF Exportación Portugal"
+  },
+  {
+   "id": 452,
+   "name": "Programa bilateral PBF Exportación Marruecos"
+  },
+  {
+   "id": 453,
+   "name": "Programa bilateral PBF Exportación Andorra"
+  },
+  {
+   "id": 454,
+   "name": "Programa bilateral PBF Comercialización Mercado Libre ventas"
+  },
+  {
+   "id": 455,
+   "name": "Programa bilateral PBF Genéricas ventas"
+  },
+  {
+   "id": 456,
+   "name": "Programa bilateral PBF Comercialización Mercado Libre bajar"
+  },
+  {
+   "id": 457,
+   "name": "Programa bilateral PBF Comercialización Último Recurso"
+  },
+  {
+   "id": 458,
+   "name": "Programa bilateral PBF Consumo Directo en Mercado"
+  },
+  {
+   "id": 459,
+   "name": "Programa bilateral PBF Genéricas bajar"
+  },
+  {
+   "id": 460,
+   "name": "Previsión diaria de la demanda eléctrica peninsular"
+  },
+  {
+   "id": 461,
+   "name": "Previsión mensual de la demanda eléctrica peninsular"
+  },
+  {
+   "id": 462,
+   "name": "Potencia indisponible de generación en PBF"
+  },
+  {
+   "id": 463,
+   "name": "Potencia indisponible de generación en el cierre"
+  },
+  {
+   "id": 464,
+   "name": "Potencia instalada de generación convencional Hidráulica UGH"
+  },
+  {
+   "id": 465,
+   "name": "Potencia instalada de generación convencional Turbinación bombeo"
+  },
+  {
+   "id": 466,
+   "name": "Potencia instalada de generación convencional Nuclear"
+  },
+  {
+   "id": 467,
+   "name": "Potencia instalada de generación convencional Hulla antracita"
+  },
+  {
+   "id": 468,
+   "name": "Potencia instalada de generación convencional Hulla sub-bituminosa"
+  },
+  {
+   "id": 469,
+   "name": "Potencia instalada de generación convencional Ciclo combinado"
+  },
+  {
+   "id": 470,
+   "name": "Potencia instalada de generación convencional Fuel"
+  },
+  {
+   "id": 471,
+   "name": "Potencia instalada de generación convencional Gas Natural"
+  },
+  {
+   "id": 472,
+   "name": "Potencia disponible de generación Hidráulica UGH horizonte horario"
+  },
+  {
+   "id": 473,
+   "name": "Potencia disponible de generación Turbinación bombeo horizonte horario"
+  },
+  {
+   "id": 474,
+   "name": "Potencia disponible de generación Nuclear horizonte horario"
+  },
+  {
+   "id": 475,
+   "name": "Potencia disponible de generación Hulla antracita horizonte horario"
+  },
+  {
+   "id": 476,
+   "name": "Potencia disponible de generación Hulla sub-bituminosa horizonte horario"
+  },
+  {
+   "id": 477,
+   "name": "Potencia disponible de generación Ciclo combinado horizonte horario"
+  },
+  {
+   "id": 478,
+   "name": "Potencia disponible de generación Fuel horizonte horario"
+  },
+  {
+   "id": 479,
+   "name": "Potencia disponible de generación Gas Natural horizonte horario"
+  },
+  {
+   "id": 480,
+   "name": "Potencia disponible de generación Hidráulica UGH horizonte año móvil"
+  },
+  {
+   "id": 481,
+   "name": "Potencia disponible de generación Turbinación bombeo horizonte año móvil"
+  },
+  {
+   "id": 482,
+   "name": "Potencia disponible de generación Nuclear horizonte año móvil"
+  },
+  {
+   "id": 483,
+   "name": "Potencia disponible de generación Hulla antracita horizonte año móvil"
+  },
+  {
+   "id": 484,
+   "name": "Potencia disponible de generación Hulla sub-bituminosa horizonte año móvil"
+  },
+  {
+   "id": 485,
+   "name": "Potencia disponible de generación Ciclo combinado horizonte año móvil"
+  },
+  {
+   "id": 486,
+   "name": "Potencia disponible de generación Fuel horizonte año móvil"
+  },
+  {
+   "id": 487,
+   "name": "Potencia disponible de generación Gas Natural horizonte año móvil"
+  },
+  {
+   "id": 488,
+   "name": "Capacidad de intercambio (NTC) con Francia importación"
+  },
+  {
+   "id": 489,
+   "name": "Capacidad de intercambio (NTC) con Portugal importación"
+  },
+  {
+   "id": 490,
+   "name": "Capacidad de intercambio (NTC) con Marruecos importación"
+  },
+  {
+   "id": 491,
+   "name": "Capacidad de intercambio (NTC) con Andorra importación"
+  },
+  {
+   "id": 492,
+   "name": "Capacidad de intercambio (NTC) con Francia exportación"
+  },
+  {
+   "id": 493,
+   "name": "Capacidad de intercambio (NTC) con Portugal exportación"
+  },
+  {
+   "id": 494,
+   "name": "Capacidad de intercambio (NTC) con Marruecos exportación"
+  },
+  {
+   "id": 495,
+   "name": "Capacidad de intercambio (NTC) con Andorra exportación"
+  },
+  {
+   "id": 496,
+   "name": "Capacidad de intercambio autorizada con Francia importación"
+  },
+  {
+   "id": 497,
+   "name": "Capacidad de intercambio autorizada con Francia exportación"
+  },
+  {
+   "id": 498,
+   "name": "Capacidad de intercambio prevista (NTC) con Francia horizonte semanal importación"
+  },
+  {
+   "id": 499,
+   "name": "Capacidad de intercambio prevista (NTC) con Portugal horizonte semanal importación"
+  },
+  {
+   "id": 500,
+   "name": "Capacidad de intercambio prevista (NTC) con Marruecos horizonte semanal importación"
+  },
+  {
+   "id": 501,
+   "name": "Capacidad de intercambio prevista (NTC) con Andorra horizonte semanal importación"
+  },
+  {
+   "id": 502,
+   "name": "Capacidad de intercambio prevista (NTC) con Francia horizonte semanal exportación"
+  },
+  {
+   "id": 503,
+   "name": "Capacidad de intercambio prevista (NTC) con Portugal horizonte semanal exportación"
+  },
+  {
+   "id": 504,
+   "name": "Capacidad de intercambio prevista (NTC) con Marruecos horizonte semanal exportación"
+  },
+  {
+   "id": 505,
+   "name": "Capacidad de intercambio prevista (NTC) con Andorra horizonte semanal exportación"
+  },
+  {
+   "id": 506,
+   "name": "Capacidad de intercambio disponible (ATC) con Francia horizonte diario importación"
+  },
+  {
+   "id": 507,
+   "name": "Capacidad de intercambio disponible (ATC) con Francia horizonte diario exportación"
+  },
+  {
+   "id": 510,
+   "name": "Capacidad de intercambio prevista (NTC) con Francia horizonte mensual importación"
+  },
+  {
+   "id": 511,
+   "name": "Capacidad de intercambio prevista (NTC) con Portugal horizonte mensual importación"
+  },
+  {
+   "id": 512,
+   "name": "Capacidad de intercambio prevista (NTC) con Marruecos horizonte mensual importación"
+  },
+  {
+   "id": 513,
+   "name": "Capacidad de intercambio prevista (NTC) con Andorra horizonte mensual importación"
+  },
+  {
+   "id": 514,
+   "name": "Capacidad de intercambio prevista (NTC) con Francia horizonte mensual exportación"
+  },
+  {
+   "id": 515,
+   "name": "Capacidad de intercambio prevista (NTC) con Portugal horizonte mensual exportación"
+  },
+  {
+   "id": 516,
+   "name": "Capacidad de intercambio prevista (NTC) con Marruecos horizonte mensual exportación"
+  },
+  {
+   "id": 517,
+   "name": "Capacidad de intercambio prevista (NTC) con Andorra horizonte mensual exportación"
+  },
+  {
+   "id": 518,
+   "name": "Capacidad de intercambio prevista (NTC) con Francia horizonte año móvil importación"
+  },
+  {
+   "id": 519,
+   "name": "Capacidad de intercambio prevista (NTC) con Portugal horizonte año móvil importación"
+  },
+  {
+   "id": 520,
+   "name": "Capacidad de intercambio prevista (NTC) con Marruecos horizonte año móvil importación"
+  },
+  {
+   "id": 521,
+   "name": "Capacidad de intercambio prevista (NTC) con Andorra horizonte año móvil importación"
+  },
+  {
+   "id": 522,
+   "name": "Capacidad de intercambio prevista (NTC) con Francia horizonte año móvil exportación"
+  },
+  {
+   "id": 523,
+   "name": "Capacidad de intercambio prevista (NTC) con Portugal horizonte año móvil exportación"
+  },
+  {
+   "id": 524,
+   "name": "Capacidad de intercambio prevista (NTC) con Marruecos horizonte año móvil exportación"
+  },
+  {
+   "id": 525,
+   "name": "Capacidad de intercambio prevista (NTC) con Andorra horizonte año móvil exportación"
+  },
+  {
+   "id": 533,
+   "name": "Programa comercial en la interconexión con Francia importación"
+  },
+  {
+   "id": 534,
+   "name": "Programa comercial en la interconexión con Francia exportación"
+  },
+  {
+   "id": 535,
+   "name": "Programas balance transfronterizo con Francia importación"
+  },
+  {
+   "id": 536,
+   "name": "Programas balance transfronterizo con Francia exportación"
+  },
+  {
+   "id": 537,
+   "name": "Programa comercial en la interconexión con Portugal importación"
+  },
+  {
+   "id": 538,
+   "name": "Programa comercial en la interconexión con Portugal exportación"
+  },
+  {
+   "id": 539,
+   "name": "Programas balance transfronterizo con Portugal importación"
+  },
+  {
+   "id": 540,
+   "name": "Programas balance transfronterizo con Portugal exportación"
+  },
+  {
+   "id": 541,
+   "name": "Previsión de la producción eólica peninsular"
+  },
+  {
+   "id": 542,
+   "name": "Generación prevista Solar fotovoltaica"
+  },
+  {
+   "id": 543,
+   "name": "Generación prevista Solar térmica"
+  },
+  {
+   "id": 544,
+   "name": "Demanda prevista"
+  },
+  {
+   "id": 545,
+   "name": "Demanda programada"
+  },
+  {
+   "id": 546,
+   "name": "Generación T.Real hidráulica"
+  },
+  {
+   "id": 547,
+   "name": "Generación T.Real carbón"
+  },
+  {
+   "id": 548,
+   "name": "Generación T.Real fuel-gas"
+  },
+  {
+   "id": 549,
+   "name": "Generación T.Real nuclear"
+  },
+  {
+   "id": 550,
+   "name": "Generación T.Real C.Combinado"
+  },
+  {
+   "id": 551,
+   "name": "Generación T.Real eólica"
+  },
+  {
+   "id": 552,
+   "name": "Generación T.Real solar"
+  },
+  {
+   "id": 553,
+   "name": "Generación T.Real intercambios"
+  },
+  {
+   "id": 554,
+   "name": "Generación T.Real enlace balear"
+  },
+  {
+   "id": 555,
+   "name": "Resto generación T.Real"
+  },
+  {
+   "id": 556,
+   "name": "Saldo horario de interconexión con Francia importación telemedidas"
+  },
+  {
+   "id": 557,
+   "name": "Saldo horario de interconexión con Portugal importación telemedidas"
+  },
+  {
+   "id": 558,
+   "name": "Saldo horario de interconexión con Andorra importación telemedidas"
+  },
+  {
+   "id": 559,
+   "name": "Saldo horario de interconexión con Marruecos importación telemedidas"
+  },
+  {
+   "id": 560,
+   "name": "Saldo horario de interconexión con Francia exportación telemedidas"
+  },
+  {
+   "id": 561,
+   "name": "Saldo horario de interconexión con Portugal exportación telemedidas"
+  },
+  {
+   "id": 562,
+   "name": "Saldo horario de interconexión con Andorra exportación telemedidas"
+  },
+  {
+   "id": 563,
+   "name": "Saldo horario de interconexión con Marruecos exportación telemedidas"
+  },
+  {
+   "id": 564,
+   "name": "Programas de countertrading Francia importación"
+  },
+  {
+   "id": 565,
+   "name": "Programas de countertrading Francia exportación"
+  },
+  {
+   "id": 566,
+   "name": "Programas de countertrading Portugal importación"
+  },
+  {
+   "id": 567,
+   "name": "Programas de countertrading Portugal exportación"
+  },
+  {
+   "id": 568,
+   "name": "Posición Neta diaria Sistema Peninsular con Portugal y Francia importación"
+  },
+  {
+   "id": 569,
+   "name": "Posición Neta diaria Sistema Peninsular con Portugal y Francia exportación"
+  },
+  {
+   "id": 570,
+   "name": "Capacidad prevista en el enlace Península - Baleares"
+  },
+  {
+   "id": 572,
+   "name": "Programas horarios en el enlace Península - Baleares sentido Península-Baleares"
+  },
+  {
+   "id": 573,
+   "name": "Precio medio de la demanda en los SNP por sistema"
+  },
+  {
+   "id": 574,
+   "name": "Precio medio de la generación en los SNP por sistema"
+  },
+  {
+   "id": 578,
+   "name": "Precio TNP Balear con enlace SEPE"
+  },
+  {
+   "id": 579,
+   "name": "Precio TNP Balear sin enlace SEPE"
+  },
+  {
+   "id": 600,
+   "name": "Precio mercado SPOT Diario"
+  },
+  {
+   "id": 602,
+   "name": "Energía asignada en Mercado SPOT Diario España"
+  },
+  {
+   "id": 603,
+   "name": "Previsión semanal de la demanda eléctrica peninsular"
+  },
+  {
+   "id": 604,
+   "name": "Previsión máxima mensual de la demanda eléctrica peninsular"
+  },
+  {
+   "id": 605,
+   "name": "Energía asignada en Mercado SPOT Intradiario sesión 1"
+  },
+  {
+   "id": 606,
+   "name": "Energía asignada en Mercado SPOT Intradiario sesión 2"
+  },
+  {
+   "id": 607,
+   "name": "Energía asignada en Mercado SPOT Intradiario sesión 3"
+  },
+  {
+   "id": 608,
+   "name": "Energía asignada en Mercado SPOT Intradiario sesión 4"
+  },
+  {
+   "id": 609,
+   "name": "Energía asignada en Mercado SPOT Intradiario sesión 5"
+  },
+  {
+   "id": 610,
+   "name": "Energía asignada en Mercado SPOT Intradiario sesión 6"
+  },
+  {
+   "id": 611,
+   "name": "Energía asignada en Mercado SPOT Intradiario sesión 7"
+  },
+  {
+   "id": 612,
+   "name": "Precio mercado SPOT Intradiario Sesión 1"
+  },
+  {
+   "id": 613,
+   "name": "Precio mercado SPOT Intradiario Sesión 2"
+  },
+  {
+   "id": 614,
+   "name": "Precio mercado SPOT Intradiario Sesión 3"
+  },
+  {
+   "id": 615,
+   "name": "Precio mercado SPOT Intradiario Sesión 4"
+  },
+  {
+   "id": 616,
+   "name": "Precio mercado SPOT Intradiario Sesión 5"
+  },
+  {
+   "id": 617,
+   "name": "Precio mercado SPOT Intradiario Sesión 6"
+  },
+  {
+   "id": 618,
+   "name": "Precio mercado SPOT Intradiario Sesión 7"
+  },
+  {
+   "id": 619,
+   "name": "Previsión mínima mensual de la demanda eléctrica peninsular"
+  },
+  {
+   "id": 620,
+   "name": "Previsión máxima anual de la demanda eléctrica peninsular"
+  },
+  {
+   "id": 621,
+   "name": "Previsión mínima anual de la demanda eléctrica peninsular"
+  },
+  {
+   "id": 622,
+   "name": "Margen generación disponible - máxima demanda prevista"
+  },
+  {
+   "id": 623,
+   "name": "Índice de llenado medio semanal de almacenamiento hidráulico"
+  },
+  {
+   "id": 624,
+   "name": "Demanda real máximo diario"
+  },
+  {
+   "id": 625,
+   "name": "Demanda real mínimo diario"
+  },
+  {
+   "id": 626,
+   "name": "Requerimientos Reserva de potencia adicional a subir"
+  },
+  {
+   "id": 627,
+   "name": "Asignación Reserva de potencia adicional a subir"
+  },
+  {
+   "id": 628,
+   "name": "Precio Reserva de potencia adicional a subir"
+  },
+  {
+   "id": 630,
+   "name": "Requerimientos reserva de regulación secundaria a subir"
+  },
+  {
+   "id": 631,
+   "name": "Requerimientos reserva de regulación secundaria a bajar"
+  },
+  {
+   "id": 632,
+   "name": "Asignación reserva de regulación secundaria a subir"
+  },
+  {
+   "id": 633,
+   "name": "Asignación reserva de regulación secundaria a bajar"
+  },
+  {
+   "id": 634,
+   "name": "Precio reserva de regulación secundaria a bajar"
+  },
+  {
+   "id": 664,
+   "name": "Requerimientos Gestión de Desvíos subir"
+  },
+  {
+   "id": 665,
+   "name": "Requerimientos Gestión de Desvíos bajar"
+  },
+  {
+   "id": 666,
+   "name": "Necesidades cubiertas de energías de balance RR subir"
+  },
+  {
+   "id": 667,
+   "name": "Necesidades cubiertas de energías de balance RR bajar"
+  },
+  {
+   "id": 668,
+   "name": "Precio Gestión de Desvíos subir"
+  },
+  {
+   "id": 669,
+   "name": "Precio Gestión de Desvíos bajar"
+  },
+  {
+   "id": 672,
+   "name": "Necesidad de Regulación Terciaria subir"
+  },
+  {
+   "id": 673,
+   "name": "Necesidad de Regulación Terciaria bajar"
+  },
+  {
+   "id": 674,
+   "name": "Asignación programada a bajar de energías mFRR SEE (AP)"
+  },
+  {
+   "id": 675,
+   "name": "Asignación programada a subir de energías mFRR SEE (AP)"
+  },
+  {
+   "id": 676,
+   "name": "Precio marginal regulación terciaria a bajar de activación programada (AP)"
+  },
+  {
+   "id": 677,
+   "name": "Precio marginal regulación terciaria a subir de activación programada (AP)"
+  },
+  {
+   "id": 680,
+   "name": "Energía activada  de regulación secundaria a subir en el sepe"
+  },
+  {
+   "id": 681,
+   "name": "Energía activada  de regulación secundaria a bajar en el sepe"
+  },
+  {
+   "id": 682,
+   "name": "Precio de energía de regulación secundaria a subir"
+  },
+  {
+   "id": 683,
+   "name": "Precio de energía de regulación secundaria a bajar"
+  },
+  {
+   "id": 684,
+   "name": "Sentido de los desvíos contrarios al sistema"
+  },
+  {
+   "id": 685,
+   "name": "Coste del desvíos contrario respecto al precio del mercado SPOT diario"
+  },
+  {
+   "id": 686,
+   "name": "Precio de cobro desvíos a subir"
+  },
+  {
+   "id": 687,
+   "name": "Precio de pago desvíos a bajar"
+  },
+  {
+   "id": 688,
+   "name": "Energía de ofertas de balance presentadas por el SEE para importación"
+  },
+  {
+   "id": 689,
+   "name": "Energía de ofertas de balance presentadas por el SEE para exportación"
+  },
+  {
+   "id": 690,
+   "name": "Energía de ofertas de balance presentadas por Francia para importación activadas por el SEE"
+  },
+  {
+   "id": 691,
+   "name": "Energía de ofertas de balance presentadas por Portugal para importación activadas por el SEE"
+  },
+  {
+   "id": 692,
+   "name": "Energía de ofertas de balance presentadas por Francia para exportación activadas por el SEE"
+  },
+  {
+   "id": 693,
+   "name": "Energía de ofertas de balance presentadas por Portugal para exportación activadas por el SEE"
+  },
+  {
+   "id": 694,
+   "name": "Energía de ofertas de balance presentadas por el SEE para importación activadas por Francia"
+  },
+  {
+   "id": 695,
+   "name": "Energía de ofertas de balance presentadas por el SEE para importación activadas por Portugal"
+  },
+  {
+   "id": 696,
+   "name": "Energía de ofertas de balance presentadas por el SEE para exportación activadas por Francia"
+  },
+  {
+   "id": 697,
+   "name": "Energía de ofertas de balance presentadas por el SEE para exportación activadas por Portugal"
+  },
+  {
+   "id": 701,
+   "name": "Energía asignada restricciones técnicas diario Fase I subir"
+  },
+  {
+   "id": 702,
+   "name": "Energía asignada restricciones técnicas diario Fase I bajar"
+  },
+  {
+   "id": 703,
+   "name": "Energía asignada restricciones técnicas diario Fase II subir"
+  },
+  {
+   "id": 704,
+   "name": "Energía asignada restricciones técnicas diario Fase II bajar"
+  },
+  {
+   "id": 705,
+   "name": "Precio medio restricciones técnicas diario Fase I subir"
+  },
+  {
+   "id": 706,
+   "name": "Precio medio restricciones técnicas diario Fase I bajar"
+  },
+  {
+   "id": 707,
+   "name": "Precio medio restricciones técnicas diario Fase II subir"
+  },
+  {
+   "id": 708,
+   "name": "Precio medio restricciones técnicas diario Fase II bajar"
+  },
+  {
+   "id": 709,
+   "name": "Coste de solución de Restricciones técnicas diario"
+  },
+  {
+   "id": 710,
+   "name": "Coste unitario soportado por demanda de solución de Restricciones técnicas diario"
+  },
+  {
+   "id": 711,
+   "name": "Coste de Reserva de Potencia Adicional a Subir"
+  },
+  {
+   "id": 712,
+   "name": "Coste de reserva de regulación secundaria a subir"
+  },
+  {
+   "id": 713,
+   "name": "Coste unitario soportado por la demanda de reserva de regulación secundaria"
+  },
+  {
+   "id": 714,
+   "name": "Derechos de Cobro de las necesidades cubiertas de energías de balance RR"
+  },
+  {
+   "id": 715,
+   "name": "Obligaciones de Pago de las necesidades cubiertas de energías de balance RR"
+  },
+  {
+   "id": 716,
+   "name": "Derechos de Cobro de las necesidades cubiertas de energías mFRR"
+  },
+  {
+   "id": 717,
+   "name": "Obligaciones de Pago de las necesidades cubiertas de energías mFRR"
+  },
+  {
+   "id": 718,
+   "name": "Derechos de cobro por energía de regulación secundaria"
+  },
+  {
+   "id": 719,
+   "name": "Obligaciones de pago por energía de regulación secundaria"
+  },
+  {
+   "id": 720,
+   "name": "Energía asignada por restricciones en tiempo real a subir"
+  },
+  {
+   "id": 721,
+   "name": "Energía asignada por restricciones en tiempo real a bajar"
+  },
+  {
+   "id": 722,
+   "name": "Precio medio de solución de Restricciones Técnicas de Seguridad en Tiempo Real subir"
+  },
+  {
+   "id": 723,
+   "name": "Precio medio de solución de Restricciones Técnicas de Seguridad en Tiempo Real bajar"
+  },
+  {
+   "id": 724,
+   "name": "Coste del proceso de solución de Restricciones Técnicas de Seguridad en Tiempo Real"
+  },
+  {
+   "id": 725,
+   "name": "Coste unitario soportado por la demanda del proceso de solución de Restricciones Técnicas de Seguridad en Tiempo Real"
+  },
+  {
+   "id": 726,
+   "name": "Coste de los desvíos medidos de mayor producción"
+  },
+  {
+   "id": 727,
+   "name": "Coste de los desvíos medidos de menor producción"
+  },
+  {
+   "id": 762,
+   "name": "Energía neta de balance"
+  },
+  {
+   "id": 763,
+   "name": "Precio de los desvíos medidos a subir"
+  },
+  {
+   "id": 764,
+   "name": "Precio de los desvíos medidos a bajar"
+  },
+  {
+   "id": 765,
+   "name": "Precio del desvío medido entre precio marginal diario a subir"
+  },
+  {
+   "id": 766,
+   "name": "Precio del desvío medido entre precio marginal diario a bajar"
+  },
+  {
+   "id": 767,
+   "name": "Exceso/déficit de desvíos medidos"
+  },
+  {
+   "id": 768,
+   "name": "Ingreso/Coste unitario para la demanda por el excedente/déficit de los desvíos"
+  },
+  {
+   "id": 769,
+   "name": "Pagos por capacidad tarifa 2.0.A"
+  },
+  {
+   "id": 770,
+   "name": "Pagos por capacidad tarifa 2.0.DHA"
+  },
+  {
+   "id": 771,
+   "name": "Pagos por capacidad tarifa 3.0A"
+  },
+  {
+   "id": 772,
+   "name": "Pagos por capacidad tarifa 3.1A"
+  },
+  {
+   "id": 773,
+   "name": "Pagos por capacidad tarifa seis periodos"
+  },
+  {
+   "id": 774,
+   "name": "Pagos por capacidad tarifa 2.0.DHS"
+  },
+  {
+   "id": 775,
+   "name": "Pagos por capacidad tarifa 2.1A"
+  },
+  {
+   "id": 776,
+   "name": "Pagos por capacidad tarifa 2.1.DHA"
+  },
+  {
+   "id": 777,
+   "name": "Pagos por capacidad tarifa 2.1.DHS"
+  },
+  {
+   "id": 778,
+   "name": "Precio medio pagos por capacidad para demanda"
+  },
+  {
+   "id": 779,
+   "name": "Precio medio cuarto horario componente mercado diario comercializadores de referencia"
+  },
+  {
+   "id": 780,
+   "name": "Precio medio cuarto horario componente restricciones PBF comercializadores de referencia"
+  },
+  {
+   "id": 781,
+   "name": "Precio medio cuarto horario componente restricciones tiempo real comercializadores de referencia"
+  },
+  {
+   "id": 782,
+   "name": "Precio medio cuarto horario componente mercado intradiario comercializadores de referencia"
+  },
+  {
+   "id": 783,
+   "name": "Precio medio horario componente restricciones intradiario comercializadores de referencia"
+  },
+  {
+   "id": 784,
+   "name": "Precio medio horario componente reserva de potencia adicional a subir comercializadores de referencia"
+  },
+  {
+   "id": 785,
+   "name": "Precio medio cuarto horario componente banda secundaria comercializadores de referencia"
+  },
+  {
+   "id": 786,
+   "name": "Precio medio cuarto horario componente desvíos comercializadores de referencia"
+  },
+  {
+   "id": 787,
+   "name": "Precio medio cuarto horario componente saldo desvíos comercializadores de referencia"
+  },
+  {
+   "id": 788,
+   "name": "Precio medio cuarto horario componente pagos capacidad comercializadores de referencia"
+  },
+  {
+   "id": 789,
+   "name": "Precio medio cuarto horario componente saldo P. O.14. 6 comercializadores de referencia"
+  },
+  {
+   "id": 790,
+   "name": "Precio medio horario componente fallo nominación UPG comercializadores de referencia"
+  },
+  {
+   "id": 791,
+   "name": "Precio medio cuarto horario final comercializadores de referencia"
+  },
+  {
+   "id": 792,
+   "name": "Precio medio cuarto horario componente mercado diario contratación libre"
+  },
+  {
+   "id": 793,
+   "name": "Precio medio cuarto horario componente restricciones PBF contratación libre"
+  },
+  {
+   "id": 794,
+   "name": "Precio medio cuarto horario componente restricciones tiempo real contratación libre"
+  },
+  {
+   "id": 795,
+   "name": "Precio medio cuarto horario componente mercado intradiario contratación libre"
+  },
+  {
+   "id": 796,
+   "name": "Precio medio horario componente restricciones intradiario contratación libre"
+  },
+  {
+   "id": 797,
+   "name": "Precio medio horario componente reserva de potencia adicional a subir contratación libre"
+  },
+  {
+   "id": 798,
+   "name": "Precio medio cuarto horario componente banda secundaria contratación libre"
+  },
+  {
+   "id": 799,
+   "name": "Precio medio cuarto horario componente desvíos contratación libre"
+  },
+  {
+   "id": 800,
+   "name": "Precio medio cuarto horario componente saldo desvíos contratación libre"
+  },
+  {
+   "id": 801,
+   "name": "Precio medio cuarto horario componente pagos capacidad contratación libre"
+  },
+  {
+   "id": 802,
+   "name": "Precio medio cuarto horario componente saldo P.O.14.6. contratación libre"
+  },
+  {
+   "id": 803,
+   "name": "Precio medio horario componente fallo nominación UPG contratación libre"
+  },
+  {
+   "id": 804,
+   "name": "Precio medio cuarto horario final contratación libre"
+  },
+  {
+   "id": 805,
+   "name": "Precio medio cuarto horario componente mercado diario"
+  },
+  {
+   "id": 806,
+   "name": "Precio medio cuarto horario componente restricciones PBF"
+  },
+  {
+   "id": 807,
+   "name": "Precio medio cuarto horario componente restricciones tiempo real"
+  },
+  {
+   "id": 808,
+   "name": "Precio medio cuarto horario componente mercado intradiario"
+  },
+  {
+   "id": 809,
+   "name": "Precio medio horario componente restricciones intradiario "
+  },
+  {
+   "id": 810,
+   "name": "Precio medio horario componente reserva de potencia adicional a subir "
+  },
+  {
+   "id": 811,
+   "name": "Precio medio cuarto horario componente banda secundaria"
+  },
+  {
+   "id": 812,
+   "name": "Precio medio cuarto horario componente desvíos"
+  },
+  {
+   "id": 813,
+   "name": "Precio medio cuarto horario componente saldo desvíos"
+  },
+  {
+   "id": 814,
+   "name": "Precio medio cuarto horario componente pagos capacidad"
+  },
+  {
+   "id": 815,
+   "name": "Precio medio cuarto horario componente saldo P.O.14.6."
+  },
+  {
+   "id": 816,
+   "name": "Precio medio horario componente fallo nominación UPG "
+  },
+  {
+   "id": 817,
+   "name": "Precio medio cuarto horario final"
+  },
+  {
+   "id": 818,
+   "name": "Energía mensual final contratación libre cuota"
+  },
+  {
+   "id": 819,
+   "name": "Energía mensual final comercializadores de referencia cuota"
+  },
+  {
+   "id": 820,
+   "name": "Energía mensual final cuota"
+  },
+  {
+   "id": 821,
+   "name": "Energía anual final comercialización libre cuota"
+  },
+  {
+   "id": 822,
+   "name": "Energía anual final comercializadores de referencia cuota"
+  },
+  {
+   "id": 823,
+   "name": "Energía anual final cuota"
+  },
+  {
+   "id": 824,
+   "name": "CO2 evitable Madera"
+  },
+  {
+   "id": 825,
+   "name": "CO2 evitable Siderurgia"
+  },
+  {
+   "id": 826,
+   "name": "CO2 evitable Papel"
+  },
+  {
+   "id": 827,
+   "name": "CO2 evitable Desalación"
+  },
+  {
+   "id": 828,
+   "name": "CO2 evitable Metalurgia"
+  },
+  {
+   "id": 829,
+   "name": "CO2 evitable Química"
+  },
+  {
+   "id": 830,
+   "name": "Energía horaria final comercializadores último recurso"
+  },
+  {
+   "id": 831,
+   "name": "CO2 evitable Maquinaria"
+  },
+  {
+   "id": 832,
+   "name": "CO2 evitable Vidrio"
+  },
+  {
+   "id": 833,
+   "name": "CO2 evitable Cemento"
+  },
+  {
+   "id": 834,
+   "name": "CO2 evitable Varios"
+  },
+  {
+   "id": 835,
+   "name": "CO2 evitable"
+  },
+  {
+   "id": 836,
+   "name": "Demanda proveedores del servicio de interrumpibilidad Madera"
+  },
+  {
+   "id": 837,
+   "name": "Demanda proveedores del servicio de interrumpibilidad Siderurgia"
+  },
+  {
+   "id": 838,
+   "name": "Demanda proveedores del servicio de interrumpibilidad Papel"
+  },
+  {
+   "id": 839,
+   "name": "Demanda proveedores del servicio de interrumpibilidad Desalación"
+  },
+  {
+   "id": 840,
+   "name": "Demanda proveedores del servicio de interrumpibilidad Metalurgia"
+  },
+  {
+   "id": 841,
+   "name": "Demanda proveedores del servicio de interrumpibilidad Química"
+  },
+  {
+   "id": 842,
+   "name": "Demanda proveedores del servicio de interrumpibilidad Maquinaria"
+  },
+  {
+   "id": 843,
+   "name": "Energía horaria final comercialización libre"
+  },
+  {
+   "id": 844,
+   "name": "Demanda proveedores del servicio de interrumpibilidad Vidrio"
+  },
+  {
+   "id": 845,
+   "name": "Demanda proveedores del servicio de interrumpibilidad Cemento"
+  },
+  {
+   "id": 846,
+   "name": "Demanda proveedores del servicio de interrumpibilidad Varios"
+  },
+  {
+   "id": 847,
+   "name": "Demanda proveedores del servicio de interrumpibilidad"
+  },
+  {
+   "id": 856,
+   "name": "Energía horaria final "
+  },
+  {
+   "id": 857,
+   "name": "Precio medio mensual componente mercado diario contratación libre"
+  },
+  {
+   "id": 858,
+   "name": "Precio medio mensual componente restricciones PBF contratación libre"
+  },
+  {
+   "id": 859,
+   "name": "Precio medio mensual componente restricciones tiempo real contratación libre"
+  },
+  {
+   "id": 860,
+   "name": "Precio medio mensual componente mercado intradiario contratación libre"
+  },
+  {
+   "id": 862,
+   "name": "Precio medio mensual componente reserva de potencia adicional a subir contratación libre"
+  },
+  {
+   "id": 863,
+   "name": "Precio medio mensual componente banda secundaria contratación libre"
+  },
+  {
+   "id": 864,
+   "name": "Precio medio mensual componente desvíos medidos contratación libre"
+  },
+  {
+   "id": 865,
+   "name": "Precio medio mensual componente saldo de desvíos contratación libre"
+  },
+  {
+   "id": 866,
+   "name": "Precio medio mensual componente pago de capacidad contratación libre"
+  },
+  {
+   "id": 867,
+   "name": "Precio medio mensual componente saldo P.O.14.6 contratación libre"
+  },
+  {
+   "id": 869,
+   "name": "Precio medio mensual final contratación libre"
+  },
+  {
+   "id": 870,
+   "name": "Precio medio mensual componente mercado diario comercialización de referencia"
+  },
+  {
+   "id": 871,
+   "name": "Precio medio mensual componente restricciones PBF comercialización de referencia"
+  },
+  {
+   "id": 872,
+   "name": "Precio medio mensual componente restricciones tiempo real comercialización de referencia"
+  },
+  {
+   "id": 873,
+   "name": "Precio medio mensual componente mercado intradiario comercialización de referencia"
+  },
+  {
+   "id": 875,
+   "name": "Precio medio mensual componente reserva de potencia adicional a subir comercialización de referencia"
+  },
+  {
+   "id": 876,
+   "name": "Precio medio mensual componente banda secundaria comercialización de referencia"
+  },
+  {
+   "id": 877,
+   "name": "Precio medio mensual componente desvíos medidos comercialización de referencia"
+  },
+  {
+   "id": 878,
+   "name": "Precio medio mensual componente saldo de desvíos comercialización de referencia"
+  },
+  {
+   "id": 879,
+   "name": "Precio medio mensual componente pago de capacidad comercialización de referencia"
+  },
+  {
+   "id": 880,
+   "name": "Precio medio mensual componente saldo P.O.14.6 comercialización de referencia"
+  },
+  {
+   "id": 882,
+   "name": "Precio medio mensual final comercialización de referencia"
+  },
+  {
+   "id": 883,
+   "name": "Precio medio mensual componente mercado diario"
+  },
+  {
+   "id": 884,
+   "name": "Precio medio mensual componente restricciones PBF"
+  },
+  {
+   "id": 885,
+   "name": "Precio medio mensual componente restricciones tiempo real"
+  },
+  {
+   "id": 886,
+   "name": "Precio medio mensual componente mercado intradiario"
+  },
+  {
+   "id": 888,
+   "name": "Precio medio mensual componente reserva de potencia adicional a subir"
+  },
+  {
+   "id": 889,
+   "name": "Precio medio mensual componente banda secundaria"
+  },
+  {
+   "id": 890,
+   "name": "Precio medio mensual componente desvíos medidos"
+  },
+  {
+   "id": 891,
+   "name": "Precio medio mensual componente saldo de desvíos"
+  },
+  {
+   "id": 892,
+   "name": "Precio medio mensual componente pago de capacidad"
+  },
+  {
+   "id": 893,
+   "name": "Precio medio mensual componente saldo P.O.14.6"
+  },
+  {
+   "id": 895,
+   "name": "Precio medio mensual final"
+  },
+  {
+   "id": 899,
+   "name": "Coste asignación de reserva de regulación secundaria a subir"
+  },
+  {
+   "id": 908,
+   "name": "Energía mensual final contratación libre"
+  },
+  {
+   "id": 921,
+   "name": "Energía mensual final comercializador de referencia"
+  },
+  {
+   "id": 934,
+   "name": "Energía mensual final"
+  },
+  {
+   "id": 935,
+   "name": "Precio medio anual componente mercado diario contratación libre"
+  },
+  {
+   "id": 936,
+   "name": "Precio medio anual componente restricciones PBF contratación libre"
+  },
+  {
+   "id": 937,
+   "name": "Precio medio anual componente restricciones tiempo real contratación libre"
+  },
+  {
+   "id": 938,
+   "name": "Precio medio anual componente mercado intradiario contratación libre"
+  },
+  {
+   "id": 939,
+   "name": "Precio medio anual componente restricciones intradiario contratación libre"
+  },
+  {
+   "id": 940,
+   "name": "Precio medio anual componente reserva de potencia adicional a subir contratación libre"
+  },
+  {
+   "id": 941,
+   "name": "Precio medio anual componente banda secundaria contratación libre"
+  },
+  {
+   "id": 942,
+   "name": "Precio medio anual componente desvíos medidos contratación libre"
+  },
+  {
+   "id": 943,
+   "name": "Precio medio anual componente saldo de desvíos contratación libre"
+  },
+  {
+   "id": 944,
+   "name": "Precio medio anual componente pago de capacidad contratación libre"
+  },
+  {
+   "id": 945,
+   "name": "Precio medio anual componente saldo P.O.14.6 contratación libre"
+  },
+  {
+   "id": 946,
+   "name": "Precio medio anual componente fallo nominación UPG contratación libre"
+  },
+  {
+   "id": 947,
+   "name": "Precio medio anual final contratación libre"
+  },
+  {
+   "id": 948,
+   "name": "Precio medio anual componente mercado diario comercialización de referencia"
+  },
+  {
+   "id": 949,
+   "name": "Precio medio anual componente restricciones PBF comercialización de referencia"
+  },
+  {
+   "id": 950,
+   "name": "Precio medio anual componente restricciones tiempo real comercialización de referencia"
+  },
+  {
+   "id": 951,
+   "name": "Precio medio anual componente mercado intradiario comercialización de referencia"
+  },
+  {
+   "id": 952,
+   "name": "Precio medio anual componente restricciones intradiario comercialización de referencia"
+  },
+  {
+   "id": 953,
+   "name": "Precio medio anual componente reserva de potencia adicional a subir comercialización de referencia"
+  },
+  {
+   "id": 954,
+   "name": "Precio medio anual componente banda secundaria comercialización de referencia"
+  },
+  {
+   "id": 955,
+   "name": "Precio medio anual componente desvíos medidos comercialización de referencia"
+  },
+  {
+   "id": 956,
+   "name": "Precio medio anual componente saldo de desvíos comercialización de referencia"
+  },
+  {
+   "id": 957,
+   "name": "Precio medio anual componente pago de capacidad comercialización de referencia"
+  },
+  {
+   "id": 958,
+   "name": "Precio medio anual componente saldo P.O.14.6 comercialización de referencia"
+  },
+  {
+   "id": 959,
+   "name": "Precio medio anual componente fallo nominación UPG comercialización de referencia"
+  },
+  {
+   "id": 960,
+   "name": "Precio medio anual final comercialización de referencia"
+  },
+  {
+   "id": 961,
+   "name": "Precio medio anual componente mercado diario"
+  },
+  {
+   "id": 962,
+   "name": "Precio medio anual componente restricciones PBF"
+  },
+  {
+   "id": 963,
+   "name": "Precio medio anual componente restricciones tiempo real"
+  },
+  {
+   "id": 964,
+   "name": "Precio medio anual componente mercado intradiario"
+  },
+  {
+   "id": 965,
+   "name": "Precio medio anual componente restricciones intradiario"
+  },
+  {
+   "id": 966,
+   "name": "Precio medio anual componente reserva de potencia adicional a subir"
+  },
+  {
+   "id": 967,
+   "name": "Precio medio anual componente banda secundaria"
+  },
+  {
+   "id": 968,
+   "name": "Precio medio anual componente desvíos medidos"
+  },
+  {
+   "id": 969,
+   "name": "Precio medio anual componente saldo de desvíos"
+  },
+  {
+   "id": 970,
+   "name": "Precio medio anual componente pago de capacidad"
+  },
+  {
+   "id": 971,
+   "name": "Precio medio anual componente saldo P.O.14.6"
+  },
+  {
+   "id": 972,
+   "name": "Precio medio anual componente fallo nominación UPG"
+  },
+  {
+   "id": 973,
+   "name": "Precio medio anual final"
+  },
+  {
+   "id": 986,
+   "name": "Energía anual final comercialización libre"
+  },
+  {
+   "id": 999,
+   "name": "Energía anual final comercializadores de referencia"
+  },
+  {
+   "id": 1000,
+   "name": "Cierre liquidación"
+  },
+  {
+   "id": 1001,
+   "name": "Término de facturación de energía activa del PVPC 2.0TD"
+  },
+  {
+   "id": 1002,
+   "name": "Periodo Tarifario del PVPC 2.0TD"
+  },
+  {
+   "id": 1003,
+   "name": "Término de facturación de energía activa del PVPC 2.0TD P1 punta "
+  },
+  {
+   "id": 1004,
+   "name": "Término de facturación de energía activa del PVPC 2.0TD P2 llano "
+  },
+  {
+   "id": 1005,
+   "name": "Término de facturación de energía activa del PVPC 2.0TD P3 valle "
+  },
+  {
+   "id": 1006,
+   "name": "Perfiles de consumo a efectos de facturación del PVPC Tarifa 2.0 GENERAL BAJA TENSIÓN, POTENCIA INFERIOR A 15 kW"
+  },
+  {
+   "id": 1012,
+   "name": "Energía anual final"
+  },
+  {
+   "id": 1013,
+   "name": "Término de facturación de energía activa del PVPC peaje por defecto"
+  },
+  {
+   "id": 1014,
+   "name": "Término de facturación de energía activa del PVPC eficiencia 2 periodos (DHA)"
+  },
+  {
+   "id": 1015,
+   "name": "Término de facturación de energía activa del PVPC vehículo eléctrico"
+  },
+  {
+   "id": 1016,
+   "name": "Desglose peaje por defecto 2.0.A Mercado diario e intradiario"
+  },
+  {
+   "id": 1017,
+   "name": "Desglose peaje por defecto 2.0.A Servicios de ajuste"
+  },
+  {
+   "id": 1018,
+   "name": "Desglose peaje por defecto 2.0.A Peaje de acceso"
+  },
+  {
+   "id": 1019,
+   "name": "Desglose peaje por defecto 2.0.A Pago por capacidad"
+  },
+  {
+   "id": 1020,
+   "name": "Desglose peaje por defecto 2.0.A Servicio de interrumpibilidad"
+  },
+  {
+   "id": 1021,
+   "name": "Desglose peaje por defecto 2.0.A Financiación OS"
+  },
+  {
+   "id": 1022,
+   "name": "Desglose peaje por defecto 2.0.A Financiación OM"
+  },
+  {
+   "id": 1023,
+   "name": "Desglose eficiencia 2 periodos (DHA) 2.0.DHA Mercado diario e intradiario"
+  },
+  {
+   "id": 1024,
+   "name": "Desglose eficiencia 2 periodos (DHA) 2.0.DHA Servicios de ajuste"
+  },
+  {
+   "id": 1025,
+   "name": "Desglose eficiencia 2 periodos (DHA) 2.0.DHA Peaje de acceso"
+  },
+  {
+   "id": 1026,
+   "name": "Desglose eficiencia 2 periodos (DHA) 2.0.DHA Pago por capacidad"
+  },
+  {
+   "id": 1027,
+   "name": "Desglose eficiencia 2 periodos (DHA) 2.0.DHA Servicio de interrumpibilidad"
+  },
+  {
+   "id": 1028,
+   "name": "Desglose eficiencia 2 periodos (DHA) 2.0.DHA Financiación OS"
+  },
+  {
+   "id": 1029,
+   "name": "Desglose eficiencia 2 periodos (DHA) 2.0.DHA Financiación OM"
+  },
+  {
+   "id": 1030,
+   "name": "Desglose vehículo eléctrico 2.0.DHS Mercado diario e intradiario"
+  },
+  {
+   "id": 1031,
+   "name": "Desglose vehículo eléctrico 2.0.DHS Servicios de ajuste"
+  },
+  {
+   "id": 1032,
+   "name": "Desglose vehículo eléctrico 2.0.DHS Peaje de acceso"
+  },
+  {
+   "id": 1033,
+   "name": "Desglose vehículo eléctrico 2.0.DHS Pago por capacidad"
+  },
+  {
+   "id": 1034,
+   "name": "Desglose vehículo eléctrico 2.0.DHS Servicio de interrumpibilidad"
+  },
+  {
+   "id": 1035,
+   "name": "Desglose vehículo eléctrico 2.0.DHS Financiación OS"
+  },
+  {
+   "id": 1036,
+   "name": "Desglose vehículo eléctrico 2.0.DHS Financiación OM"
+  },
+  {
+   "id": 1037,
+   "name": "Gastos mensuales de balance (GMB)"
+  },
+  {
+   "id": 1038,
+   "name": "Ingresos mensuales de balance (IMB)"
+  },
+  {
+   "id": 1039,
+   "name": "Capacidad ofrecida subasta explícita diaria con Francia sentido importador"
+  },
+  {
+   "id": 1040,
+   "name": "Capacidad ofrecida subasta explícita diaria con Francia sentido exportador"
+  },
+  {
+   "id": 1041,
+   "name": "Capacidad ofrecida subasta explícita intradiaria1 con Francia sentido importador"
+  },
+  {
+   "id": 1042,
+   "name": "Capacidad ofrecida subasta explícita intradiaria1 con Francia sentido exportador"
+  },
+  {
+   "id": 1043,
+   "name": "Capacidad ofrecida subasta explícita intradiaria2 con Francia sentido importador"
+  },
+  {
+   "id": 1044,
+   "name": "Capacidad ofrecida subasta explícita intradiaria2 con Francia sentido exportador"
+  },
+  {
+   "id": 1045,
+   "name": "Capacidad ofrecida subasta explícita mensual con Francia sentido importador"
+  },
+  {
+   "id": 1046,
+   "name": "Capacidad ofrecida subasta explícita mensual con Francia sentido exportador"
+  },
+  {
+   "id": 1047,
+   "name": "Capacidad ofrecida subasta explícita anual con Francia sentido importador"
+  },
+  {
+   "id": 1048,
+   "name": "Capacidad ofrecida subasta explícita anual con Francia sentido exportador"
+  },
+  {
+   "id": 1049,
+   "name": "Participantes en subasta explícita diaria  con Francia sentido importador"
+  },
+  {
+   "id": 1050,
+   "name": "Participantes en subasta explícita diaria  con Francia sentido exportador"
+  },
+  {
+   "id": 1051,
+   "name": "Participantes Adjudicatarios en subasta explícita diaria  con Francia sentido importador"
+  },
+  {
+   "id": 1052,
+   "name": "Participantes Adjudicatarios en subasta explícita diaria  con Francia sentido exportador"
+  },
+  {
+   "id": 1053,
+   "name": "Capacidad asignada en subasta explícita diaria con Francia sentido importador"
+  },
+  {
+   "id": 1054,
+   "name": "Capacidad asignada en subasta explícita diaria con Francia sentido exportador"
+  },
+  {
+   "id": 1055,
+   "name": "Precio de subasta explícita diaria con Francia sentido importador"
+  },
+  {
+   "id": 1056,
+   "name": "Precio de subasta explícita diaria con Francia sentido exportador"
+  },
+  {
+   "id": 1057,
+   "name": "Participantes en subasta explícita intradiaria 1  con Francia sentido importador"
+  },
+  {
+   "id": 1058,
+   "name": "Participantes en subasta explícita intradiaria 1  con Francia sentido exportador"
+  },
+  {
+   "id": 1059,
+   "name": "Participantes Adjudicatarios en subasta explícita intradiaria 1  con Francia sentido importador"
+  },
+  {
+   "id": 1060,
+   "name": "Participantes Adjudicatarios en subasta explícita intradiaria 1  con Francia sentido exportador"
+  },
+  {
+   "id": 1061,
+   "name": "Capacidad asignada en subasta explícita intradiaria 1 con Francia sentido importador"
+  },
+  {
+   "id": 1062,
+   "name": "Capacidad asignada en subasta explícita intradiaria 1 con Francia sentido exportador"
+  },
+  {
+   "id": 1063,
+   "name": "Precio de subasta explícita intradiaria 1 con Francia sentido importador"
+  },
+  {
+   "id": 1064,
+   "name": "Precio de subasta explícita intradiaria 1 con Francia sentido exportador"
+  },
+  {
+   "id": 1065,
+   "name": "Participantes en subasta explícita intradiaria 2  con Francia sentido importador"
+  },
+  {
+   "id": 1066,
+   "name": "Participantes en subasta explícita intradiaria 2  con Francia sentido exportador"
+  },
+  {
+   "id": 1067,
+   "name": "Participantes Adjudicatarios en subasta explícita intradiaria 2  con Francia sentido importador"
+  },
+  {
+   "id": 1068,
+   "name": "Participantes Adjudicatarios en subasta explícita intradiaria 2  con Francia sentido exportador"
+  },
+  {
+   "id": 1069,
+   "name": "Capacidad asignada en subasta explícita intradiaria 2 con Francia sentido importador"
+  },
+  {
+   "id": 1070,
+   "name": "Capacidad asignada en subasta explícita intradiaria 2 con Francia sentido exportador"
+  },
+  {
+   "id": 1071,
+   "name": "Precio de subasta explícita intradiaria 2 con Francia sentido importador"
+  },
+  {
+   "id": 1072,
+   "name": "Precio de subasta explícita intradiaria 2 con Francia sentido exportador"
+  },
+  {
+   "id": 1073,
+   "name": "Participantes en subasta explícita mensual  con Francia sentido importador"
+  },
+  {
+   "id": 1074,
+   "name": "Participantes en subasta explícita mensual  con Francia sentido exportador"
+  },
+  {
+   "id": 1075,
+   "name": "Participantes Adjudicatarios en subasta explícita mensual  con Francia sentido importador"
+  },
+  {
+   "id": 1076,
+   "name": "Participantes Adjudicatarios en subasta explícita mensual  con Francia sentido exportador"
+  },
+  {
+   "id": 1077,
+   "name": "Capacidad asignada en subasta explícita mensual con Francia sentido importador"
+  },
+  {
+   "id": 1078,
+   "name": "Capacidad asignada en subasta explícita mensual con Francia sentido exportador"
+  },
+  {
+   "id": 1079,
+   "name": "Precio de subasta explícita mensual con Francia sentido importador"
+  },
+  {
+   "id": 1080,
+   "name": "Precio de subasta explícita mensual con Francia sentido exportador"
+  },
+  {
+   "id": 1081,
+   "name": "Participantes en subasta explícita anual  con Francia sentido importador"
+  },
+  {
+   "id": 1082,
+   "name": "Participantes en subasta explícita anual  con Francia sentido exportador"
+  },
+  {
+   "id": 1083,
+   "name": "Participantes Adjudicatarios en subasta explícita anual  con Francia sentido importador"
+  },
+  {
+   "id": 1084,
+   "name": "Participantes Adjudicatarios en subasta explícita anual  con Francia sentido exportador"
+  },
+  {
+   "id": 1085,
+   "name": "Capacidad asignada en subasta explícita anual con Francia sentido importador"
+  },
+  {
+   "id": 1086,
+   "name": "Capacidad asignada en subasta explícita anual con Francia sentido exportador"
+  },
+  {
+   "id": 1087,
+   "name": "Precio de subasta explícita anual con Francia sentido importador"
+  },
+  {
+   "id": 1088,
+   "name": "Precio de subasta explícita anual con Francia sentido exportador"
+  },
+  {
+   "id": 1099,
+   "name": "Capacidad Nominada subasta diaria con Francia importación"
+  },
+  {
+   "id": 1100,
+   "name": "Capacidad Nominada subasta diaria con Francia exportación"
+  },
+  {
+   "id": 1101,
+   "name": "Capacidad Nominada subasta intradiaria 1 con Francia importación"
+  },
+  {
+   "id": 1102,
+   "name": "Capacidad Nominada subasta intradiaria 1 con Francia exportación"
+  },
+  {
+   "id": 1103,
+   "name": "Capacidad Nominada subasta intradiaria 2 con Francia importación"
+  },
+  {
+   "id": 1104,
+   "name": "Capacidad Nominada subasta intradiaria 2 con Francia exportación"
+  },
+  {
+   "id": 1105,
+   "name": "Capacidad Nominada subasta anual+mensual con Francia importación"
+  },
+  {
+   "id": 1106,
+   "name": "Capacidad Nominada subasta anual+mensual con Francia exportación"
+  },
+  {
+   "id": 1107,
+   "name": "Rentas de congestión subasta explícita diaria Francia importación"
+  },
+  {
+   "id": 1108,
+   "name": "Rentas de congestión subasta explícita diaria Francia exportación"
+  },
+  {
+   "id": 1109,
+   "name": "Rentas de congestión subasta explícita intradiaria 1 Francia importación"
+  },
+  {
+   "id": 1110,
+   "name": "Rentas de congestión subasta explícita intradiaria 1 Francia exportación"
+  },
+  {
+   "id": 1111,
+   "name": "Rentas de congestión subasta explícita intradiaria 2 Francia importación"
+  },
+  {
+   "id": 1112,
+   "name": "Rentas de congestión subasta explícita intradiaria 2 Francia exportación"
+  },
+  {
+   "id": 1113,
+   "name": "Rentas de congestión subasta explícita mensual Francia importación"
+  },
+  {
+   "id": 1114,
+   "name": "Rentas de congestión subasta explícita mensual Francia exportación"
+  },
+  {
+   "id": 1115,
+   "name": "Rentas de congestión subasta explícita anual Francia importación"
+  },
+  {
+   "id": 1116,
+   "name": "Rentas de congestión subasta explícita anual Francia exportación"
+  },
+  {
+   "id": 1117,
+   "name": "Rentas de congestión mecanismos implícitos diario Francia importación"
+  },
+  {
+   "id": 1118,
+   "name": "Rentas de congestión mecanismos implícitos diario Francia exportación"
+  },
+  {
+   "id": 1119,
+   "name": "Rentas de congestión mecanismos implícitos diario Portugal importación"
+  },
+  {
+   "id": 1120,
+   "name": "Rentas de congestión mecanismos implícitos diario Portugal exportación"
+  },
+  {
+   "id": 1121,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 1 Portugal importación"
+  },
+  {
+   "id": 1122,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 2 Portugal importación"
+  },
+  {
+   "id": 1123,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 3 Portugal importación"
+  },
+  {
+   "id": 1124,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 4 Portugal importación"
+  },
+  {
+   "id": 1125,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 5 Portugal importación"
+  },
+  {
+   "id": 1126,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 6 Portugal importación"
+  },
+  {
+   "id": 1127,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 7 Portugal importación"
+  },
+  {
+   "id": 1128,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 1 Portugal exportación"
+  },
+  {
+   "id": 1129,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 2 Portugal exportación"
+  },
+  {
+   "id": 1130,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 3 Portugal exportación"
+  },
+  {
+   "id": 1131,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 4 Portugal exportación"
+  },
+  {
+   "id": 1132,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 5 Portugal exportación"
+  },
+  {
+   "id": 1133,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 6 Portugal exportación"
+  },
+  {
+   "id": 1134,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 7 Portugal exportación"
+  },
+  {
+   "id": 1135,
+   "name": "Coste Mensual Countertrading (IPE +IFE)"
+  },
+  {
+   "id": 1136,
+   "name": "Pérdidas de transporte"
+  },
+  {
+   "id": 1137,
+   "name": "Pérdidas de distribución"
+  },
+  {
+   "id": 1138,
+   "name": "Precio medio de ofertas de balance presentadas por el SEE para importación"
+  },
+  {
+   "id": 1139,
+   "name": "Precio medio de ofertas de balance presentadas por el SEE para exportación"
+  },
+  {
+   "id": 1140,
+   "name": "Precio medio de ofertas de balance presentadas por Francia para importación activadas por el SEE"
+  },
+  {
+   "id": 1141,
+   "name": "Precio medio de ofertas de balance presentadas por Portugal para importación activadas por el SEE"
+  },
+  {
+   "id": 1142,
+   "name": "Precio medio de ofertas de balance presentadas por Francia para exportación activadas por el SEE"
+  },
+  {
+   "id": 1143,
+   "name": "Precio medio de ofertas de balance presentadas por Portugal para exportación activadas por el SEE"
+  },
+  {
+   "id": 1144,
+   "name": "Precio medio de ofertas de balance presentadas por el SEE para importación activadas por Francia"
+  },
+  {
+   "id": 1145,
+   "name": "Precio medio de ofertas de balance presentadas por el SEE para importación activadas por Portugal"
+  },
+  {
+   "id": 1146,
+   "name": "Precio medio de ofertas de balance presentadas por el SEE para exportación activadas por Francia"
+  },
+  {
+   "id": 1147,
+   "name": "Precio medio de ofertas de balance presentadas por el SEE para exportación activadas por Portugal"
+  },
+  {
+   "id": 1150,
+   "name": "Generación medida Hidráulica UGH"
+  },
+  {
+   "id": 1151,
+   "name": "Generación medida Hidráulica no UGH"
+  },
+  {
+   "id": 1152,
+   "name": "Generación medida Turbinación bombeo"
+  },
+  {
+   "id": 1153,
+   "name": "Generación medida Nuclear"
+  },
+  {
+   "id": 1154,
+   "name": "Generación medida Hulla antracita"
+  },
+  {
+   "id": 1155,
+   "name": "Generación medida Hulla sub-bituminosa"
+  },
+  {
+   "id": 1156,
+   "name": "Generación medida Ciclo combinado"
+  },
+  {
+   "id": 1157,
+   "name": "Generación medida Fuel"
+  },
+  {
+   "id": 1158,
+   "name": "Generación medida Gas Natural - Turbina de vapor"
+  },
+  {
+   "id": 1159,
+   "name": "Generación medida Eólica terrestre"
+  },
+  {
+   "id": 1160,
+   "name": "Generación medida Eólica marina"
+  },
+  {
+   "id": 1161,
+   "name": "Generación medida Solar fotovoltaica"
+  },
+  {
+   "id": 1162,
+   "name": "Generación medida Solar térmica"
+  },
+  {
+   "id": 1163,
+   "name": "Generación medida Océano y geotérmica"
+  },
+  {
+   "id": 1164,
+   "name": "Generación medida Gas Natural Cogeneración"
+  },
+  {
+   "id": 1165,
+   "name": "Generación medida Derivados del petróleo ó carbón"
+  },
+  {
+   "id": 1166,
+   "name": "Generación medida Subproductos minería"
+  },
+  {
+   "id": 1167,
+   "name": "Generación medida Energía residual"
+  },
+  {
+   "id": 1168,
+   "name": "Generación medida Biomasa"
+  },
+  {
+   "id": 1169,
+   "name": "Generación medida Biogás"
+  },
+  {
+   "id": 1170,
+   "name": "Generación medida Residuos domésticos y similares"
+  },
+  {
+   "id": 1171,
+   "name": "Generación medida Residuos varios"
+  },
+  {
+   "id": 1172,
+   "name": "Generación medida Consumo bombeo"
+  },
+  {
+   "id": 1173,
+   "name": "Generación medida Enlace Baleares"
+  },
+  {
+   "id": 1174,
+   "name": "Generación medida Importación Francia"
+  },
+  {
+   "id": 1175,
+   "name": "Generación medida Importación Portugal"
+  },
+  {
+   "id": 1176,
+   "name": "Generación medida Importación Marruecos"
+  },
+  {
+   "id": 1177,
+   "name": "Generación medida Importación Andorra"
+  },
+  {
+   "id": 1178,
+   "name": "Generación medida Exportación Francia"
+  },
+  {
+   "id": 1179,
+   "name": "Generación medida Exportación Portugal"
+  },
+  {
+   "id": 1180,
+   "name": "Generación medida Exportación Marruecos"
+  },
+  {
+   "id": 1181,
+   "name": "Generación medida Exportación Andorra"
+  },
+  {
+   "id": 1182,
+   "name": "Generación medida red de transporte"
+  },
+  {
+   "id": 1183,
+   "name": "Generación medida red de distribución"
+  },
+  {
+   "id": 1184,
+   "name": "Nº Puntos Frontera Distribución - Distribución"
+  },
+  {
+   "id": 1185,
+   "name": "Nº Puntos Frontera Distribución - Transporte"
+  },
+  {
+   "id": 1186,
+   "name": "Nº Puntos Frontera Generación RE - Transporte"
+  },
+  {
+   "id": 1187,
+   "name": "Nº Puntos Frontera Generación RE - Distribución"
+  },
+  {
+   "id": 1188,
+   "name": "Nº Puntos Frontera Generación RO - Distribución"
+  },
+  {
+   "id": 1189,
+   "name": "Nº Puntos Frontera Generación RO - Transporte"
+  },
+  {
+   "id": 1190,
+   "name": "Nº Puntos Frontera Transporte - Internacional"
+  },
+  {
+   "id": 1191,
+   "name": "Nº de Clientes > 450 kW discriminación horaria Sin discriminación horaria"
+  },
+  {
+   "id": 1192,
+   "name": "Demanda en barras de central "
+  },
+  {
+   "id": 1193,
+   "name": "Demanda en consumo"
+  },
+  {
+   "id": 1194,
+   "name": "Demanda medida discriminación horaria Sin discriminación horaria"
+  },
+  {
+   "id": 1195,
+   "name": "Demanda medida discriminación horaria G0 GENERAL ALTA TENSIÓN"
+  },
+  {
+   "id": 1198,
+   "name": "Demanda medida discriminación horaria E3 TARIFA DE TRES PERIODOS"
+  },
+  {
+   "id": 1200,
+   "name": "Demanda medida nivel de tensión Sin nivel tensión"
+  },
+  {
+   "id": 1201,
+   "name": "Demanda medida nivel de tensión E0 Baja tensión"
+  },
+  {
+   "id": 1202,
+   "name": "Demanda medida nivel de tensión E1 >= 1 kV y < 14 kV"
+  },
+  {
+   "id": 1203,
+   "name": "Demanda medida nivel de tensión E2 >= 14 kV y < 36 kV"
+  },
+  {
+   "id": 1204,
+   "name": "Demanda medida nivel de tensión E3 >= 36 kV y < 72.5 kV"
+  },
+  {
+   "id": 1205,
+   "name": "Demanda medida nivel de tensión E4 >= 72.5 kV y < 145 kV"
+  },
+  {
+   "id": 1206,
+   "name": "Demanda medida nivel de tensión E5 >= 145 kV y < 220 kV"
+  },
+  {
+   "id": 1207,
+   "name": "Demanda medida nivel de tensión E6 >= 220 kV"
+  },
+  {
+   "id": 1208,
+   "name": "Demanda medida tarifa de acceso Sin tarifa de acceso"
+  },
+  {
+   "id": 1209,
+   "name": "Demanda medida tarifa de acceso 2.0 GENERAL BAJA TENSIÓN, POTENCIA NO SUPERIOR A 15 KW "
+  },
+  {
+   "id": 1216,
+   "name": "Demanda medida tarifa de acceso 6.2 >= 30 KV Y < 72.5 KV"
+  },
+  {
+   "id": 1217,
+   "name": "Demanda medida tarifa de acceso 6.3 >= 72.5 KV Y < 145 KV"
+  },
+  {
+   "id": 1218,
+   "name": "Demanda medida tarifa de acceso 6.4 >= 145 KV"
+  },
+  {
+   "id": 1235,
+   "name": "Nº de Clientes > 450 kW discriminación horaria G0 GENERAL ALTA TENSIÓN"
+  },
+  {
+   "id": 1238,
+   "name": "Nº de Clientes > 450 kW discriminación horaria E3 TARIFA DE TRES PERIODOS"
+  },
+  {
+   "id": 1240,
+   "name": "Nº de Clientes > 450 kW nivel de tensión Sin nivel tensión"
+  },
+  {
+   "id": 1241,
+   "name": "Nº de Clientes > 450 kW nivel de tensión E0 Baja tensión"
+  },
+  {
+   "id": 1242,
+   "name": "Nº de Clientes > 450 kW nivel de tensión E1 >= 1 kV y < 14 kV"
+  },
+  {
+   "id": 1243,
+   "name": "Nº de Clientes > 450 kW nivel de tensión E2 >= 14 kV y < 36 kV"
+  },
+  {
+   "id": 1244,
+   "name": "Nº de Clientes > 450 kW nivel de tensión E3 >= 36 kV y < 72.5 kV"
+  },
+  {
+   "id": 1245,
+   "name": "Nº de Clientes > 450 kW nivel de tensión E4 >= 72.5 kV y < 145 kV"
+  },
+  {
+   "id": 1246,
+   "name": "Nº de Clientes > 450 kW nivel de tensión E5 >= 145 kV y < 220 kV"
+  },
+  {
+   "id": 1247,
+   "name": "Nº de Clientes > 450 kW nivel de tensión E6 >= 220 kV"
+  },
+  {
+   "id": 1248,
+   "name": "Nº de Clientes > 450 kW tarifa de acceso Sin tarifa de acceso"
+  },
+  {
+   "id": 1249,
+   "name": "Nº de Clientes > 450 kW tarifa de acceso 2.0 GENERAL BAJA TENSIÓN, POTENCIA NO SUPERIOR A 15 KW "
+  },
+  {
+   "id": 1256,
+   "name": "Nº de Clientes > 450 kW tarifa de acceso 6.2 >= 30 KV Y < 72.5 KV"
+  },
+  {
+   "id": 1257,
+   "name": "Nº de Clientes > 450 kW tarifa de acceso 6.3 >= 72.5 KV Y < 145 KV"
+  },
+  {
+   "id": 1258,
+   "name": "Nº de Clientes > 450 kW tarifa de acceso 6.4 >= 145 KV"
+  },
+  {
+   "id": 1275,
+   "name": "Precio medio horario componente servicio de interrumpibilidad comercializadores de referencia"
+  },
+  {
+   "id": 1276,
+   "name": "Precio medio horario componente servicio de interrumpibilidad contratación libre"
+  },
+  {
+   "id": 1277,
+   "name": "Precio medio horario componente servicio de interrumpibilidad "
+  },
+  {
+   "id": 1278,
+   "name": "Precio medio mensual componente servicio de interrumpibilidad contratación libre"
+  },
+  {
+   "id": 1279,
+   "name": "Precio medio mensual componente servicio de interrumpibilidad comercializadores de referencia"
+  },
+  {
+   "id": 1280,
+   "name": "Precio medio mensual componente servicio de interrumpibilidad"
+  },
+  {
+   "id": 1281,
+   "name": "Precio medio anual componente servicio de interrumpibilidad contratación libre"
+  },
+  {
+   "id": 1282,
+   "name": "Precio medio anual componente servicio de interrumpibilidad comercializadores de referencia"
+  },
+  {
+   "id": 1283,
+   "name": "Precio medio anual componente servicio de interrumpibilidad"
+  },
+  {
+   "id": 1284,
+   "name": "Precio medio cuarto horario componente control factor de potencia comercializadores de referencia"
+  },
+  {
+   "id": 1285,
+   "name": "Precio medio cuarto horario componente control factor potencia contratación libre"
+  },
+  {
+   "id": 1286,
+   "name": "Precio medio cuarto horario componente control factor potencia"
+  },
+  {
+   "id": 1287,
+   "name": "Precio medio mensual componente control factor potencia contratación libre"
+  },
+  {
+   "id": 1288,
+   "name": "Precio medio mensual componente control factor potencia comercializador de referencia"
+  },
+  {
+   "id": 1289,
+   "name": "Precio medio mensual componente control factor potencia"
+  },
+  {
+   "id": 1290,
+   "name": "Precio medio anual componente control factor potencia contratación libre"
+  },
+  {
+   "id": 1291,
+   "name": "Precio medio anual componente control factor potencia comercializadores de referencia"
+  },
+  {
+   "id": 1292,
+   "name": "Precio medio anual componente control factor potencia"
+  },
+  {
+   "id": 1293,
+   "name": "Demanda real"
+  },
+  {
+   "id": 1294,
+   "name": "Generación T.Real Solar térmica"
+  },
+  {
+   "id": 1295,
+   "name": "Generación T.Real Solar fotovoltaica"
+  },
+  {
+   "id": 1296,
+   "name": "Generación T.Real Térmica renovable"
+  },
+  {
+   "id": 1297,
+   "name": "Generación T.Real Cogeneración y resto"
+  },
+  {
+   "id": 1298,
+   "name": "Energía de ofertas de balance presentadas por Francia para importación"
+  },
+  {
+   "id": 1299,
+   "name": "Energía de ofertas de balance presentadas por Francia para exportación"
+  },
+  {
+   "id": 1300,
+   "name": "Energía de ofertas de balance presentadas por Portugal para importación"
+  },
+  {
+   "id": 1301,
+   "name": "Energía de ofertas de balance presentadas por Portugal para exportación"
+  },
+  {
+   "id": 1302,
+   "name": "Precio medio de ofertas de balance presentadas por Francia para importación"
+  },
+  {
+   "id": 1303,
+   "name": "Precio medio de ofertas de balance presentadas por Francia para exportación"
+  },
+  {
+   "id": 1304,
+   "name": "Precio medio de ofertas de balance presentadas por Portugal para importación"
+  },
+  {
+   "id": 1305,
+   "name": "Precio medio de ofertas de balance presentadas por Portugal para exportación"
+  },
+  {
+   "id": 1306,
+   "name": "Precio máximo de ofertas de balance presentadas por SEE para importación"
+  },
+  {
+   "id": 1307,
+   "name": "Precio máximo de ofertas de balance presentadas por SEE para exportación"
+  },
+  {
+   "id": 1308,
+   "name": "Precio máximo de ofertas de balance presentadas por Francia para importación"
+  },
+  {
+   "id": 1309,
+   "name": "Precio máximo de ofertas de balance presentadas por Francia para exportación"
+  },
+  {
+   "id": 1310,
+   "name": "Precio máximo de ofertas de balance presentadas por Portugal para importación"
+  },
+  {
+   "id": 1311,
+   "name": "Precio máximo de ofertas de balance presentadas por Portugal para exportación"
+  },
+  {
+   "id": 1312,
+   "name": "Precio máximo de ofertas de balance presentadas por SEE para importación activadas por Francia"
+  },
+  {
+   "id": 1313,
+   "name": "Precio máximo de ofertas de balance presentadas por SEE para exportación activadas por Francia"
+  },
+  {
+   "id": 1314,
+   "name": "Precio máximo de ofertas de balance presentadas por SEE para importación activadas por Portugal"
+  },
+  {
+   "id": 1315,
+   "name": "Precio máximo de ofertas de balance presentadas por SEE para exportación activadas por Portugal"
+  },
+  {
+   "id": 1316,
+   "name": "Precio máximo de ofertas de balance presentadas por Francia para importación activadas por el SEE"
+  },
+  {
+   "id": 1317,
+   "name": "Precio máximo de ofertas de balance presentadas por Francia para exportación activadas por el SEE"
+  },
+  {
+   "id": 1318,
+   "name": "Precio máximo de ofertas de balance presentadas por Portugal para importación activadas por el SEE"
+  },
+  {
+   "id": 1319,
+   "name": "Precio máximo de ofertas de balance presentadas por Portugal para exportación activadas por el SEE"
+  },
+  {
+   "id": 1320,
+   "name": "Precio mínimo de ofertas de balance presentadas por SEE para importación"
+  },
+  {
+   "id": 1321,
+   "name": "Precio mínimo de ofertas de balance presentadas por SEE para exportación"
+  },
+  {
+   "id": 1322,
+   "name": "Precio mínimo de ofertas de balance presentadas por Francia para importación"
+  },
+  {
+   "id": 1323,
+   "name": "Precio mínimo de ofertas de balance presentadas por Francia para exportación"
+  },
+  {
+   "id": 1324,
+   "name": "Precio mínimo de ofertas de balance presentadas por Portugal para importación"
+  },
+  {
+   "id": 1325,
+   "name": "Precio mínimo de ofertas de balance presentadas por Portugal para exportación"
+  },
+  {
+   "id": 1326,
+   "name": "Precio mínimo de ofertas de balance presentadas por SEE para importación activadas por Francia"
+  },
+  {
+   "id": 1327,
+   "name": "Precio mínimo de ofertas de balance presentadas por SEE para exportación activadas por Francia"
+  },
+  {
+   "id": 1328,
+   "name": "Precio mínimo de ofertas de balance presentadas por SEE para importación activadas por Portugal"
+  },
+  {
+   "id": 1329,
+   "name": "Precio mínimo de ofertas de balance presentadas por SEE para exportación activadas por Portugal"
+  },
+  {
+   "id": 1330,
+   "name": "Precio mínimo de ofertas de balance presentadas por Francia para importación activadas por el SEE"
+  },
+  {
+   "id": 1331,
+   "name": "Precio mínimo de ofertas de balance presentadas por Francia para exportación activadas por el SEE"
+  },
+  {
+   "id": 1332,
+   "name": "Precio mínimo de ofertas de balance presentadas por Portugal para importación activadas por el SEE"
+  },
+  {
+   "id": 1333,
+   "name": "Precio mínimo de ofertas de balance presentadas por Portugal para exportación activadas por el SEE"
+  },
+  {
+   "id": 1334,
+   "name": "Energía asignada en Mercado SPOT Diario Francia"
+  },
+  {
+   "id": 1335,
+   "name": "Demanda del sistema a efectos del cálculo de perfiles"
+  },
+  {
+   "id": 1336,
+   "name": "Precio medio de la demanda en los SNP por subsistema"
+  },
+  {
+   "id": 1337,
+   "name": "Precio medio de la generación en los SNP por subsistema"
+  },
+  {
+   "id": 1338,
+   "name": "Volumen neto de los desvíos generación-demanda"
+  },
+  {
+   "id": 1339,
+   "name": "Demanda en Gran Canaria"
+  },
+  {
+   "id": 1340,
+   "name": "Demanda en Lanzarote y Fuerteventura"
+  },
+  {
+   "id": 1341,
+   "name": "Demanda en Tenerife"
+  },
+  {
+   "id": 1342,
+   "name": "Demanda en La Palma"
+  },
+  {
+   "id": 1343,
+   "name": "Demanda en La Gomera"
+  },
+  {
+   "id": 1344,
+   "name": "Demanda en El Hierro"
+  },
+  {
+   "id": 1345,
+   "name": "Demanda en Mallorca - Menorca"
+  },
+  {
+   "id": 1346,
+   "name": "Demanda en Ibiza - Formentera"
+  },
+  {
+   "id": 1347,
+   "name": "Demanda en Ceuta"
+  },
+  {
+   "id": 1348,
+   "name": "Demanda en Melilla"
+  },
+  {
+   "id": 1349,
+   "name": "Generación en Gran Canaria"
+  },
+  {
+   "id": 1350,
+   "name": "Generación en Lanzarote y Fuerteventura"
+  },
+  {
+   "id": 1351,
+   "name": "Generación en Tenerife"
+  },
+  {
+   "id": 1352,
+   "name": "Generación en La Palma"
+  },
+  {
+   "id": 1353,
+   "name": "Generación en La Gomera"
+  },
+  {
+   "id": 1354,
+   "name": "Generación en El Hierro"
+  },
+  {
+   "id": 1355,
+   "name": "Generación en Mallorca - Menorca"
+  },
+  {
+   "id": 1356,
+   "name": "Generación en Ibiza - Formentera"
+  },
+  {
+   "id": 1357,
+   "name": "Generación en Ceuta"
+  },
+  {
+   "id": 1358,
+   "name": "Generación en Melilla"
+  },
+  {
+   "id": 1360,
+   "name": "Precio medio mensual componente incumplimiento energía de balance contratación libre"
+  },
+  {
+   "id": 1361,
+   "name": "Precio medio mensual componente incumplimiento energía de balance comercialización de referencia"
+  },
+  {
+   "id": 1362,
+   "name": "Precio medio mensual componente incumplimiento energía de balance "
+  },
+  {
+   "id": 1363,
+   "name": "Precio medio anual componente incumplimiento energía de balance contratación libre"
+  },
+  {
+   "id": 1364,
+   "name": "Precio medio anual componente incumplimiento energía de balance comercialización de referencia"
+  },
+  {
+   "id": 1365,
+   "name": "Precio medio anual componente incumplimiento energía de balance "
+  },
+  {
+   "id": 1366,
+   "name": "Precio medio cuarto horario componente incumplimiento energía de balance contratación libre"
+  },
+  {
+   "id": 1367,
+   "name": "Precio medio cuarto horario componente incumplimiento energía de balance comercializadores de referencia"
+  },
+  {
+   "id": 1368,
+   "name": "Precio medio cuarto horario componente incumplimiento energía de balance"
+  },
+  {
+   "id": 1369,
+   "name": "Demanda medida tarifa de acceso 6.1A >= 1 KV Y < 30 KV"
+  },
+  {
+   "id": 1371,
+   "name": "Nº de Clientes > 450 kW tarifa de acceso 6.1A >= 1 KV Y < 30 KV"
+  },
+  {
+   "id": 1373,
+   "name": "Coste de solución de restricciones técnicas diario Fase I subir"
+  },
+  {
+   "id": 1374,
+   "name": "Coste de solución de restricciones técnicas diario Fase I bajar"
+  },
+  {
+   "id": 1375,
+   "name": "Coste de solución de restricciones técnicas diario Fase II subir"
+  },
+  {
+   "id": 1376,
+   "name": "Coste de solución de restricciones técnicas diario Fase II bajar"
+  },
+  {
+   "id": 1388,
+   "name": "Desglose peaje por defecto 2.0.A Coste de comercialización"
+  },
+  {
+   "id": 1389,
+   "name": "Desglose eficiencia 2 periodos (DHA) 2.0.DHA Coste de comercialización"
+  },
+  {
+   "id": 1390,
+   "name": "Desglose vehículo eléctrico 2.0.DHS Coste de comercialización"
+  },
+  {
+   "id": 1391,
+   "name": "Precio de derechos de emisión de despacho de los TNP (PCO2D)"
+  },
+  {
+   "id": 1397,
+   "name": "Solicitud de aplicación del servicio interrumpibilidad por criterios económicos"
+  },
+  {
+   "id": 1398,
+   "name": "Solicitud de aplicación del servicio interrumpibilidad por criterios técnicos"
+  },
+  {
+   "id": 1399,
+   "name": "Solicitud de aplicación del servicio interrumpibilidad a efectos de comprobación del funcionamiento efectivo del servicio"
+  },
+  {
+   "id": 1400,
+   "name": "Generación programada PHFC Hidráulica UGH"
+  },
+  {
+   "id": 1401,
+   "name": "Generación programada PHFC Hidráulica no UGH"
+  },
+  {
+   "id": 1402,
+   "name": "Generación programada PHFC Turbinación bombeo"
+  },
+  {
+   "id": 1403,
+   "name": "Generación programada PHFC Nuclear"
+  },
+  {
+   "id": 1404,
+   "name": "Generación programada PHFC Hulla antracita Anexo II RD 134/2010"
+  },
+  {
+   "id": 1405,
+   "name": "Generación programada PHFC Hulla sub-bituminosa Anexo II RD 134/2010"
+  },
+  {
+   "id": 1406,
+   "name": "Generación programada PHFC Hulla antracita"
+  },
+  {
+   "id": 1407,
+   "name": "Generación programada PHFC Hulla sub-bituminosa"
+  },
+  {
+   "id": 1408,
+   "name": "Generación programada PHFC Ciclo combinado"
+  },
+  {
+   "id": 1409,
+   "name": "Generación programada PHFC Fuel"
+  },
+  {
+   "id": 1410,
+   "name": "Generación programada PHFC Gas Natural - Turbina de vapor"
+  },
+  {
+   "id": 1411,
+   "name": "Generación programada PHFC Eólica terrestre"
+  },
+  {
+   "id": 1412,
+   "name": "Generación programada PHFC Eólica marina"
+  },
+  {
+   "id": 1413,
+   "name": "Generación programada PHFC Solar fotovoltaica"
+  },
+  {
+   "id": 1414,
+   "name": "Generación programada PHFC Solar térmica"
+  },
+  {
+   "id": 1415,
+   "name": "Generación programada PHFC Océano y geotérmica"
+  },
+  {
+   "id": 1416,
+   "name": "Generación programada PHFC Gas Natural Cogeneración"
+  },
+  {
+   "id": 1417,
+   "name": "Generación programada PHFC Derivados del petróleo ó carbón"
+  },
+  {
+   "id": 1418,
+   "name": "Generación programada PHFC Subproductos minería"
+  },
+  {
+   "id": 1419,
+   "name": "Generación programada PHFC Energía residual"
+  },
+  {
+   "id": 1420,
+   "name": "Generación programada PHFC Biomasa"
+  },
+  {
+   "id": 1421,
+   "name": "Generación programada PHFC Biogás"
+  },
+  {
+   "id": 1422,
+   "name": "Generación programada PHFC Residuos domésticos y similares"
+  },
+  {
+   "id": 1423,
+   "name": "Generación programada PHFC Residuos varios"
+  },
+  {
+   "id": 1424,
+   "name": "Generación programada PHFC Consumo bombeo"
+  },
+  {
+   "id": 1425,
+   "name": "Generación programada PHFC Enlace Baleares"
+  },
+  {
+   "id": 1426,
+   "name": "Generación programada PHFC Genéricas"
+  },
+  {
+   "id": 1427,
+   "name": "Generación programada PHFC Importación Francia"
+  },
+  {
+   "id": 1428,
+   "name": "Generación programada PHFC Importación Portugal"
+  },
+  {
+   "id": 1429,
+   "name": "Generación programada PHFC Importación Marruecos"
+  },
+  {
+   "id": 1430,
+   "name": "Generación programada PHFC Importación Andorra"
+  },
+  {
+   "id": 1431,
+   "name": "Generación programada PHFC Exportación Francia"
+  },
+  {
+   "id": 1432,
+   "name": "Generación programada PHFC Exportación Portugal"
+  },
+  {
+   "id": 1433,
+   "name": "Generación programada PHFC Exportación Marruecos"
+  },
+  {
+   "id": 1434,
+   "name": "Generación programada PHFC Exportación Andorra"
+  },
+  {
+   "id": 1435,
+   "name": "Demanda programada PHFC Comercializadores mercado libre"
+  },
+  {
+   "id": 1436,
+   "name": "Demanda programada PHFC Comercializadores de referencia"
+  },
+  {
+   "id": 1437,
+   "name": "Demanda programada PHFC Consumos directos en mercado"
+  },
+  {
+   "id": 1438,
+   "name": "Demanda programada PHFC Consumo de Servicios Auxiliares"
+  },
+  {
+   "id": 1439,
+   "name": "Demanda programada PHFC Corrección eólica"
+  },
+  {
+   "id": 1440,
+   "name": "Demanda programada PHFC Corrección solar"
+  },
+  {
+   "id": 1441,
+   "name": "Demanda programada PHFC Corrección REE"
+  },
+  {
+   "id": 1442,
+   "name": "Energía asignada en Mercado Intradiario Continuo"
+  },
+  {
+   "id": 1475,
+   "name": "Potencia instalada de generación hidráulica"
+  },
+  {
+   "id": 1476,
+   "name": "Potencia instalada de turbinación de bombeo"
+  },
+  {
+   "id": 1477,
+   "name": "Potencia instalada de generación nuclear"
+  },
+  {
+   "id": 1478,
+   "name": "Potencia instalada de generación carbón"
+  },
+  {
+   "id": 1479,
+   "name": "Potencia instalada de generación motores diesel"
+  },
+  {
+   "id": 1480,
+   "name": "Potencia instalada de generación turbina de gas"
+  },
+  {
+   "id": 1481,
+   "name": "Potencia instalada de generación turbina de vapor"
+  },
+  {
+   "id": 1482,
+   "name": "Potencia instalada de generación fuel"
+  },
+  {
+   "id": 1483,
+   "name": "Potencia instalada de generación ciclo combinado"
+  },
+  {
+   "id": 1484,
+   "name": "Potencia instalada de generación hidroeólica"
+  },
+  {
+   "id": 1485,
+   "name": "Potencia instalada de generación eólica"
+  },
+  {
+   "id": 1486,
+   "name": "Potencia instalada de generación solar fotovoltaica"
+  },
+  {
+   "id": 1487,
+   "name": "Potencia instalada de generación solar térmica"
+  },
+  {
+   "id": 1488,
+   "name": "Potencia instalada de generación otras renovables"
+  },
+  {
+   "id": 1489,
+   "name": "Potencia instalada de generación cogeneración"
+  },
+  {
+   "id": 1490,
+   "name": "Potencia instalada de generación residuos no renovables"
+  },
+  {
+   "id": 1491,
+   "name": "Potencia instalada de generación residuos renovables"
+  },
+  {
+   "id": 1632,
+   "name": "Capacidad ofrecida subasta explícita mensual con Portugal sentido importador"
+  },
+  {
+   "id": 1633,
+   "name": "Capacidad ofrecida subasta explícita mensual con Portugal sentido exportador"
+  },
+  {
+   "id": 1634,
+   "name": "Capacidad ofrecida subasta explícita trimestral con Portugal sentido importador"
+  },
+  {
+   "id": 1635,
+   "name": "Capacidad ofrecida subasta explícita trimestral con Portugal sentido exportador"
+  },
+  {
+   "id": 1636,
+   "name": "Capacidad ofrecida subasta explícita anual con Portugal sentido importador"
+  },
+  {
+   "id": 1637,
+   "name": "Capacidad ofrecida subasta explícita anual con Portugal sentido exportador"
+  },
+  {
+   "id": 1638,
+   "name": "Participantes en subasta explícita mensual  con Portugal sentido importador"
+  },
+  {
+   "id": 1639,
+   "name": "Participantes en subasta explícita mensual  con Portugal sentido exportador"
+  },
+  {
+   "id": 1640,
+   "name": "Participantes adjudicatarios en subasta explícita mensual  con Portugal sentido importador"
+  },
+  {
+   "id": 1641,
+   "name": "Participantes adjudicatarios en subasta explícita mensual  con Portugal sentido exportador"
+  },
+  {
+   "id": 1642,
+   "name": "Capacidad asignada en subasta explícita mensual con Portugal sentido importador"
+  },
+  {
+   "id": 1643,
+   "name": "Capacidad asignada en subasta explícita mensual con Portugal sentido exportador"
+  },
+  {
+   "id": 1644,
+   "name": "Precio de subasta explícita mensual con Portugal sentido importador"
+  },
+  {
+   "id": 1645,
+   "name": "Precio de subasta explícita mensual con Portugal sentido exportador"
+  },
+  {
+   "id": 1646,
+   "name": "Participantes en subasta explícita trimestral  con Portugal sentido importador"
+  },
+  {
+   "id": 1647,
+   "name": "Participantes en subasta explícita trimestral  con Portugal sentido exportador"
+  },
+  {
+   "id": 1648,
+   "name": "Participantes adjudicatarios en subasta explícita trimestral  con Portugal sentido importador"
+  },
+  {
+   "id": 1649,
+   "name": "Participantes adjudicatarios en subasta explícita trimestral  con Portugal sentido exportador"
+  },
+  {
+   "id": 1650,
+   "name": "Capacidad asignada en subasta explícita trimestral con Portugal sentido importador"
+  },
+  {
+   "id": 1651,
+   "name": "Capacidad asignada en subasta explícita trimestral con Portugal sentido exportador"
+  },
+  {
+   "id": 1652,
+   "name": "Precio de subasta explícita trimestral con Portugal sentido importador"
+  },
+  {
+   "id": 1653,
+   "name": "Precio de subasta explícita trimestral con Portugal sentido exportador"
+  },
+  {
+   "id": 1654,
+   "name": "Participantes en subasta explícita anual  con Portugal sentido importador"
+  },
+  {
+   "id": 1655,
+   "name": "Participantes en subasta explícita anual  con Portugal sentido exportador"
+  },
+  {
+   "id": 1656,
+   "name": "Participantes adjudicatarios en subasta explícita anual  con Portugal sentido importador"
+  },
+  {
+   "id": 1657,
+   "name": "Participantes adjudicatarios en subasta explícita anual  con Portugal sentido exportador"
+  },
+  {
+   "id": 1658,
+   "name": "Capacidad asignada en subasta explícita anual con Portugal sentido importador"
+  },
+  {
+   "id": 1659,
+   "name": "Capacidad asignada en subasta explícita anual con Portugal sentido exportador"
+  },
+  {
+   "id": 1660,
+   "name": "Precio de subasta explícita anual con Portugal sentido importador"
+  },
+  {
+   "id": 1661,
+   "name": "Precio de subasta explícita anual con Portugal sentido exportador"
+  },
+  {
+   "id": 1662,
+   "name": "Rentas de congestión subasta explícita mensual Portugal importación"
+  },
+  {
+   "id": 1663,
+   "name": "Rentas de congestión subasta explícita mensual Portugal exportación"
+  },
+  {
+   "id": 1664,
+   "name": "Rentas de congestión subasta explícita trimestral Portugal importación"
+  },
+  {
+   "id": 1665,
+   "name": "Rentas de congestión subasta explícita trimestral Portugal exportación"
+  },
+  {
+   "id": 1666,
+   "name": "Rentas de congestión subasta explícita anual Portugal importación"
+  },
+  {
+   "id": 1667,
+   "name": "Rentas de congestión subasta explícita anual Portugal exportación"
+  },
+  {
+   "id": 1674,
+   "name": "Capacidad Reducida Largo Plazo Francia sentido importador"
+  },
+  {
+   "id": 1675,
+   "name": "Capacidad Reducida Largo Plazo Francia sentido exportador"
+  },
+  {
+   "id": 1676,
+   "name": "Capacidad Reducida Largo Plazo Portugal sentido importador"
+  },
+  {
+   "id": 1677,
+   "name": "Capacidad Reducida Largo Plazo Portugal sentido exportador"
+  },
+  {
+   "id": 1678,
+   "name": "Compensaciones por reducciones de capacidad Francia-España importación"
+  },
+  {
+   "id": 1679,
+   "name": "Compensaciones por reducciones de capacidad Francia-España exportación"
+  },
+  {
+   "id": 1680,
+   "name": "Compensaciones por reducciones de capacidad Portugal-España importación"
+  },
+  {
+   "id": 1681,
+   "name": "Compensaciones por reducciones de capacidad Portugal-España exportación"
+  },
+  {
+   "id": 1682,
+   "name": "Capacidad Largo Plazo No Nominada Francia sentido importador"
+  },
+  {
+   "id": 1683,
+   "name": "Capacidad Largo Plazo No Nominada Francia sentido exportador"
+  },
+  {
+   "id": 1684,
+   "name": "Remuneración Capacidad Largo plazo Francia-España importación"
+  },
+  {
+   "id": 1685,
+   "name": "Remuneración Capacidad Largo plazo Francia-España exportación"
+  },
+  {
+   "id": 1686,
+   "name": "Remuneración Capacidad Largo plazo Portugal-España importación"
+  },
+  {
+   "id": 1687,
+   "name": "Remuneración Capacidad Largo plazo Portugal-España exportación"
+  },
+  {
+   "id": 1690,
+   "name": "Demanda en Sistema Eléctrico Balear"
+  },
+  {
+   "id": 1691,
+   "name": "Generación en Sistema Eléctrico Balear "
+  },
+  {
+   "id": 1723,
+   "name": "Coste del proceso de solución de Restricciones Técnicas de Seguridad en Tiempo Real a Subir"
+  },
+  {
+   "id": 1724,
+   "name": "Coste del proceso de solución de Restricciones Técnicas de Seguridad en Tiempo Real a Bajar"
+  },
+  {
+   "id": 1725,
+   "name": "Energía limitada con derechos de cobro por restricciones en tiempo real a subir"
+  },
+  {
+   "id": 1726,
+   "name": "Energía limitada con derechos de cobro por restricciones en tiempo real a bajar"
+  },
+  {
+   "id": 1727,
+   "name": "Precio de referencia en Mercado Intradiario Continuo"
+  },
+  {
+   "id": 1739,
+   "name": "Precio de la energía excedentaria del autoconsumo para el mecanismo de compensación simplificada (PVPC)"
+  },
+  {
+   "id": 1740,
+   "name": "Demanda Real SNP"
+  },
+  {
+   "id": 1741,
+   "name": "Demanda programada SNP"
+  },
+  {
+   "id": 1742,
+   "name": "Demanda prevista SNP"
+  },
+  {
+   "id": 1743,
+   "name": "Generación T.Real motores diésel SNP"
+  },
+  {
+   "id": 1744,
+   "name": "Generación T.Real turbina de gas SNP"
+  },
+  {
+   "id": 1745,
+   "name": "Generación T.Real eólica SNP"
+  },
+  {
+   "id": 1746,
+   "name": "Generación T.Real ciclo combinado SNP"
+  },
+  {
+   "id": 1747,
+   "name": "Generación T.Real turbina de vapor SNP"
+  },
+  {
+   "id": 1748,
+   "name": "Generación T.Real solar fotovoltaica SNP"
+  },
+  {
+   "id": 1749,
+   "name": "Generación T.Real hidráulica SNP"
+  },
+  {
+   "id": 1750,
+   "name": "Generación T.Real carbón SNP"
+  },
+  {
+   "id": 1751,
+   "name": "Generación T.Real enlace balear SNP"
+  },
+  {
+   "id": 1752,
+   "name": "Generación T.Real otras renovables SNP"
+  },
+  {
+   "id": 1753,
+   "name": "Generación T.Real residuos SNP"
+  },
+  {
+   "id": 1754,
+   "name": "Generación T.Real generación auxiliar SNP"
+  },
+  {
+   "id": 1755,
+   "name": "Generación T.Real cogeneración SNP"
+  },
+  {
+   "id": 1774,
+   "name": "Previsión demanda anual"
+  },
+  {
+   "id": 1775,
+   "name": "Previsión diaria D+1 demanda"
+  },
+  {
+   "id": 1776,
+   "name": "Previsión intradiaria H+3 demanda"
+  },
+  {
+   "id": 1777,
+   "name": "Previsión diaria D+1 eólica"
+  },
+  {
+   "id": 1778,
+   "name": "Previsión intradiaria H+3 eólica"
+  },
+  {
+   "id": 1779,
+   "name": "Previsión diaria D+1 fotovoltaica"
+  },
+  {
+   "id": 1780,
+   "name": "Previsión intradiaria H+3 fotovoltaica"
+  },
+  {
+   "id": 1782,
+   "name": "Precio energías de balance RR"
+  },
+  {
+   "id": 1783,
+   "name": "Asignación a subir de energías de balance RR SEE"
+  },
+  {
+   "id": 1784,
+   "name": "Asignación a bajar de energías de balance RR SEE"
+  },
+  {
+   "id": 1787,
+   "name": "Necesidad inelástica solicitada de energías de balance RR"
+  },
+  {
+   "id": 1788,
+   "name": "Requerimientos de reserva a subir de energías de balance mFRR"
+  },
+  {
+   "id": 1789,
+   "name": "Requerimientos de reserva a bajar de energías de balance mFRR"
+  },
+  {
+   "id": 1790,
+   "name": "Energía asignada por restricciones técnicas diario Fase I Subir SCB"
+  },
+  {
+   "id": 1791,
+   "name": "Energía asignada por restricciones técnicas diario Fase I Bajar SCB"
+  },
+  {
+   "id": 1792,
+   "name": "Energía asignada por restricciones técnicas diario Fase I Subir SCA"
+  },
+  {
+   "id": 1793,
+   "name": "Energía asignada por restricciones técnicas diario Fase I Bajar SCA"
+  },
+  {
+   "id": 1794,
+   "name": "Energía asignada por restricciones técnicas diario Fase I Subir CT"
+  },
+  {
+   "id": 1795,
+   "name": "Energía asignada por restricciones técnicas diario Fase I Bajar CT"
+  },
+  {
+   "id": 1796,
+   "name": "Energía asignada por restricciones técnicas diario Fase I Subir RTD"
+  },
+  {
+   "id": 1797,
+   "name": "Energía asignada por restricciones técnicas diario Fase I Bajar RTD"
+  },
+  {
+   "id": 1800,
+   "name": "Energía asignada por restricciones técnicas diario Fase I Subir Otros"
+  },
+  {
+   "id": 1801,
+   "name": "Energía asignada por restricciones técnicas diario Fase I Bajar Otros"
+  },
+  {
+   "id": 1802,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Subir SCB"
+  },
+  {
+   "id": 1803,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Bajar SCB"
+  },
+  {
+   "id": 1804,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Subir SCA"
+  },
+  {
+   "id": 1805,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Bajar SCA"
+  },
+  {
+   "id": 1806,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Subir CT"
+  },
+  {
+   "id": 1807,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Bajar CT"
+  },
+  {
+   "id": 1808,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Subir RTD"
+  },
+  {
+   "id": 1809,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Bajar RTD"
+  },
+  {
+   "id": 1812,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Subir Otros"
+  },
+  {
+   "id": 1813,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Bajar Otros"
+  },
+  {
+   "id": 1814,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Subir RSI"
+  },
+  {
+   "id": 1815,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Bajar RSI"
+  },
+  {
+   "id": 1816,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Subir RBI"
+  },
+  {
+   "id": 1817,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Bajar RBI"
+  },
+  {
+   "id": 1818,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Subir ASE"
+  },
+  {
+   "id": 1819,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Bajar ASE"
+  },
+  {
+   "id": 1820,
+   "name": "Generación T.Real enlace Ibiza-Formentera SNP"
+  },
+  {
+   "id": 1821,
+   "name": "Generación T.Real enlace Mallorca-Menorca SNP"
+  },
+  {
+   "id": 1822,
+   "name": "Generación T.Real enlace Mallorca-Ibiza SNP"
+  },
+  {
+   "id": 1824,
+   "name": "Requisito máximo de control de flujo en España-Portugal en sentido exportador"
+  },
+  {
+   "id": 1825,
+   "name": "Requisito mínimo de control de flujo en España-Portugal en sentido exportador"
+  },
+  {
+   "id": 1826,
+   "name": "Requisito máximo de control de flujo en España-Portugal en sentido importador"
+  },
+  {
+   "id": 1827,
+   "name": "Requisito mínimo de control de flujo en España-Portugal en sentido importador"
+  },
+  {
+   "id": 1828,
+   "name": "Requisito máximo de control de flujo en España-Francia en sentido exportador"
+  },
+  {
+   "id": 1829,
+   "name": "Requisito mínimo de control de flujo en España-Francia en sentido exportador"
+  },
+  {
+   "id": 1830,
+   "name": "Requisito máximo de control de flujo en España-Francia en sentido importador"
+  },
+  {
+   "id": 1831,
+   "name": "Requisito mínimo de control de flujo en España-Francia en sentido importador"
+  },
+  {
+   "id": 1833,
+   "name": "Renta de congestión energías de balance RR Portugal exportación"
+  },
+  {
+   "id": 1834,
+   "name": "Renta de congestión energías de balance RR Portugal importación"
+  },
+  {
+   "id": 1835,
+   "name": "Renta de congestión energías de balance RR Francia exportación"
+  },
+  {
+   "id": 1836,
+   "name": "Renta de congestión energías de balance RR Francia importación"
+  },
+  {
+   "id": 1839,
+   "name": "Energía de importación intercambiada desde igcc hacia sepe"
+  },
+  {
+   "id": 1840,
+   "name": "Energía de exportación intercambiada desde SEPE hacia IGCC"
+  },
+  {
+   "id": 1841,
+   "name": "Precio final de liquidación del proceso de compensación de desequilibrio igcc"
+  },
+  {
+   "id": 1843,
+   "name": "Beneficio estimado para SEPE del proceso de compensación de desequilibrio"
+  },
+  {
+   "id": 1844,
+   "name": "Capacidad de intercambio prevista (NTC) con Francia horizonte diario importación"
+  },
+  {
+   "id": 1845,
+   "name": "Capacidad de intercambio prevista (NTC) con Portugal horizonte diario importación"
+  },
+  {
+   "id": 1846,
+   "name": "Capacidad de intercambio prevista (NTC) con Marruecos horizonte diario importación"
+  },
+  {
+   "id": 1848,
+   "name": "Capacidad de intercambio prevista (NTC) con Francia horizonte diario exportación"
+  },
+  {
+   "id": 1849,
+   "name": "Capacidad de intercambio prevista (NTC) con Portugal horizonte diario exportación"
+  },
+  {
+   "id": 1850,
+   "name": "Capacidad de intercambio prevista (NTC) con Marruecos horizonte diario exportación"
+  },
+  {
+   "id": 1870,
+   "name": "Necesidad elástica solicitada de energías de balance RR"
+  },
+  {
+   "id": 1871,
+   "name": "Desglose peaje por defecto 2.0TD Servicios de ajuste"
+  },
+  {
+   "id": 1872,
+   "name": "Desglose peaje por defecto 2.0TD Pago por capacidad"
+  },
+  {
+   "id": 1873,
+   "name": "Desglose peaje por defecto 2.0TD Servicio de interrumpibilidad"
+  },
+  {
+   "id": 1874,
+   "name": "Desglose peaje por defecto 2.0TD Financiación OM"
+  },
+  {
+   "id": 1875,
+   "name": "Desglose peaje por defecto 2.0TD Mercado diario e intradiario"
+  },
+  {
+   "id": 1876,
+   "name": "Desglose peaje por defecto 2.0TD Peajes y cargos"
+  },
+  {
+   "id": 1877,
+   "name": "Desglose peaje por defecto 2.0TD Financiación OS"
+  },
+  {
+   "id": 1878,
+   "name": "Desglose peaje por defecto 2.0TD Coste de comercialización"
+  },
+  {
+   "id": 1879,
+   "name": "Desglose peaje por defecto 2.0TD Excedente o déficit subastas renovables"
+  },
+  {
+   "id": 1880,
+   "name": "Necesidades de reserva adicional identificadas en Tiempo Real"
+  },
+  {
+   "id": 1881,
+   "name": "Reserva adicional programada en Tiempo Real"
+  },
+  {
+   "id": 1883,
+   "name": "Asignación directa a bajar de energías mFRR SEE (AD, QH1)"
+  },
+  {
+   "id": 1884,
+   "name": "Asignación directa a subir de energías mFRR SEE (AD, QH0)"
+  },
+  {
+   "id": 1885,
+   "name": "Asignación directa a bajar de energías mFRR SEE (AD, QH0)"
+  },
+  {
+   "id": 1886,
+   "name": "Asignación directa a subir de energías mFRR SEE (AD, QH1)"
+  },
+  {
+   "id": 1891,
+   "name": "Necesidad cubierta de energías mFRR a bajar de activación programada"
+  },
+  {
+   "id": 1892,
+   "name": "Necesidad cubierta de energías mFRR a subir de activación programada"
+  },
+  {
+   "id": 1893,
+   "name": "Necesidad cubierta de energías mFRR a bajar de activación directa"
+  },
+  {
+   "id": 1894,
+   "name": "Necesidad cubierta de energías mFRR a subir de activación directa"
+  },
+  {
+   "id": 1900,
+   "name": "Desglose peaje por defecto 2.0TD excedente o déficit de la liquidación del mecanismo de ajuste de costes de producción"
+  },
+  {
+   "id": 1901,
+   "name": "Precio medio horario componente RD-L 10/2022 restricciones técnicas y mercados de balance "
+  },
+  {
+   "id": 1902,
+   "name": "Precio medio horario componente RD-L 10/2022 restricciones técnicas y mercados de balance contratación libre"
+  },
+  {
+   "id": 1903,
+   "name": "Precio medio horario componente RD-L 10/2022 restricciones técnicas y mercados de balance comercializadores de referencia"
+  },
+  {
+   "id": 1904,
+   "name": "Precio medio horario componente RD-L 10/2022 mercado diario e intradiario - diferencia por liquidación con medidas"
+  },
+  {
+   "id": 1905,
+   "name": "Precio medio horario componente RD-L 10/2022 mercado diario e intradiario - dif. por liq. con medidas contratación libre"
+  },
+  {
+   "id": 1906,
+   "name": "Precio medio horario componente RD-L 10/2022 mercado diario e intradiario - dif. por liq. con med. comerc. referencia"
+  },
+  {
+   "id": 1907,
+   "name": "Precio medio horario componente RD-L 10/2022 mercado diario e intradiario "
+  },
+  {
+   "id": 1908,
+   "name": "Precio medio horario componente RD-L 10/2022 mercado diario e intradiario contratación libre"
+  },
+  {
+   "id": 1909,
+   "name": "Precio medio horario componente RD-L 10/2022 mercado diario e intradiario comercializadores de referencia"
+  },
+  {
+   "id": 1910,
+   "name": "Precio medio mensual componente RD-L 10/2022 restricciones técnicas y mercados de balance"
+  },
+  {
+   "id": 1911,
+   "name": "Precio medio mensual componente RD-L 10/2022 restricciones técnicas y mercados de balance contratación libre"
+  },
+  {
+   "id": 1912,
+   "name": "Precio medio mensual componente RD-L 10/2022 restricciones técnicas y mercados de balance comercialización de referencia"
+  },
+  {
+   "id": 1913,
+   "name": "Precio medio mensual componente RD-L 10/2022 mercado diario e intradiario - diferencia por liquidación con medidas"
+  },
+  {
+   "id": 1914,
+   "name": "Precio medio mensual componente RD-L 10/2022 mercado diario e intradiario - diferencia por liquidación con medidas contratación libre"
+  },
+  {
+   "id": 1915,
+   "name": "Precio medio mensual componente RD-L 10/2022 mercado diario e intradiario - diferencia por liquidación con medidas comercialización de referencia"
+  },
+  {
+   "id": 1916,
+   "name": "Precio medio mensual componente RD-L 10/2022 mercado diario e intradiario"
+  },
+  {
+   "id": 1917,
+   "name": "Precio medio mensual componente RD-L 10/2022 mercado diario e intradiario contratación libre"
+  },
+  {
+   "id": 1918,
+   "name": "Precio medio mensual componente RD-L 10/2022 mercado diario e intradiario comercialización de referencia"
+  },
+  {
+   "id": 1919,
+   "name": "Precio medio anual componente RD-L 10/2022 restricciones técnicas y mercados de balance"
+  },
+  {
+   "id": 1920,
+   "name": "Precio medio anual componente RD-L 10/2022 restricciones técnicas y mercados de balance contratación libre"
+  },
+  {
+   "id": 1921,
+   "name": "Precio medio anual componente RD-L 10/2022 restricciones técnicas y mercados de balance comercialización de referencia"
+  },
+  {
+   "id": 1922,
+   "name": "Precio medio anual componente RD-L 10/2022 mercado diario e intradiario - diferencia por liquidación con medidas"
+  },
+  {
+   "id": 1923,
+   "name": "Precio medio anual componente RD-L 10/2022 mercado diario e intradiario - diferencia por liquidación con medidas contratación libre"
+  },
+  {
+   "id": 1924,
+   "name": "Precio medio anual componente RD-L 10/2022 mercado diario e intradiario - diferencia por liquidación con medidas comercialización de referencia"
+  },
+  {
+   "id": 1925,
+   "name": "Precio medio anual componente RD-L 10/2022 mercado diario e intradiario"
+  },
+  {
+   "id": 1926,
+   "name": "Precio medio anual componente RD-L 10/2022 mercado diario e intradiario contratación libre"
+  },
+  {
+   "id": 1927,
+   "name": "Precio medio anual componente RD-L 10/2022 mercado diario e intradiario comercialización de referencia"
+  },
+  {
+   "id": 1928,
+   "name": "Número de activaciones"
+  },
+  {
+   "id": 1929,
+   "name": "Potencia activada en el servicio de respuesta activa de la demanda"
+  },
+  {
+   "id": 1930,
+   "name": "Precio marginal en el servicio de respuesta activa de la demanda"
+  },
+  {
+   "id": 1931,
+   "name": "Energía asignada en el servicio de respuesta activa de la demanda"
+  },
+  {
+   "id": 1932,
+   "name": "Derechos de cobro de la activación del servicio de respuesta activa de la demanda"
+  },
+  {
+   "id": 1933,
+   "name": "Precio de producto del combustible diesel oil para despacho de los TNP"
+  },
+  {
+   "id": 1934,
+   "name": "Precio de producto del combustible fuel 0.3% para despacho de los TNP"
+  },
+  {
+   "id": 1935,
+   "name": "Precio de producto del combustible fuel 0.73% para despacho de los TNP"
+  },
+  {
+   "id": 1936,
+   "name": "Precio de producto combustible carbón Baleares"
+  },
+  {
+   "id": 1938,
+   "name": "Precios de producto del combustible gasoleo para despacho de los TNP"
+  },
+  {
+   "id": 1939,
+   "name": "Precios de producto del combustible fuel 1% para despacho de los TNP"
+  },
+  {
+   "id": 1940,
+   "name": "Precio de producto del combustible Gas Natural para despacho de los TNP"
+  },
+  {
+   "id": 1941,
+   "name": "Demanda Programada Total Peninsular"
+  },
+  {
+   "id": 1942,
+   "name": "Demanda Programada total territorios no peninsulares"
+  },
+  {
+   "id": 1943,
+   "name": "Potencia instalada de generación autoconsumo hidráulica"
+  },
+  {
+   "id": 1944,
+   "name": "Potencia instalada de generación autoconsumo eólica"
+  },
+  {
+   "id": 1945,
+   "name": "Potencia instalada de generación autoconsumo solar fotovoltaica"
+  },
+  {
+   "id": 1946,
+   "name": "Potencia instalada de generación autoconsumo cogeneración"
+  },
+  {
+   "id": 1947,
+   "name": "Potencia instalada de generación autoconsumo otras renovables"
+  },
+  {
+   "id": 1948,
+   "name": "Potencia instalada de generación autoconsumo residuos renovables"
+  },
+  {
+   "id": 2017,
+   "name": "Potencia instalada de generación autoconsumo solar térmica"
+  },
+  {
+   "id": 2018,
+   "name": "Potencia instalada de generación autoconsumo residuos no renovables"
+  },
+  {
+   "id": 2037,
+   "name": "Demanda real nacional"
+  },
+  {
+   "id": 2038,
+   "name": "Generación T.Real eólica nacional"
+  },
+  {
+   "id": 2039,
+   "name": "Generación T.Real nuclear nacional"
+  },
+  {
+   "id": 2040,
+   "name": "Generación T.Real carbón nacional"
+  },
+  {
+   "id": 2041,
+   "name": "Generación T.Real ciclo combinado nacional"
+  },
+  {
+   "id": 2042,
+   "name": "Generación T.Real hidráulica nacional"
+  },
+  {
+   "id": 2043,
+   "name": "Generación T.Real intercambios internacionales nacional"
+  },
+  {
+   "id": 2044,
+   "name": "Generación T.Real solar fotovoltaica nacional"
+  },
+  {
+   "id": 2045,
+   "name": "Generación T.Real solar térmica nacional"
+  },
+  {
+   "id": 2046,
+   "name": "Generación T.Real térmica renovable nacional"
+  },
+  {
+   "id": 2047,
+   "name": "Generación T.Real motor diesel nacional"
+  },
+  {
+   "id": 2048,
+   "name": "Generación T.Real turbina de gas nacional"
+  },
+  {
+   "id": 2049,
+   "name": "Generación T.Real turbina de vapor nacional"
+  },
+  {
+   "id": 2050,
+   "name": "Generación T.Real generación auxiliar nacional"
+  },
+  {
+   "id": 2051,
+   "name": "Generación T.Real cogeneración y residuos nacional"
+  },
+  {
+   "id": 2052,
+   "name": "Demanda real prevista nacional"
+  },
+  {
+   "id": 2053,
+   "name": "Demanda real programada nacional"
+  },
+  {
+   "id": 2054,
+   "name": "Demanda Programada Total nacional"
+  },
+  {
+   "id": 2065,
+   "name": "Generación T.Real consumo bombeo Nacional"
+  },
+  {
+   "id": 2066,
+   "name": "Generación T.Real turbinación bombeo Nacional"
+  },
+  {
+   "id": 2067,
+   "name": "Generación T.Real generación hidráulica Nacional"
+  },
+  {
+   "id": 2068,
+   "name": "Generación T.Real exportación Andorra"
+  },
+  {
+   "id": 2069,
+   "name": "Generación T.Real exportación Marruecos"
+  },
+  {
+   "id": 2070,
+   "name": "Generación T.Real exportación Portugal"
+  },
+  {
+   "id": 2071,
+   "name": "Generación T.Real exportación Francia"
+  },
+  {
+   "id": 2072,
+   "name": "Generación T.Real exportación total"
+  },
+  {
+   "id": 2073,
+   "name": "Generación T.Real importación Andorra"
+  },
+  {
+   "id": 2074,
+   "name": "Generación T.Real importación Marruecos"
+  },
+  {
+   "id": 2075,
+   "name": "Generación T.Real importación Portugal"
+  },
+  {
+   "id": 2076,
+   "name": "Generación T.Real importación Francia"
+  },
+  {
+   "id": 2077,
+   "name": "Generación T.Real importación total"
+  },
+  {
+   "id": 2078,
+   "name": "Generación T.Real consumo bombeo"
+  },
+  {
+   "id": 2079,
+   "name": "Generación T.Real turbinación bombeo"
+  },
+  {
+   "id": 2080,
+   "name": "Generación T.Real generación hidráulica"
+  },
+  {
+   "id": 2081,
+   "name": "Generación T.Real consumo bombeo para sistemas no peninsulares"
+  },
+  {
+   "id": 2082,
+   "name": "Generación T.Real turbinación bombeo para sistemas no peninsulares"
+  },
+  {
+   "id": 2083,
+   "name": "Generación T.Real generación hidráulica para sistemas no peninsulares"
+  },
+  {
+   "id": 2084,
+   "name": "Generación T.Real enlace Lanzarote-Fuerteventura para sistemas no peninsulares"
+  },
+  {
+   "id": 2085,
+   "name": "Generación T.Real residuos no renovables para sistemas no peninsulares"
+  },
+  {
+   "id": 2086,
+   "name": "Generación T.Real residuos renovables para sistemas no peninsulares"
+  },
+  {
+   "id": 2102,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 1 Francia importación"
+  },
+  {
+   "id": 2103,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 2 Francia importación"
+  },
+  {
+   "id": 2104,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 3 Francia importación"
+  },
+  {
+   "id": 2105,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 1 Francia exportación"
+  },
+  {
+   "id": 2106,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 2 Francia exportación"
+  },
+  {
+   "id": 2107,
+   "name": "Rentas de congestión mecanismos implícitos intradiario 3 Francia exportación"
+  },
+  {
+   "id": 2108,
+   "name": "Término de ajuste de mercados a plazo"
+  },
+  {
+   "id": 2109,
+   "name": "Programa de apoyo de emergencia Francia importación"
+  },
+  {
+   "id": 2110,
+   "name": "Programa de apoyo de emergencia Francia exportación"
+  },
+  {
+   "id": 2111,
+   "name": "Programa de apoyo de emergencia Portugal importación"
+  },
+  {
+   "id": 2112,
+   "name": "Programa de apoyo de emergencia Portugal exportación"
+  },
+  {
+   "id": 2113,
+   "name": "Programa de apoyo de emergencia Marruecos importación"
+  },
+  {
+   "id": 2114,
+   "name": "Programa de apoyo de emergencia Marruecos exportación"
+  },
+  {
+   "id": 2115,
+   "name": "Programa de apoyo de emergencia Andorra importación"
+  },
+  {
+   "id": 2116,
+   "name": "Programa de apoyo de emergencia Andorra exportación"
+  },
+  {
+   "id": 2117,
+   "name": "Capacidad de intercambio comercial prevista en la interconexión con Francia horizonte intradiario importación"
+  },
+  {
+   "id": 2118,
+   "name": "Capacidad de intercambio comercial prevista en la interconexión con Francia horizonte intradiario exportación"
+  },
+  {
+   "id": 2119,
+   "name": "Capacidad de intercambio comercial prevista en la interconexión con Portugal horizonte intradiario importación"
+  },
+  {
+   "id": 2120,
+   "name": "Capacidad de intercambio comercial prevista en la interconexión con Portugal horizonte intradiario exportación"
+  },
+  {
+   "id": 2127,
+   "name": "Coste de reserva de regulación secundaria a bajar"
+  },
+  {
+   "id": 2129,
+   "name": "Coste asignación de reserva de regulación secundaria a bajar"
+  },
+  {
+   "id": 2130,
+   "name": "Precio Reserva de regulación secundaria a subir"
+  },
+  {
+   "id": 2131,
+   "name": "Generación programada P48 Hibridación"
+  },
+  {
+   "id": 2132,
+   "name": "Generación programada PBF Hibridación"
+  },
+  {
+   "id": 2133,
+   "name": "Generación programada PHF1 Hibridación"
+  },
+  {
+   "id": 2134,
+   "name": "Generación programada PHF2 Hibridación"
+  },
+  {
+   "id": 2135,
+   "name": "Generación programada PHF3 Hibridación"
+  },
+  {
+   "id": 2136,
+   "name": "Generación programada PHF4 Hibridación"
+  },
+  {
+   "id": 2137,
+   "name": "Generación programada PHF5 Hibridación"
+  },
+  {
+   "id": 2138,
+   "name": "Generación programada PHF6 Hibridación"
+  },
+  {
+   "id": 2139,
+   "name": "Generación programada PHF7 Hibridación"
+  },
+  {
+   "id": 2140,
+   "name": "Generación programada PHFC Hibridación"
+  },
+  {
+   "id": 2141,
+   "name": "Generación programada PVP Hibridación"
+  },
+  {
+   "id": 2142,
+   "name": "Programa bilateral PBF Hibridación"
+  },
+  {
+   "id": 2166,
+   "name": "Almacenamiento T.Real Carga Baterías"
+  },
+  {
+   "id": 2167,
+   "name": "Almacenamiento T.Real Entrega Baterías"
+  },
+  {
+   "id": 2168,
+   "name": "Almacenamiento T.Real Carga Baterías para los sistemas no peninsulares"
+  },
+  {
+   "id": 2169,
+   "name": "Almacenamiento T.Real Entrega Baterías para los sistemas no peninsulares"
+  },
+  {
+   "id": 2184,
+   "name": "Necesidad inelástica solicitada de energías de balance mFRR a subir de activación programada"
+  },
+  {
+   "id": 2185,
+   "name": "Necesidad inelástica solicitada de energías de balance mFRR a bajar de activación programada"
+  },
+  {
+   "id": 2186,
+   "name": "Necesidad elástica solicitada de energías de balance mFRR a subir de activación programada"
+  },
+  {
+   "id": 2187,
+   "name": "Necesidad elástica solicitada de energías de balance mFRR a bajar de activación programada"
+  },
+  {
+   "id": 2188,
+   "name": "Necesidad solicitada de energías de balance mFRR a subir de activación directa"
+  },
+  {
+   "id": 2189,
+   "name": "Necesidad solicitada de energías de balance mFRR a bajar de activación directa"
+  },
+  {
+   "id": 2190,
+   "name": "Necesidad elástica cubierta de energías de balance mFRR a subir de activación programada"
+  },
+  {
+   "id": 2191,
+   "name": "Necesidad elástica cubierta de energías de balance mFRR a bajar de activación programada"
+  },
+  {
+   "id": 2192,
+   "name": "Necesidad inelástica cubierta de energías de balance mFRR a subir de activación programada"
+  },
+  {
+   "id": 2193,
+   "name": "Necesidad inelástica cubierta de energías de balance mFRR a bajar de activación programada"
+  },
+  {
+   "id": 2196,
+   "name": "Precio necesidad elástica de energías de balance mFRR de activación programada"
+  },
+  {
+   "id": 2197,
+   "name": "Precio energías de balance mFRR de activación programada"
+  },
+  {
+   "id": 2198,
+   "name": "Almacenamiento T.Real Entrega Baterías Nacional"
+  },
+  {
+   "id": 2199,
+   "name": "Almacenamiento T.Real Carga Baterías Nacional"
+  },
+  {
+   "id": 2200,
+   "name": "Energía Renovable No Integrable por restricciones técnicas en tiempo real RTT SNP"
+  },
+  {
+   "id": 2201,
+   "name": "Energía Renovable No Integrable por restricciones técnicas en tiempo real Balance SNP"
+  },
+  {
+   "id": 2202,
+   "name": "Energía Renovable No Integrable por restricciones técnicas en tiempo real Total SNP"
+  },
+  {
+   "id": 2207,
+   "name": "Necesidad de energía de regulación secundaria subir en el sepe"
+  },
+  {
+   "id": 2208,
+   "name": "Necesidad de energía de regulación secundaria bajar en el sepe"
+  },
+  {
+   "id": 2267,
+   "name": "Potencia instalada híbrida renovable"
+  },
+  {
+   "id": 2268,
+   "name": "Potencia instalada híbrida renovable-térmica no renovable"
+  },
+  {
+   "id": 2269,
+   "name": "Potencia instalada híbrida renovable-almacenamiento"
+  },
+  {
+   "id": 2270,
+   "name": "Potencia instalada híbrida térmica no renovable con almacenamiento"
+  },
+  {
+   "id": 2271,
+   "name": "Potencia instalada híbrida renovable-térmica no renovable-almacenamiento"
+  },
+  {
+   "id": 2272,
+   "name": "Potencia instalada de generación solar fotovoltaica híbridada"
+  },
+  {
+   "id": 2273,
+   "name": "Potencia instalada de generación eólica híbridada"
+  },
+  {
+   "id": 2274,
+   "name": "Potencia instalada de generación cogeneración híbridada"
+  },
+  {
+   "id": 2275,
+   "name": "Potencia instalada de baterías híbridada"
+  },
+  {
+   "id": 2276,
+   "name": "Energía Renovable No Integrable por restricciones técnicas en tiempo real Total SNP"
+  },
+  {
+   "id": 2277,
+   "name": "Capacidad ofrecida subasta explícita anual anticipada con Francia sentido importador"
+  },
+  {
+   "id": 2278,
+   "name": "Capacidad ofrecida subasta expí­cita anual anticipada con Francia sentido exportador"
+  },
+  {
+   "id": 2279,
+   "name": "Participantes en subasta explícita anual anticipada con Francia sentido importador"
+  },
+  {
+   "id": 2280,
+   "name": "Participantes en subasta explícita anual anticipada con Francia sentido exportador"
+  },
+  {
+   "id": 2281,
+   "name": "Participantes Adjudicatarios en subasta explícita anual anticipada con Francia sentido importador"
+  },
+  {
+   "id": 2282,
+   "name": "Participantes Adjudicatarios en subasta explícita anual anticipada con Francia sentido exportador"
+  },
+  {
+   "id": 2283,
+   "name": "Capacidad asignada en subasta explí­cita anual anticipada con Francia sentido importador"
+  },
+  {
+   "id": 2284,
+   "name": "Capacidad asignada en subasta explí­cita anual anticipada con Francia sentido exportador"
+  },
+  {
+   "id": 2285,
+   "name": "Precio de subasta explícita anual anticipada con Francia sentido importador"
+  },
+  {
+   "id": 2286,
+   "name": "Precio de subasta explícita anual anticipada con Francia sentido exportador"
+  },
+  {
+   "id": 2318,
+   "name": "Número de BSPs habilitados en servicio de balance aFRR"
+  },
+  {
+   "id": 2329,
+   "name": "Potencia habilitada en aFRR Cogeneración"
+  },
+  {
+   "id": 2330,
+   "name": "Potencia habilitada en aFRR Eólica"
+  },
+  {
+   "id": 2331,
+   "name": "Potencia habilitada en aFRR Otras Renovables"
+  },
+  {
+   "id": 2332,
+   "name": "Potencia habilitada en aFRR Residuos no Renovables"
+  },
+  {
+   "id": 2333,
+   "name": "Potencia habilitada en aFRR Solar Térmica"
+  },
+  {
+   "id": 2334,
+   "name": "Potencia habilitada en aFRR Solar Fotovoltaica"
+  },
+  {
+   "id": 2335,
+   "name": "Potencia habilitada en aFRR Hidráulica"
+  },
+  {
+   "id": 2336,
+   "name": "Potencia habilitada en aFRR Hibridación"
+  },
+  {
+   "id": 2337,
+   "name": "Potencia habilitada en aFRR Almacenamiento"
+  },
+  {
+   "id": 2344,
+   "name": "Generación T.Real Turbina de vapor"
+  },
+  {
+   "id": 2352,
+   "name": "Energía asignada por restricciones técnicas diario Fase I Subir RSI"
+  },
+  {
+   "id": 2353,
+   "name": "Energía asignada por restricciones técnicas diario Fase I Bajar RSI"
+  },
+  {
+   "id": 2358,
+   "name": "Potencia instalada de híbrida hidráulica"
+  },
+  {
+   "id": 2359,
+   "name": "Potencia instalada de híbrida solar térmica"
+  },
+  {
+   "id": 2366,
+   "name": "Potencia instalada de autoconsumo baterías"
+  },
+  {
+   "id": 2367,
+   "name": "Capacidad de intercambio prevista (NTC) con Francia horizonte anual importación"
+  },
+  {
+   "id": 2368,
+   "name": "Capacidad de intercambio prevista (NTC) con Portugal horizonte anual importación"
+  },
+  {
+   "id": 2369,
+   "name": "Capacidad de intercambio prevista (NTC) con Marruecos horizonte anual importación"
+  },
+  {
+   "id": 2370,
+   "name": "Capacidad de intercambio prevista (NTC) con Andorra horizonte anual importación"
+  },
+  {
+   "id": 2371,
+   "name": "Capacidad de intercambio prevista (NTC) con Francia horizonte anual exportación"
+  },
+  {
+   "id": 2372,
+   "name": "Capacidad de intercambio prevista (NTC) con Portugal horizonte anual exportación"
+  },
+  {
+   "id": 2373,
+   "name": "Capacidad de intercambio prevista (NTC) con Marruecos horizonte anual exportación"
+  },
+  {
+   "id": 2374,
+   "name": "Capacidad de intercambio prevista (NTC) con Andorra horizonte anual exportación"
+  },
+  {
+   "id": 2375,
+   "name": "Precio medio cuarto horario componente control de tensión (demanda)"
+  },
+  {
+   "id": 2376,
+   "name": "Precio medio cuarto horario componente control de tensión (demanda) comercializadores de referencia"
+  },
+  {
+   "id": 2377,
+   "name": "Precio medio cuarto horario componente control de tensión (demanda) contratación libre"
+  },
+  {
+   "id": 2378,
+   "name": "Precio medio cuarto horario componente servicio de respuesta activa energía activada"
+  },
+  {
+   "id": 2379,
+   "name": "Precio medio cuarto horario componente servicio de respuesta activa energía activada comercializadores de referencia"
+  },
+  {
+   "id": 2380,
+   "name": "Precio medio cuarto horario componente servicio de respuesta activa energía activada contratación libre"
+  },
+  {
+   "id": 2381,
+   "name": "Precio medio cuarto horario componente servicio de respuesta activa potencia asignada"
+  },
+  {
+   "id": 2382,
+   "name": "Precio medio cuarto horario componente servicio de respuesta activa potencia asignada comercializadores de referencia"
+  },
+  {
+   "id": 2383,
+   "name": "Precio medio cuarto horario componente servicio de respuesta activa potencia asignada contratación libre"
+  },
+  {
+   "id": 2384,
+   "name": "Precio medio cuarto horario componente servicio de respuesta activa incumplimiento potencia asignada"
+  },
+  {
+   "id": 2385,
+   "name": "Precio medio cuarto horario componente servicio de RAD incumplimiento potencia asignada comercializadores de referencia"
+  },
+  {
+   "id": 2386,
+   "name": "Precio medio cuarto horario componente servicio de respuesta activa incumplimiento potencia asignada contratación libre"
+  },
+  {
+   "id": 2387,
+   "name": "Precio medio cuarto horario componente servicio de respuesta activa incumplimiento energía activada"
+  },
+  {
+   "id": 2388,
+   "name": "Precio medio cuarto horario componente servicio de RAD incumplimiento energía activada comercializadores de referencia"
+  },
+  {
+   "id": 2389,
+   "name": "Precio medio cuarto horario componente servicio de respuesta activa incumplimiento energía activada contratación libre"
+  },
+  {
+   "id": 2390,
+   "name": "Precio medio cuarto horario componente intercambios apoyo con precio"
+  },
+  {
+   "id": 2391,
+   "name": "Precio medio cuarto horario componente intercambios apoyo con precio comercializadores de referencia"
+  },
+  {
+   "id": 2392,
+   "name": "Precio medio cuarto horario componente intercambios apoyo con precio contratación libre"
+  },
+  {
+   "id": 2393,
+   "name": "Precio medio cuarto horario componente coste a BRP servicio de respuesta activa"
+  },
+  {
+   "id": 2394,
+   "name": "Precio medio cuarto horario componente coste a BRP servicio de respuesta activa comercializadores de referencia"
+  },
+  {
+   "id": 2395,
+   "name": "Precio medio cuarto horario componente coste a BRP servicio de respuesta activa contratación libre"
+  },
+  {
+   "id": 2396,
+   "name": "Precio medio cuarto horario componente incumplimiento aFRR"
+  },
+  {
+   "id": 2397,
+   "name": "Precio medio cuarto horario componente incumplimiento aFRR comercializadores de referencia"
+  },
+  {
+   "id": 2398,
+   "name": "Precio medio cuarto horario componente incumplimiento aFRR contratación libre"
+  },
+  {
+   "id": 2399,
+   "name": "Precio medio cuarto horario componente control de tensión (coste)"
+  },
+  {
+   "id": 2400,
+   "name": "Precio medio cuarto horario componente control de tensión (coste) comercializadores de referencia"
+  },
+  {
+   "id": 2401,
+   "name": "Precio medio cuarto horario componente control de tensión (coste) contratación libre"
+  },
+  {
+   "id": 2402,
+   "name": "Precio medio cuarto horario componente régimen económico de energías renovables"
+  },
+  {
+   "id": 2403,
+   "name": "Precio medio cuarto horario componente régimen económico de energías renovables comercializadores de referencia"
+  },
+  {
+   "id": 2404,
+   "name": "Precio medio cuarto horario componente régimen económico de energías renovables contratación libre"
+  },
+  {
+   "id": 2441,
+   "name": "Energía asignada a subir mFRR Residuos no renovables"
+  },
+  {
+   "id": 2442,
+   "name": "Energía asignada a bajar mFRR Residuos no renovables"
+  },
+  {
+   "id": 2443,
+   "name": "Demanda programada P48 Corrección RE programas"
+  },
+  {
+   "id": 2444,
+   "name": "Ajuste de programas P48 generación"
+  },
+  {
+   "id": 2445,
+   "name": "Serie estadística generación Hidroeólica por CCAA"
+  },
+  {
+   "id": 2446,
+   "name": "Serie estadística generación Turbina de vapor por CCAA"
+  },
+  {
+   "id": 2447,
+   "name": "Serie estadística generación Turbina de gas por CCAA"
+  },
+  {
+   "id": 2448,
+   "name": "Serie estadística generación Diesel por CCAA"
+  },
+  {
+   "id": 2449,
+   "name": "Serie estadística generación Hulla antracita por CCAA"
+  },
+  {
+   "id": 2450,
+   "name": "Serie estadística generación Hulla sub-bituminosa por CCAA"
+  },
+  {
+   "id": 2451,
+   "name": "Serie estadística generación Fuel por CCAA"
+  },
+  {
+   "id": 2452,
+   "name": "Serie estadística generación Nuclear por CCAA"
+  },
+  {
+   "id": 2453,
+   "name": "Serie estadística generación Ciclo combinado por CCAA"
+  },
+  {
+   "id": 2454,
+   "name": "Serie estadística generación Auxiliar por CCAA"
+  },
+  {
+   "id": 2455,
+   "name": "Serie estadística generación Gas natural por CCAA"
+  },
+  {
+   "id": 2509,
+   "name": "Generación T.Real enlace Tenerife - La Gomera"
+  },
+  {
+   "id": 2515,
+   "name": "Demanda en Tenerife–La Gomera"
+  },
+  {
+   "id": 2518,
+   "name": "Generación en Tenerife–La Gomera"
+  },
+  {
+   "id": 2528,
+   "name": "Perfil final de consumo E"
+  },
+  {
+   "id": 2529,
+   "name": "Perfil final de consumo F"
+  },
+  {
+   "id": 2530,
+   "name": "Perfil final de consumo G"
+  },
+  {
+   "id": 2531,
+   "name": "Demanda medida tarifa de acceso 3.0.TDVE GENERAL BAJA TENSIÓN, POTENCIA SUPERIOR 15 kW PARA VEHÍCULO ELÉCTRICO"
+  },
+  {
+   "id": 2532,
+   "name": "Demanda medida tarifa de acceso 3.0.TD GENERAL BAJA TENSIÓN, POTENCIA SUPERIOR A 15 kW"
+  },
+  {
+   "id": 2533,
+   "name": "Demanda medida tarifa de acceso 6.1.TDVE  - Tarifa 6.1A para vehículo eléctrico"
+  },
+  {
+   "id": 2534,
+   "name": "Demanda medida tarifa de acceso 6.2.TDVE  - Tarifa 6.2A para vehículo eléctrico"
+  },
+  {
+   "id": 2535,
+   "name": "Nº de Clientes > 450 kW tarifa de acceso 3.0.TDVE GENERAL BAJA TENSIÓN, POTENCIA SUPERIOR 15 kW PARA VEHÍCULO ELÉCTRICO"
+  },
+  {
+   "id": 2536,
+   "name": "Nº de Clientes > 450 kW tarifa de acceso 3.0.TD GENERAL BAJA TENSIÓN, POTENCIA SUPERIOR A 15 kW"
+  },
+  {
+   "id": 2537,
+   "name": "Nº de Clientes > 450 kW tarifa de acceso 6.1.TDVE  - Tarifa 6.1A para vehículo eléctrico"
+  },
+  {
+   "id": 2538,
+   "name": "Nº de Clientes > 450 kW tarifa de acceso 6.2.TDVE  - Tarifa 6.2A para vehículo eléctrico"
+  },
+  {
+   "id": 2539,
+   "name": "Precio medio mensual componente servicio respuesta activa de la demanda"
+  },
+  {
+   "id": 2540,
+   "name": "Precio medio mensual componente ingreso control tensión"
+  },
+  {
+   "id": 2541,
+   "name": "Precio medio mensual componente servicio respuesta activa de la demanda contratación"
+  },
+  {
+   "id": 2542,
+   "name": "Precio medio mensual componente ingreso control de tensión contratación libre"
+  },
+  {
+   "id": 2563,
+   "name": "Previsión diaria de la demanda eléctrica peninsular en el mercado"
+  },
+  {
+   "id": 2583,
+   "name": "Precio de producto del combustible gasóleo automoción 10 ppm para despacho de los TNP"
+  },
+  {
+   "id": 10001,
+   "name": "Potencia disponible de generación total horizonte horario"
+  },
+  {
+   "id": 10003,
+   "name": "Potencia instalada total de generación convencional"
+  },
+  {
+   "id": 10004,
+   "name": "Demanda real suma de generación"
+  },
+  {
+   "id": 10006,
+   "name": "Generación libre de CO2"
+  },
+  {
+   "id": 10008,
+   "name": "Generación programada P48 Carbón"
+  },
+  {
+   "id": 10009,
+   "name": "Generación programada P48 Fuel-Gas"
+  },
+  {
+   "id": 10010,
+   "name": "Generación programada P48 Eólica"
+  },
+  {
+   "id": 10011,
+   "name": "Generación programada P48 Cogeneración"
+  },
+  {
+   "id": 10012,
+   "name": "Generación programada P48 Residuos no renovables"
+  },
+  {
+   "id": 10013,
+   "name": "Generación programada P48 otras renovables"
+  },
+  {
+   "id": 10014,
+   "name": "Generación programada P48 Saldo Portugal"
+  },
+  {
+   "id": 10015,
+   "name": "Generación programada P48 Saldo Francia"
+  },
+  {
+   "id": 10016,
+   "name": "Generación programada P48 Saldo Marruecos"
+  },
+  {
+   "id": 10017,
+   "name": "Generación programada P48 Saldo Andorra"
+  },
+  {
+   "id": 10018,
+   "name": "Capacidad de intercambio disponible (ATC) tras la programación con Portugal importación"
+  },
+  {
+   "id": 10019,
+   "name": "Capacidad de intercambio disponible (ATC) tras la programación con Portugal exportación"
+  },
+  {
+   "id": 10020,
+   "name": "Capacidad de intercambio disponible (ATC) tras la programación con Marruecos importación"
+  },
+  {
+   "id": 10021,
+   "name": "Capacidad de intercambio disponible (ATC) tras la programación con Marruecos exportación"
+  },
+  {
+   "id": 10022,
+   "name": "Capacidad de intercambio disponible (ATC) tras la programación con Andorra importación"
+  },
+  {
+   "id": 10023,
+   "name": "Capacidad de intercambio disponible (ATC) tras la programación con Andorra exportación"
+  },
+  {
+   "id": 10024,
+   "name": "Generación programada + Almacenamiento + Cable Baleares P48"
+  },
+  {
+   "id": 10025,
+   "name": "Ajuste de programas p48"
+  },
+  {
+   "id": 10026,
+   "name": "Saldo total interconexiones programa p48"
+  },
+  {
+   "id": 10027,
+   "name": "Demanda programada P48 total"
+  },
+  {
+   "id": 10028,
+   "name": "Energía horaria final contratación libre cuota"
+  },
+  {
+   "id": 10029,
+   "name": "Energía horaria final contratación CUR cuota"
+  },
+  {
+   "id": 10033,
+   "name": "Porcentaje de generación libre de CO2"
+  },
+  {
+   "id": 10034,
+   "name": "Generación prevista Solar"
+  },
+  {
+   "id": 10035,
+   "name": "Generación medida Hidráulica"
+  },
+  {
+   "id": 10036,
+   "name": "Generación medida Carbón"
+  },
+  {
+   "id": 10037,
+   "name": "Generación medida Eólica"
+  },
+  {
+   "id": 10038,
+   "name": "Generación medida Fuel-gas"
+  },
+  {
+   "id": 10039,
+   "name": "Generación medida cogeneración"
+  },
+  {
+   "id": 10040,
+   "name": "Generación medida Residuos no renovables"
+  },
+  {
+   "id": 10041,
+   "name": "Generación medida otras renovables"
+  },
+  {
+   "id": 10042,
+   "name": "Total Generación + Total Interconexiones programada p48"
+  },
+  {
+   "id": 10043,
+   "name": "Generación medida total"
+  },
+  {
+   "id": 10044,
+   "name": "Generación medida Saldo Portugal"
+  },
+  {
+   "id": 10045,
+   "name": "Generación medida Saldo Francia"
+  },
+  {
+   "id": 10046,
+   "name": "Generación medida Saldo Marruecos"
+  },
+  {
+   "id": 10047,
+   "name": "Generación medida Saldo Andorra"
+  },
+  {
+   "id": 10048,
+   "name": "Saldo total interconexiones medidas"
+  },
+  {
+   "id": 10049,
+   "name": "Total Generación + Total Interconexiones medidas"
+  },
+  {
+   "id": 10050,
+   "name": "Energía asignada en Mercado SPOT Intradiario"
+  },
+  {
+   "id": 10051,
+   "name": "Energía asignada restricciones técnicas diario Fase I"
+  },
+  {
+   "id": 10052,
+   "name": "Volumen absoluto de Energía asignada por restricciones en tiempo real"
+  },
+  {
+   "id": 10054,
+   "name": "Volumen absoluto de necesidades cubiertas de energías de balance RR"
+  },
+  {
+   "id": 10055,
+   "name": "Volumen absoluto de asignación de energías mFRR"
+  },
+  {
+   "id": 10056,
+   "name": "Volumen absoluto de energía utilizada de regulación secundaria"
+  },
+  {
+   "id": 10057,
+   "name": "Energía total mercado de producción"
+  },
+  {
+   "id": 10058,
+   "name": "Demanda en consumo diferencia generación - pérdidas"
+  },
+  {
+   "id": 10059,
+   "name": "Demanda proveedores del servicio de interrumpibilidad Sectores"
+  },
+  {
+   "id": 10061,
+   "name": "Generación programada P48 Anexo II RD 134/2010"
+  },
+  {
+   "id": 10062,
+   "name": "Generación medida Residuos renovables"
+  },
+  {
+   "id": 10063,
+   "name": "Generación programada P48 UGH + no UGH"
+  },
+  {
+   "id": 10064,
+   "name": "Generación programada PBF UGH + no UGH"
+  },
+  {
+   "id": 10065,
+   "name": "Generación programada PVP UGH + no UGH"
+  },
+  {
+   "id": 10066,
+   "name": "Generación programada PHF1 UGH + no UGH"
+  },
+  {
+   "id": 10067,
+   "name": "Generación programada PHF2 UGH + no UGH"
+  },
+  {
+   "id": 10068,
+   "name": "Generación programada PHF3 UGH + no UGH"
+  },
+  {
+   "id": 10069,
+   "name": "Generación programada PHF4 UGH + no UGH"
+  },
+  {
+   "id": 10070,
+   "name": "Generación programada PHF5 UGH + no UGH"
+  },
+  {
+   "id": 10071,
+   "name": "Generación programada PHF6 UGH + no UGH"
+  },
+  {
+   "id": 10072,
+   "name": "Generación programada PHF7 UGH + no UGH"
+  },
+  {
+   "id": 10073,
+   "name": "Generación programada PBF Eólica"
+  },
+  {
+   "id": 10074,
+   "name": "Generación programada PBF otras renovables"
+  },
+  {
+   "id": 10075,
+   "name": "Generación programada PBF Anexo II RD 134/2010"
+  },
+  {
+   "id": 10077,
+   "name": "Generación programada PBF Fuel-Gas"
+  },
+  {
+   "id": 10078,
+   "name": "Generación programada PVP Fuel-Gas"
+  },
+  {
+   "id": 10079,
+   "name": "Generación programada PHF1 Fuel-Gas"
+  },
+  {
+   "id": 10080,
+   "name": "Generación programada PHF2 Fuel-Gas"
+  },
+  {
+   "id": 10081,
+   "name": "Generación programada PHF3 Fuel-Gas"
+  },
+  {
+   "id": 10082,
+   "name": "Generación programada PHF4 Fuel-Gas"
+  },
+  {
+   "id": 10083,
+   "name": "Generación programada PHF5 Fuel-Gas"
+  },
+  {
+   "id": 10084,
+   "name": "Generación programada PHF6 Fuel-Gas"
+  },
+  {
+   "id": 10085,
+   "name": "Generación programada PHF7 Fuel-Gas"
+  },
+  {
+   "id": 10086,
+   "name": "Generación programada PBF Cogeneración"
+  },
+  {
+   "id": 10087,
+   "name": "Generación programada PVP Cogeneración"
+  },
+  {
+   "id": 10088,
+   "name": "Generación programada PHF1 Cogeneración"
+  },
+  {
+   "id": 10089,
+   "name": "Generación programada PHF2 Cogeneración"
+  },
+  {
+   "id": 10090,
+   "name": "Generación programada PHF3 Cogeneración"
+  },
+  {
+   "id": 10091,
+   "name": "Generación programada PHF4 Cogeneración"
+  },
+  {
+   "id": 10092,
+   "name": "Generación programada PHF5 Cogeneración"
+  },
+  {
+   "id": 10093,
+   "name": "Generación programada PHF6 Cogeneración"
+  },
+  {
+   "id": 10094,
+   "name": "Generación programada PHF7 Cogeneración"
+  },
+  {
+   "id": 10095,
+   "name": "Generación programada PBF Residuos"
+  },
+  {
+   "id": 10096,
+   "name": "Generación programada PVP Residuos"
+  },
+  {
+   "id": 10097,
+   "name": "Generación programada PHF1 Residuos"
+  },
+  {
+   "id": 10098,
+   "name": "Generación programada PHF2 Residuos"
+  },
+  {
+   "id": 10099,
+   "name": "Generación programada PHF3 Residuos"
+  },
+  {
+   "id": 10100,
+   "name": "Generación programada PHF4 Residuos"
+  },
+  {
+   "id": 10101,
+   "name": "Generación programada PHF5 Residuos"
+  },
+  {
+   "id": 10102,
+   "name": "Generación programada PHF6 Residuos"
+  },
+  {
+   "id": 10103,
+   "name": "Generación programada PHF7 Residuos"
+  },
+  {
+   "id": 10104,
+   "name": "Generación programada PBF Saldo Francia"
+  },
+  {
+   "id": 10105,
+   "name": "Generación programada PVP Saldo Francia"
+  },
+  {
+   "id": 10106,
+   "name": "Generación programada PHF1 Saldo Francia"
+  },
+  {
+   "id": 10107,
+   "name": "Generación programada PHF2 Saldo Francia"
+  },
+  {
+   "id": 10108,
+   "name": "Generación programada PHF3 Saldo Francia"
+  },
+  {
+   "id": 10109,
+   "name": "Generación programada PHF4 Saldo Francia"
+  },
+  {
+   "id": 10110,
+   "name": "Generación programada PHF5 Saldo Francia"
+  },
+  {
+   "id": 10111,
+   "name": "Generación programada PHF6 Saldo Francia"
+  },
+  {
+   "id": 10112,
+   "name": "Generación programada PHF7 Saldo Francia"
+  },
+  {
+   "id": 10113,
+   "name": "Generación programada PBF Saldo Portugal"
+  },
+  {
+   "id": 10114,
+   "name": "Generación programada PVP Saldo Portugal"
+  },
+  {
+   "id": 10115,
+   "name": "Generación programada PHF1 Saldo Portugal"
+  },
+  {
+   "id": 10116,
+   "name": "Generación programada PHF2 Saldo Portugal"
+  },
+  {
+   "id": 10117,
+   "name": "Generación programada PHF3 Saldo Portugal"
+  },
+  {
+   "id": 10118,
+   "name": "Generación programada PHF4 Saldo Portugal"
+  },
+  {
+   "id": 10119,
+   "name": "Generación programada PHF5 Saldo Portugal"
+  },
+  {
+   "id": 10120,
+   "name": "Generación programada PHF6 Saldo Portugal"
+  },
+  {
+   "id": 10121,
+   "name": "Generación programada PHF7 Saldo Portugal"
+  },
+  {
+   "id": 10122,
+   "name": "Generación programada PBF Saldo Marruecos"
+  },
+  {
+   "id": 10123,
+   "name": "Generación programada PVP Saldo Marruecos"
+  },
+  {
+   "id": 10124,
+   "name": "Generación programada PHF1 Saldo Marruecos"
+  },
+  {
+   "id": 10125,
+   "name": "Generación programada PHF2 Saldo Marruecos"
+  },
+  {
+   "id": 10126,
+   "name": "Generación programada PHF3 Saldo Marruecos"
+  },
+  {
+   "id": 10127,
+   "name": "Generación programada PHF4 Saldo Marruecos"
+  },
+  {
+   "id": 10128,
+   "name": "Generación programada PHF5 Saldo Marruecos"
+  },
+  {
+   "id": 10129,
+   "name": "Generación programada PHF6 Saldo Marruecos"
+  },
+  {
+   "id": 10130,
+   "name": "Generación programada PHF7 Saldo Marruecos"
+  },
+  {
+   "id": 10131,
+   "name": "Generación programada PBF Saldo Andorra"
+  },
+  {
+   "id": 10132,
+   "name": "Generación programada PVP Saldo Andorra"
+  },
+  {
+   "id": 10133,
+   "name": "Generación programada PHF1 Saldo Andorra"
+  },
+  {
+   "id": 10134,
+   "name": "Generación programada PHF2 Saldo Andorra"
+  },
+  {
+   "id": 10136,
+   "name": "Generación programada PHF3 Saldo Andorra"
+  },
+  {
+   "id": 10137,
+   "name": "Generación programada PHF4 Saldo Andorra"
+  },
+  {
+   "id": 10138,
+   "name": "Generación programada PHF5 Saldo Andorra"
+  },
+  {
+   "id": 10139,
+   "name": "Generación programada PHF6 Saldo Andorra"
+  },
+  {
+   "id": 10140,
+   "name": "Generación programada PHF7 Saldo Andorra"
+  },
+  {
+   "id": 10141,
+   "name": "Demanda programada PBF total"
+  },
+  {
+   "id": 10142,
+   "name": "Demanda programada PVP total"
+  },
+  {
+   "id": 10143,
+   "name": "Demanda programada PHF1 total"
+  },
+  {
+   "id": 10144,
+   "name": "Demanda programada PHF2 total"
+  },
+  {
+   "id": 10145,
+   "name": "Demanda programada PHF3 total"
+  },
+  {
+   "id": 10146,
+   "name": "Demanda programada PHF4 total"
+  },
+  {
+   "id": 10147,
+   "name": "Demanda programada PHF5 total"
+  },
+  {
+   "id": 10148,
+   "name": "Demanda programada PHF6 total"
+  },
+  {
+   "id": 10149,
+   "name": "Demanda programada PHF7 total"
+  },
+  {
+   "id": 10150,
+   "name": "Generación programada PVP Anexo II RD 134/2010"
+  },
+  {
+   "id": 10151,
+   "name": "Generación programada PHF1 Anexo II RD 134/2010"
+  },
+  {
+   "id": 10152,
+   "name": "Generación programada PHF2 Anexo II RD 134/2010"
+  },
+  {
+   "id": 10153,
+   "name": "Generación programada PHF3 Anexo II RD 134/2010"
+  },
+  {
+   "id": 10154,
+   "name": "Generación programada PHF4 Anexo II RD 134/2010"
+  },
+  {
+   "id": 10155,
+   "name": "Generación programada PHF5 Anexo II RD 134/2010"
+  },
+  {
+   "id": 10156,
+   "name": "Generación programada PHF6 Anexo II RD 134/2010"
+  },
+  {
+   "id": 10157,
+   "name": "Generación programada PHF7 Anexo II RD 134/2010"
+  },
+  {
+   "id": 10158,
+   "name": "Generación programada PVP Eólica"
+  },
+  {
+   "id": 10159,
+   "name": "Generación programada PHF1 Eólica"
+  },
+  {
+   "id": 10160,
+   "name": "Generación programada PHF2 Eólica"
+  },
+  {
+   "id": 10161,
+   "name": "Generación programada PHF3 Eólica"
+  },
+  {
+   "id": 10162,
+   "name": "Generación programada PHF4 Eólica"
+  },
+  {
+   "id": 10163,
+   "name": "Generación programada PHF5 Eólica"
+  },
+  {
+   "id": 10164,
+   "name": "Generación programada PHF6 Eólica"
+  },
+  {
+   "id": 10165,
+   "name": "Generación programada PHF7 Eólica"
+  },
+  {
+   "id": 10167,
+   "name": "Generación programada PBF Carbón"
+  },
+  {
+   "id": 10168,
+   "name": "Generación programada PVP Carbón"
+  },
+  {
+   "id": 10169,
+   "name": "Generación programada PHF1 Carbón"
+  },
+  {
+   "id": 10170,
+   "name": "Generación programada PHF2 Carbón"
+  },
+  {
+   "id": 10171,
+   "name": "Generación programada PHF3 Carbón"
+  },
+  {
+   "id": 10172,
+   "name": "Generación programada PHF4 Carbón"
+  },
+  {
+   "id": 10173,
+   "name": "Generación programada PHF5 Carbón"
+  },
+  {
+   "id": 10174,
+   "name": "Generación programada PHF6 Carbón"
+  },
+  {
+   "id": 10175,
+   "name": "Generación programada PHF7 Carbón"
+  },
+  {
+   "id": 10176,
+   "name": "Generación programada PVP otras renovables"
+  },
+  {
+   "id": 10177,
+   "name": "Generación programada PHF1 otras renovables"
+  },
+  {
+   "id": 10178,
+   "name": "Generación programada PHF2 otras renovables"
+  },
+  {
+   "id": 10179,
+   "name": "Generación programada PHF3 otras renovables"
+  },
+  {
+   "id": 10180,
+   "name": "Generación programada PHF4 otras renovables"
+  },
+  {
+   "id": 10181,
+   "name": "Generación programada PHF5 otras renovables"
+  },
+  {
+   "id": 10182,
+   "name": "Generación programada PHF6 otras renovables"
+  },
+  {
+   "id": 10183,
+   "name": "Generación programada PHF7 otras renovables"
+  },
+  {
+   "id": 10186,
+   "name": "Saldo total interconexiones programa PBF"
+  },
+  {
+   "id": 10187,
+   "name": "Saldo total interconexiones programa PVP"
+  },
+  {
+   "id": 10188,
+   "name": "Saldo total interconexiones programa PHF1"
+  },
+  {
+   "id": 10189,
+   "name": "Saldo total interconexiones programa PHF2"
+  },
+  {
+   "id": 10190,
+   "name": "Saldo total interconexiones programa PHF3"
+  },
+  {
+   "id": 10191,
+   "name": "Saldo total interconexiones programa PHF4"
+  },
+  {
+   "id": 10192,
+   "name": "Saldo total interconexiones programa PHF5"
+  },
+  {
+   "id": 10193,
+   "name": "Saldo total interconexiones programa PHF6"
+  },
+  {
+   "id": 10194,
+   "name": "Saldo total interconexiones programa PHF7"
+  },
+  {
+   "id": 10195,
+   "name": "Generación medida total tipo producción"
+  },
+  {
+   "id": 10196,
+   "name": "Ajuste de programas PBF"
+  },
+  {
+   "id": 10197,
+   "name": "Ajuste de programas PVP"
+  },
+  {
+   "id": 10198,
+   "name": "Ajuste de programas PHF1"
+  },
+  {
+   "id": 10199,
+   "name": "Ajuste de programas PHF2"
+  },
+  {
+   "id": 10200,
+   "name": "Ajuste de programas PHF3"
+  },
+  {
+   "id": 10201,
+   "name": "Ajuste de programas PHF4"
+  },
+  {
+   "id": 10202,
+   "name": "Ajuste de programas PHF5"
+  },
+  {
+   "id": 10203,
+   "name": "Ajuste de programas PHF6"
+  },
+  {
+   "id": 10204,
+   "name": "Ajuste de programas PHF7"
+  },
+  {
+   "id": 10205,
+   "name": "Generación medida solar"
+  },
+  {
+   "id": 10206,
+   "name": "Generación T.Real Solar"
+  },
+  {
+   "id": 10207,
+   "name": "Saldo horario neto de interconexión con Francia telemedidas"
+  },
+  {
+   "id": 10208,
+   "name": "Saldo horario neto de interconexión con Portugal telemedidas"
+  },
+  {
+   "id": 10209,
+   "name": "Saldo horario neto de interconexión con Marruecos telemedidas"
+  },
+  {
+   "id": 10210,
+   "name": "Saldo horario neto de interconexión con Andorra telemedidas"
+  },
+  {
+   "id": 10211,
+   "name": "Precio medio horario final suma de componentes"
+  },
+  {
+   "id": 10212,
+   "name": "Precio medio horario final comercializadores de referencia suma de componentes"
+  },
+  {
+   "id": 10213,
+   "name": "Precio medio anual final contratación libre suma de componentes"
+  },
+  {
+   "id": 10214,
+   "name": "Precio medio horario final contratación libre suma de componentes"
+  },
+  {
+   "id": 10215,
+   "name": "Precio medio anual final comercialización de referencia suma de componentes"
+  },
+  {
+   "id": 10216,
+   "name": "Precio medio mensual final suma de componentes"
+  },
+  {
+   "id": 10217,
+   "name": "Precio medio anual final suma de componentes"
+  },
+  {
+   "id": 10218,
+   "name": "Precio medio mensual final comercialización de referencia suma de componentes"
+  },
+  {
+   "id": 10219,
+   "name": "Precio medio mensual final contratación libre suma de componentes"
+  },
+  {
+   "id": 10220,
+   "name": "Generación programada + Almacenamiento  + Cable Baleares PBF"
+  },
+  {
+   "id": 10221,
+   "name": "Generación programada + Almacenamiento  + Cable Baleares PHF1"
+  },
+  {
+   "id": 10222,
+   "name": "Generación programada + Almacenamiento + Cable Baleares PHF2"
+  },
+  {
+   "id": 10223,
+   "name": "Generación programada + Almacenamiento  + Cable Baleares PHF3"
+  },
+  {
+   "id": 10224,
+   "name": "Generación programada + Almacenamiento + Cable Baleares PHF4"
+  },
+  {
+   "id": 10225,
+   "name": "Generación programada + Almacenamiento + Cable Baleares PHF5"
+  },
+  {
+   "id": 10226,
+   "name": "Generación programada + Almacenamiento  + Cable Baleares PHF6"
+  },
+  {
+   "id": 10227,
+   "name": "Generación programada + Almacenamiento  + Cable Baleares PHF7"
+  },
+  {
+   "id": 10228,
+   "name": "Generación programada + Almacenamiento  + Cable Baleares PVP"
+  },
+  {
+   "id": 10229,
+   "name": "Término de facturación de energía activa del PVPC peaje por defecto suma componentes"
+  },
+  {
+   "id": 10230,
+   "name": "Término de facturación de energía activa del PVPC eficiencia 2 periodos (DHA) suma componentes"
+  },
+  {
+   "id": 10231,
+   "name": "Término de facturación de energía activa del PVPC vehículo eléctrico suma componentes"
+  },
+  {
+   "id": 10232,
+   "name": "Potencia disponible de generación total horizonte año móvil"
+  },
+  {
+   "id": 10233,
+   "name": "Programa bilateral PBF Carbón"
+  },
+  {
+   "id": 10234,
+   "name": "Programa bilateral PBF Otras renovables"
+  },
+  {
+   "id": 10235,
+   "name": "Programa bilateral PBF Total Ventas"
+  },
+  {
+   "id": 10236,
+   "name": "Programa bilateral PBF Total Compras"
+  },
+  {
+   "id": 10237,
+   "name": "Generación programada P48 Importación Total"
+  },
+  {
+   "id": 10238,
+   "name": "Generación programada P48 Exportación Total"
+  },
+  {
+   "id": 10241,
+   "name": "Capacidad de intercambio disponible (ATC) tras la programación con Francia importación"
+  },
+  {
+   "id": 10242,
+   "name": "Capacidad de intercambio disponible (ATC) tras la programación con Francia exportación"
+  },
+  {
+   "id": 10243,
+   "name": "Demanda en Canarias"
+  },
+  {
+   "id": 10244,
+   "name": "Demanda en Baleares"
+  },
+  {
+   "id": 10245,
+   "name": "Demanda en los SNP"
+  },
+  {
+   "id": 10246,
+   "name": "Generación en Canarias"
+  },
+  {
+   "id": 10247,
+   "name": "Generación en Baleares"
+  },
+  {
+   "id": 10248,
+   "name": "Generación en los SNP"
+  },
+  {
+   "id": 10249,
+   "name": "Previsión de la demanda residual"
+  },
+  {
+   "id": 10250,
+   "name": "Volumen neto de asignación de energías mFRR"
+  },
+  {
+   "id": 10251,
+   "name": "Volumen neto de necesidades cubiertas de energías de balance RR"
+  },
+  {
+   "id": 10252,
+   "name": "Volumen neto de energía utilizada de regulación secundaria"
+  },
+  {
+   "id": 10253,
+   "name": "Volumen neto de Energía asignada por restricciones en tiempo real"
+  },
+  {
+   "id": 10254,
+   "name": "Desglose peaje por defecto 2.0.A Término de energía"
+  },
+  {
+   "id": 10255,
+   "name": "Desglose eficiencia 2 periodos (DHA) 2.0.DHA Término de energía"
+  },
+  {
+   "id": 10256,
+   "name": "Desglose vehículo eléctrico 2.0.DHS Término de energía"
+  },
+  {
+   "id": 10257,
+   "name": "Generación programada P48 total"
+  },
+  {
+   "id": 10258,
+   "name": "Generación programada PBF total"
+  },
+  {
+   "id": 10259,
+   "name": "Generación programada PVP total"
+  },
+  {
+   "id": 10260,
+   "name": "Generación programada PHF1 total"
+  },
+  {
+   "id": 10261,
+   "name": "Generación programada PHF2 total"
+  },
+  {
+   "id": 10262,
+   "name": "Generación programada PHF3 total"
+  },
+  {
+   "id": 10263,
+   "name": "Generación programada PHF4 total"
+  },
+  {
+   "id": 10264,
+   "name": "Generación programada PHF5 total"
+  },
+  {
+   "id": 10265,
+   "name": "Generación programada PHF6 total"
+  },
+  {
+   "id": 10266,
+   "name": "Generación programada PHF7 total"
+  },
+  {
+   "id": 10267,
+   "name": "Demanda medida discriminación horaria total"
+  },
+  {
+   "id": 10268,
+   "name": "Demanda medida tarifa de acceso total"
+  },
+  {
+   "id": 10269,
+   "name": "Demanda medida nivel de tensión total"
+  },
+  {
+   "id": 10270,
+   "name": "Energía asignada restricciones técnicas diario Fase II"
+  },
+  {
+   "id": 10271,
+   "name": "Generación programada PHFC UGH + no UGH"
+  },
+  {
+   "id": 10272,
+   "name": "Generación programada PHFC Fuel-Gas"
+  },
+  {
+   "id": 10273,
+   "name": "Generación programada PHFC Cogeneración"
+  },
+  {
+   "id": 10274,
+   "name": "Generación programada PHFC Residuos"
+  },
+  {
+   "id": 10275,
+   "name": "Generación programada PHFC Saldo Francia"
+  },
+  {
+   "id": 10276,
+   "name": "Generación programada PHFC Saldo Portugal"
+  },
+  {
+   "id": 10277,
+   "name": "Generación programada PHFC Saldo Marruecos"
+  },
+  {
+   "id": 10278,
+   "name": "Generación programada PHFC Saldo Andorra"
+  },
+  {
+   "id": 10279,
+   "name": "Demanda programada PHFC total"
+  },
+  {
+   "id": 10280,
+   "name": "Generación programada PHFC Anexo II RD 134/2010"
+  },
+  {
+   "id": 10281,
+   "name": "Generación programada PHFC Eólica"
+  },
+  {
+   "id": 10282,
+   "name": "Generación programada PHFC Carbón"
+  },
+  {
+   "id": 10283,
+   "name": "Generación programada PHFC otras renovables"
+  },
+  {
+   "id": 10284,
+   "name": "Saldo total interconexiones programa PHFC"
+  },
+  {
+   "id": 10285,
+   "name": "Ajuste de programas PHFC"
+  },
+  {
+   "id": 10286,
+   "name": "Generación programada + Almacenamiento  + Cable Baleares PHFC"
+  },
+  {
+   "id": 10287,
+   "name": "Generación programada PHFC total"
+  },
+  {
+   "id": 10300,
+   "name": "Potencia instalada de generación total"
+  },
+  {
+   "id": 10301,
+   "name": "Potencia instalada de generación total no renovable"
+  },
+  {
+   "id": 10302,
+   "name": "Potencia instalada de generación total renovable"
+  },
+  {
+   "id": 10303,
+   "name": "Potencia instalada de generación total con emisiones"
+  },
+  {
+   "id": 10304,
+   "name": "Potencia instalada de generación total libre de emisiones"
+  },
+  {
+   "id": 10321,
+   "name": "Energía asignada por seguridad a subir"
+  },
+  {
+   "id": 10322,
+   "name": "Energía asignada por seguridad a bajar"
+  },
+  {
+   "id": 10323,
+   "name": "Energía de balance a subir"
+  },
+  {
+   "id": 10324,
+   "name": "Energía de balance a bajar"
+  },
+  {
+   "id": 10325,
+   "name": "Energía total asignada por seguridad y de balance"
+  },
+  {
+   "id": 10326,
+   "name": "Precio medio ponderado restricciones técnicas diario subir"
+  },
+  {
+   "id": 10327,
+   "name": "Precio medio ponderado restricciones técnicas diario bajar"
+  },
+  {
+   "id": 10328,
+   "name": "Precio medio mensual componente servicios ajuste del sistema"
+  },
+  {
+   "id": 10329,
+   "name": "Precio medio anual componente servicios ajuste del sistema"
+  },
+  {
+   "id": 10340,
+   "name": "Precio medio ponderado de solución de Restricciones Técnicas de Seguridad en Tiempo Real subir"
+  },
+  {
+   "id": 10341,
+   "name": "Precio medio ponderado de solución de Restricciones Técnicas de Seguridad en Tiempo Real bajar"
+  },
+  {
+   "id": 10350,
+   "name": "Demanda real suma de generación SNP"
+  },
+  {
+   "id": 10351,
+   "name": "Generación T.Real renovable"
+  },
+  {
+   "id": 10352,
+   "name": "Generación T.Real no renovable"
+  },
+  {
+   "id": 10353,
+   "name": "Generación T.Real renovable SNP"
+  },
+  {
+   "id": 10354,
+   "name": "Generación T.Real no renovable SNP"
+  },
+  {
+   "id": 10355,
+   "name": "CO2 Asociado Generación T.Real"
+  },
+  {
+   "id": 10356,
+   "name": "CO2 Asociado Generación T.Real SNP"
+  },
+  {
+   "id": 10358,
+   "name": "Previsión diaria D+1 eólica más fotovoltaica"
+  },
+  {
+   "id": 10359,
+   "name": "Previsión intradiaria H+3 eólica más fotovoltaica"
+  },
+  {
+   "id": 10360,
+   "name": "Programas balance transfronterizo importación"
+  },
+  {
+   "id": 10361,
+   "name": "Programas balance transfronterizo exportación"
+  },
+  {
+   "id": 10362,
+   "name": "Energía asignada por restricciones técnicas diario Fase I Absoluto SCB"
+  },
+  {
+   "id": 10363,
+   "name": "Energía asignada por restricciones técnicas diario Fase I Absoluto SCA"
+  },
+  {
+   "id": 10364,
+   "name": "Energía asignada por restricciones técnicas diario Fase I Absoluto CT"
+  },
+  {
+   "id": 10365,
+   "name": "Energía asignada por restricciones técnicas diario Fase I Absoluto RTD"
+  },
+  {
+   "id": 10367,
+   "name": "Energía asignada por restricciones técnicas diario Fase I Absoluto Otros"
+  },
+  {
+   "id": 10368,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Absoluto SCB"
+  },
+  {
+   "id": 10369,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Absoluto SCA"
+  },
+  {
+   "id": 10370,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Absoluto CT"
+  },
+  {
+   "id": 10371,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Absoluto RTD"
+  },
+  {
+   "id": 10373,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Absoluto Otros"
+  },
+  {
+   "id": 10374,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Absoluto RSI"
+  },
+  {
+   "id": 10375,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Absoluto RBI"
+  },
+  {
+   "id": 10376,
+   "name": "Energía asignada por restricciones técnicas en tiempo real Absoluto ASE"
+  },
+  {
+   "id": 10377,
+   "name": "Precio medio cuarto horario componente restricciones técnicas"
+  },
+  {
+   "id": 10378,
+   "name": "Precio medio cuarto horario componente restricciones técnicas comercializadores de referencia"
+  },
+  {
+   "id": 10379,
+   "name": "Precio medio cuarto horario componente restricciones técnicas contratación libre"
+  },
+  {
+   "id": 10380,
+   "name": "Precio medio cuarto horario componente procesos OS"
+  },
+  {
+   "id": 10381,
+   "name": "Precio medio cuarto horario componente procesos OS comercializadores de referencia"
+  },
+  {
+   "id": 10382,
+   "name": "Precio medio cuarto horario componente procesos OS contratación libre"
+  },
+  {
+   "id": 10383,
+   "name": "Necesidad total solicitada de energías de balance RR"
+  },
+  {
+   "id": 10384,
+   "name": "Precio medio ponderado de las necesidades cubiertas de energías de balance RR a subir"
+  },
+  {
+   "id": 10385,
+   "name": "Precio medio ponderado de las necesidades cubiertas de energías de balance RR a bajar"
+  },
+  {
+   "id": 10386,
+   "name": "Precio medio ponderado regulación terciaria a subir"
+  },
+  {
+   "id": 10387,
+   "name": "Precio medio ponderado regulación terciaria a bajar"
+  },
+  {
+   "id": 10388,
+   "name": "Precio medio ponderado reserva de regulación secundaria a subir"
+  },
+  {
+   "id": 10389,
+   "name": "Precio medio ponderado de energía de regulación secundaria a subir"
+  },
+  {
+   "id": 10390,
+   "name": "Precio medio ponderado de energía de regulación secundaria a bajar"
+  },
+  {
+   "id": 10391,
+   "name": "Término de facturación de energía activa del PVPC 2.0TD suma componentes"
+  },
+  {
+   "id": 10392,
+   "name": "Precio medio ponderado programación de reserva adicional Tiempo Real"
+  },
+  {
+   "id": 10393,
+   "name": "Desglose peaje 2.0TD Término de energía"
+  },
+  {
+   "id": 10394,
+   "name": "Asignación a bajar de energías mFRR SEE"
+  },
+  {
+   "id": 10395,
+   "name": "Asignación a subir de energías mFRR SEE"
+  },
+  {
+   "id": 10396,
+   "name": "Asignación directa a subir de energías mFRR SEE (AD)"
+  },
+  {
+   "id": 10397,
+   "name": "Asignación directa a bajar de energías mFRR SEE (AD)"
+  },
+  {
+   "id": 10398,
+   "name": "Precio medio ponderado regulación terciaria a subir de activación programada (AP)"
+  },
+  {
+   "id": 10399,
+   "name": "Precio medio ponderado regulación terciaria a bajar de activación programada (AP)"
+  },
+  {
+   "id": 10400,
+   "name": "Precio medio ponderado regulación terciaria a subir de activación directa (AD)"
+  },
+  {
+   "id": 10401,
+   "name": "Precio medio ponderado regulación terciaria a bajar de activación directa (AD)"
+  },
+  {
+   "id": 10403,
+   "name": "Precio medio horario componente mecanismo de ajuste RD-L 10/2022"
+  },
+  {
+   "id": 10404,
+   "name": "Precio medio horario componente mecanismo de ajuste RD-L 10/2022 contratación libre"
+  },
+  {
+   "id": 10405,
+   "name": "Precio medio horario componente mecanismo de ajuste RD-L 10/2022 comercializadores de referencia"
+  },
+  {
+   "id": 10406,
+   "name": "RD-L 10/2022 mercado diario e intradiario - Mensual"
+  },
+  {
+   "id": 10407,
+   "name": "RD-L 10/2022 mercado diario e intradiario - diferencia por liquidación con medidas - Mensual"
+  },
+  {
+   "id": 10408,
+   "name": "RD-L 10/2022 restricciones tÃ©cnicas y mercados de balance - Mensual"
+  },
+  {
+   "id": 10409,
+   "name": "RD-L 10/2022 mercado diario e intradiario - Anual"
+  },
+  {
+   "id": 10410,
+   "name": "RD-L 10/2022 mercado diario e intradiario - diferencia por liquidación con medidas - Anual"
+  },
+  {
+   "id": 10411,
+   "name": "RD-L 10/2022 restricciones técnicas y mercados de balance - Anual"
+  },
+  {
+   "id": 10412,
+   "name": "Precio medio ponderado de activación del servicio de respuesta activa de la demanda "
+  },
+  {
+   "id": 10413,
+   "name": "Potencia instalada de generación autoconsumo total"
+  },
+  {
+   "id": 10456,
+   "name": "Porcentaje de Energía Renovable No Integrable por restricciones técnicas RTT en el PDBF Fase 1"
+  },
+  {
+   "id": 10457,
+   "name": "Porcentaje de Energía Renovable No Integrable por restricciones técnicas RTD en PDBF Fase 1"
+  },
+  {
+   "id": 10458,
+   "name": "Porcentaje de Energía Renovable No Integrable por restricciones técnicas RTT en tiempo real"
+  },
+  {
+   "id": 10459,
+   "name": "Porcentaje de Energía Renovable No Integrable por restricciones técnicas RTD en tiempo real"
+  },
+  {
+   "id": 10460,
+   "name": "Porcentaje de Energía Renovable No Integrable por restricciones técnicas en la RTT"
+  },
+  {
+   "id": 10461,
+   "name": "Porcentaje de Energía Renovable No Integrable por restricciones técnicas en la RTD"
+  },
+  {
+   "id": 10462,
+   "name": "Porcentaje de Energía Renovable No Integrable por restricciones técnicas "
+  },
+  {
+   "id": 10463,
+   "name": "Precio medio ponderado reserva de regulación secundaria a bajar"
+  },
+  {
+   "id": 10464,
+   "name": "Almacenamiento total programa p48"
+  },
+  {
+   "id": 10485,
+   "name": "Necesidad total solicitada de energías de balance mFRR de activación programada"
+  },
+  {
+   "id": 10488,
+   "name": "Porcentaje de energía renovable no integrable por RRTT SNP"
+  },
+  {
+   "id": 10489,
+   "name": "Porcentaje de energía renovable no integrable por Balance SNP"
+  },
+  {
+   "id": 10490,
+   "name": "Porcentaje de energía renovable no integrable Total"
+  },
+  {
+   "id": 10491,
+   "name": "Porcentaje de Generación Renovable Peninsular"
+  },
+  {
+   "id": 10517,
+   "name": "Potencia instalada de hibridación total"
+  },
+  {
+   "id": 10518,
+   "name": "Energía asignada por restricciones técnicas diario Fase I Absoluto RSI"
+  },
+  {
+   "id": 10519,
+   "name": "Serie estadística generación total estimada No Renovable por CCAA"
+  },
+  {
+   "id": 10520,
+   "name": "Serie estadística generación total estimada con emisiones por CCAA"
+  },
+  {
+   "id": 10521,
+   "name": "Serie estadística generación total estimada Renovable por CCAA"
+  },
+  {
+   "id": 10522,
+   "name": "Serie estadística generación total estimada sin emisiones por CCAA"
+  },
+  {
+   "id": 10523,
+   "name": "Precio medio cuarto horario componente importe participación servicios"
+  },
+  {
+   "id": 10524,
+   "name": "Precio medio cuarto horario componente importe participación servicios comercializadores de referencia"
+  },
+  {
+   "id": 10525,
+   "name": "Precio medio cuarto horario componente importe participación servicios contratación libre"
+  },
+  {
+   "id": 10573,
+   "name": "Serie estadística generación Carbón por CCAA"
+  },
+  {
+   "id": 10574,
+   "name": "Serie estadística generación Fuel+Gas por CCAA"
+  },
+  {
+   "id": 10578,
+   "name": "Serie estadística generación total sin emisiones por CCAA"
+  }
+ ]
+}

@@ -1,0 +1,7 @@
+# Repo multiplataforma: en el repositorio todo va con LF, y cada quien lo ve
+# como le toque en su sistema.
+* text=auto eol=lf
+
+*.bat text eol=crlf
+*.png binary
+*.jpg binary

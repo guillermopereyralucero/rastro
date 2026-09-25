@@ -1,0 +1,10 @@
+# Manifiesto de la plantilla de FlowCrack.
+# Lo genera `instalar.py --sellar`: no editar a mano.
+#
+# `version` es la de la PLANTILLA (visor + build), no la del esquema del
+# YAML, que es VERSION_FORMATO en build.py. Son preguntas distintas.
+version: 17
+ficheros:
+  build.bat: 66eed6b03330476fa6b501ce6e164ab394b33e8905f681b35b37d9667eb2e065
+  build.py: 66f9389f348caba6656c3ebd13aa27a090a5ee0e5be6d821ad775f3788a4b4c2
+  index.html: 287703da74688f673f0a753cbf39cffe0dfccbeae6688987f1e6664e1402ed01
