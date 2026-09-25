@@ -2,7 +2,7 @@
 // Fuente: decisiones.yaml
 window.FLOWCRACK = {
   "formato": 2,
-  "generado": "2026-09-25 18:07",
+  "generado": "2026-09-25 18:10",
   "proyecto": {
     "nombre": "Rastro",
     "perfil": "investigacion",
