@@ -23,7 +23,9 @@ gha-creds-*.json
 
 # --- Terraform ---
 .terraform/
-.terraform.lock.hcl
+# El fichero de bloqueo SI se versiona: es lo que fija los hashes de los
+# providers y hace que `terraform init` traiga lo mismo en cualquier maquina.
+!.terraform.lock.hcl
 *.tfstate
 *.tfstate.*
 *.tfvars

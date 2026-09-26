@@ -88,10 +88,21 @@ def _opciones_ingesta(p: argparse.ArgumentParser) -> None:
 
 
 def _politica(args) -> Politica:
+    """Traduce las opciones de la linea de ordenes a una politica de ingesta.
+
+    Sin `--desde`, la serie **arranca ahora**: el inicio historico se pone una
+    ventana revisable por detras, lo justo para que la primera ejecucion traiga
+    algo y no un dataset vacio. Es lo que se quiere cuando la plataforma acaba
+    de montarse y no interesa arrastrar historia.
+
+    Con `--desde AAAA-MM-DD` se hace carga historica. Tenerla detras de una
+    opcion explicita no es pereza: una carga de un ano son unas 850 peticiones,
+    y eso es una decision que se toma a proposito, no por omision.
+    """
     desde = (
         datetime.fromisoformat(args.desde).replace(tzinfo=UTC)
         if args.desde
-        else ahora_utc() - timedelta(days=30)
+        else ahora_utc() - timedelta(hours=args.horas_revisables)
     )
     return Politica(
         inicio_historico=desde,

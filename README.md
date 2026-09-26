@@ -38,10 +38,17 @@ la capa entera.
 ## Empezar
 
 ```bash
+python -m venv .venv
+source .venv/Scripts/activate      # Windows con Git Bash
+# source .venv/bin/activate        # Linux y macOS
 pip install -e ".[dev]"
-pytest                          # 47 tests, ninguno toca la red
-rastro buscar eolica            # busca en el catálogo local
+
+pytest                             # 47 tests, ninguno toca la red
+rastro buscar eolica               # busca en el catálogo local
 ```
+
+Extras: `.[bigquery]` para escribir en BigQuery y `.[dbt]` para los modelos.
+El núcleo no los necesita.
 
 Para descargar datos hace falta un token de ESIOS. **Es personal**: pide el
 tuyo en [esios.ree.es/es/pagina/api](https://www.esios.ree.es/es/pagina/api).
@@ -49,13 +56,21 @@ tuyo en [esios.ree.es/es/pagina/api](https://www.esios.ree.es/es/pagina/api).
 ```bash
 export ESIOS_TOKEN=tu-token
 
-rastro plan --indicador 551 --desde 2026-09-01     # qué se pediría, sin pedir
-rastro ingesta --indicador 551 --desde 2026-09-01  # descarga de verdad
+rastro plan --indicador 551      # qué se pediría, sin pedir nada
+rastro ingesta --indicador 551   # descarga de verdad
 ```
 
 `rastro plan` no hace ninguna petición. Existe porque en una herramienta que
 consume la cuota de un tercero, poder ver el plan antes de ejecutarlo no es una
 comodidad: es lo mínimo.
+
+Sin `--desde`, la serie **arranca ahora**. Para carga histórica hay que pedirla
+a propósito, porque un año son unas 850 peticiones y eso se decide, no se hereda
+de un valor por omisión:
+
+```bash
+rastro plan --indicador 551 --desde 2026-01-01
+```
 
 ---
 
@@ -134,6 +149,36 @@ consumiendo el recurso limitado de un tercero acaba sin probarse.
 
 ---
 
+## La infraestructura
+
+Todo en Terraform: datasets, tablas, IAM, cuenta de servicio, secreto y
+presupuesto. Nada creado a mano por consola. Los pasos completos están en
+[docs/puesta-en-marcha.md](docs/puesta-en-marcha.md); solo dos exigen un
+navegador, y son los de meter una tarjeta.
+
+```bash
+cd infra
+cp terraform.tfvars.ejemplo terraform.tfvars
+terraform init && terraform plan
+```
+
+Dos cosas de ahí merecen una línea:
+
+**La alerta de presupuesto también es Terraform.** Una alerta creada a mano en
+la consola no está en ningún sitio: nadie sabe que existe, nadie la revisa, y
+si el proyecto se recrea desaparece. El techo está en 1 € con avisos al 50 %,
+90 % y 100 %, más uno sobre el gasto previsto. No corta el servicio —Google no
+lo hace por presupuesto— así que no es un límite: es un detector de humo.
+
+**Partición y agrupamiento desde el primer día**, no "cuando haga falta".
+Cuando hace falta ya hay consultas escritas contra la tabla sin particionar y
+cambiarlo cuesta reescribirlas. La tabla de medidas va particionada por día
+sobre `instante` —todas las consultas del dashboard miran una ventana
+temporal— y agrupada por `indicador_id`, que es el segundo filtro más
+frecuente y con 16 valores distintos resulta muy efectivo.
+
+---
+
 ## Cómo está organizado
 
 ```
@@ -146,7 +191,8 @@ src/rastro/
 │   └── modelos.py       # todo en UTC, ventanas semiabiertas
 ├── recursos/            # el catálogo de indicadores, cacheado
 └── cli.py
-docs/                    # la anomalía y el seguimiento
+infra/                   # Terraform: datasets, IAM, presupuesto
+docs/                    # la anomalía, la puesta en marcha y el seguimiento
 flowcrack/               # el registro de decisiones
 tests/                   # 47, ninguno con red
 ```

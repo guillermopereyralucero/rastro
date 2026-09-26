@@ -1,0 +1,10 @@
+# Copia este fichero a terraform.tfvars y rellena lo tuyo.
+# terraform.tfvars esta ignorado por git.
+
+# Sale de https://console.cloud.google.com/billing, formato XXXXXX-XXXXXX-XXXXXX
+billing_account_id = "000000-000000-000000"
+
+# Opcional: correo para las alertas de presupuesto. Vacio = avisa a los
+# administradores de facturacion de la cuenta, que para un proyecto personal
+# ya vale.
+correo_avisos = ""

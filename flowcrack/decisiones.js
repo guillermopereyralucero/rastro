@@ -2,7 +2,7 @@
 // Fuente: decisiones.yaml
 window.FLOWCRACK = {
   "formato": 2,
-  "generado": "2026-09-25 18:10",
+  "generado": "2026-09-26 12:52",
   "proyecto": {
     "nombre": "Rastro",
     "perfil": "investigacion",
@@ -130,11 +130,6 @@ window.FLOWCRACK = {
     {
       "id": "evaluacion",
       "pregunta": "Como se sabe que Rastro responde bien?",
-      "irreversible": false
-    },
-    {
-      "id": "alcance-temporal",
-      "pregunta": "Que periodo o ambito cubre, y cual queda fuera?",
       "irreversible": false
     }
   ],
@@ -756,6 +751,340 @@ window.FLOWCRACK = {
           "opcion": "Usar requests",
           "elegida": false,
           "motivo": "Mas comodo de escribir, pero es una dependencia por un GET"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r016",
+      "fecha": "2026-09-26",
+      "orden": 1,
+      "carril": "difusion",
+      "titulo": "El repositorio ya es publico en github.com/guillermopereyralucero/rastro",
+      "tipo": "hito-externo",
+      "detalle": "Publicado con dos commits y 28 ficheros, con temas (bigquery, dbt, data-lineage, data-engineering, gcp, terraform, esios, open-data) y CI corriendo. Antes de publicar se verifico que el token de ESIOS no aparece en el historial completo, no solo en el arbol de trabajo.",
+      "porque": "La decision r004 ya lo habia fijado: publico desde el primer commit, porque el historial visible es parte del escaparate.",
+      "consecuencia": null,
+      "estado": "vigente",
+      "impacto": "mayor",
+      "irreversible": true,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [],
+      "causada_por": [
+        "r004"
+      ],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r017",
+      "fecha": "2026-09-26",
+      "orden": 2,
+      "carril": "fuentes",
+      "titulo": "El proyecto de GCP es rastro-509715, region europe-southwest1",
+      "tipo": "decision",
+      "detalle": "Madrid. La capa gratuita de BigQuery se aplica igual en cualquier region, asi que la eleccion se hace por otra cosa.",
+      "porque": "Son datos del sistema electrico espanol: la residencia del dato y la latencia quedan donde corresponde, y ademas es un detalle que se explica bien en una entrevista.",
+      "consecuencia": null,
+      "estado": "vigente",
+      "impacto": "mayor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "europe-southwest1 (Madrid)",
+          "elegida": true,
+          "motivo": "Residencia coherente con el origen del dato, sin coste extra"
+        },
+        {
+          "opcion": "Multirregion EU",
+          "elegida": false,
+          "motivo": "Mas margen si algun servicio no llega a Madrid, pero el dato espanol acabaria replicado por media Europa sin necesidad\n"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r018",
+      "fecha": "2026-09-26",
+      "orden": 3,
+      "carril": "metodo",
+      "titulo": "La alerta de presupuesto se declara en Terraform, no en la consola",
+      "tipo": "decision",
+      "detalle": "Techo de 1 EUR con avisos al 50, 90 y 100 por ciento, mas uno sobre el gasto previsto del mes. Recurso `google_billing_budget`.",
+      "porque": "Una alerta creada a mano no esta en ningun sitio: nadie sabe que existe, nadie la revisa y si el proyecto se recrea desaparece. En Terraform esta versionada y se revisa en el pull request. Ademas es coherente con el resto del proyecto, donde nada se crea por consola.",
+      "consecuencia": "Un presupuesto en GCP no corta el servicio, solo avisa. Asi que no es un limite sino un detector de humo: con objetivo de coste 0 EUR, cualquier cargo es por definicion algo no previsto.",
+      "estado": "vigente",
+      "impacto": "menor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Presupuesto en Terraform",
+          "elegida": true,
+          "motivo": "Versionado, revisable y se recrea solo"
+        },
+        {
+          "opcion": "Crearlo a mano en la consola",
+          "elegida": false,
+          "motivo": "Mas rapido una vez, invisible para siempre"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r019",
+      "fecha": "2026-09-26",
+      "orden": 4,
+      "carril": "analisis",
+      "titulo": "Cuatro datasets (raw, staging, marts, control), no uno",
+      "tipo": "decision",
+      "detalle": "",
+      "porque": "El grafo que Rastro va a dibujar necesita capas distinguibles: con todo en el mismo dataset el linaje seria una mancha y no ensenaria nada. La herramienta y la plataforma se disenan a la vez a proposito, no una despues de la otra.",
+      "consecuencia": null,
+      "estado": "vigente",
+      "impacto": "mayor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Cuatro datasets por capa",
+          "elegida": true,
+          "motivo": "El linaje solo se ve si hay capas que distinguir"
+        },
+        {
+          "opcion": "Un dataset unico",
+          "elegida": false,
+          "motivo": "Mas simple de montar y deja la capa 2 sin nada que mostrar"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r020",
+      "fecha": "2026-09-26",
+      "orden": 5,
+      "carril": "analisis",
+      "titulo": "Particion por dia y agrupamiento por indicador desde el primer dia",
+      "tipo": "decision",
+      "detalle": "La tabla `raw.medidas` va particionada por DAY sobre `instante` y agrupada por `indicador_id`.",
+      "porque": "Particionar \"cuando haga falta\" no funciona: cuando hace falta ya hay consultas escritas contra la tabla sin particionar y cambiarlo cuesta reescribirlas. La particion por dia se aplica siempre porque todas las consultas del dashboard miran una ventana temporal, y con 16 valores distintos el agrupamiento por indicador es muy efectivo.",
+      "consecuencia": "Queda pendiente medir la consulta tipica antes y despues para poner la cifra en el README. Sin la cifra, la decision es una opinion.",
+      "estado": "vigente",
+      "impacto": "mayor",
+      "irreversible": false,
+      "hito": "metodo",
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Particion y agrupamiento desde el inicio",
+          "elegida": true,
+          "motivo": "Es gratis hacerlo ahora y caro hacerlo despues"
+        },
+        {
+          "opcion": "Tabla plana y optimizar cuando duela",
+          "elegida": false,
+          "motivo": "Cuando duele ya hay consultas que dependen de la forma vieja"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r021",
+      "fecha": "2026-09-26",
+      "orden": 6,
+      "carril": "etica",
+      "titulo": "El token vive en Secret Manager y su valor no pasa por Terraform",
+      "tipo": "decision",
+      "detalle": "Terraform crea el secreto vacio y da acceso de lectura a la cuenta de servicio de la ingesta. El valor se mete aparte con `gcloud secrets versions add`.",
+      "porque": "El estado de Terraform se guarda en claro: cualquier valor que entre por una variable acaba legible ahi. Separar la creacion del secreto de su contenido es lo que evita que el token termine en un fichero de estado.",
+      "consecuencia": "La cuenta de servicio de la ingesta tiene `dataEditor` solo sobre raw y control, y `jobUser` en el proyecto. Nada de `roles/editor`, que permite borrar el proyecto entero.",
+      "estado": "vigente",
+      "impacto": "mayor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Secret Manager, con el valor fuera de Terraform",
+          "elegida": true,
+          "motivo": "El token no llega nunca al estado de Terraform"
+        },
+        {
+          "opcion": "Variable de entorno en el servicio",
+          "elegida": false,
+          "motivo": "Queda visible en la configuracion del servicio"
+        },
+        {
+          "opcion": "Variable de Terraform",
+          "elegida": false,
+          "motivo": "El estado se guarda en claro"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r022",
+      "fecha": "2026-09-26",
+      "orden": 7,
+      "carril": "fuentes",
+      "titulo": "La serie arranca cuando la plataforma esta lista, sin carga historica",
+      "tipo": "decision",
+      "detalle": "Sin `--desde`, el inicio historico se pone una ventana revisable por detras: lo justo para que la primera ejecucion traiga algo. La carga historica existe pero hay que pedirla a proposito con `--desde AAAA-MM-DD`.",
+      "porque": "Decision de Guillermo el 26-sep. Evita arrastrar historia antes de que la plataforma este montada y probada, y mantiene el numero de peticiones al minimo mientras se valida el circuito completo.",
+      "consecuencia": "El dashboard tendra poca historia las primeras semanas. La carga historica sigue disponible en una sola opcion: un ano son unos 53 tramos por indicador, unas 850 peticiones en total, que el planificador reparte por turnos entre varias ejecuciones. REE lo permite explicitamente si se hace una vez y por tramos.",
+      "estado": "vigente",
+      "impacto": "menor",
+      "irreversible": false,
+      "hito": "alcance-temporal",
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Arrancar ahora, carga historica bajo demanda",
+          "elegida": true,
+          "motivo": "Menos peticiones mientras se valida el circuito completo"
+        },
+        {
+          "opcion": "Cargar un ano de historia desde el principio",
+          "elegida": false,
+          "motivo": "El dashboard seria interesante antes, pero son 850 peticiones sobre una plataforma aun sin probar\n"
+        },
+        {
+          "opcion": "Arrancar ahora y no permitir carga historica",
+          "elegida": false,
+          "motivo": "Cierra una puerta que no cuesta nada dejar abierta"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r023",
+      "fecha": "2026-09-26",
+      "orden": 8,
+      "carril": "metodo",
+      "titulo": "Entorno virtual en el proyecto, sin tocar el PATH del sistema",
+      "tipo": "decision",
+      "detalle": "`.venv` dentro de `rastro/`, con el paquete instalado en modo editable. gcloud y terraform si quedan en el PATH de usuario porque sus propios instaladores lo hacen.",
+      "porque": "pip instala `pytest`, `ruff`, `dbt` y el comando `rastro` en un directorio que no estaba en el PATH. Anadirlo habria funcionado, pero el PATH de usuario de esta maquina ya tiene mas de cuarenta entradas con duplicados, asi que meter una mas es empeorar algo que ya esta al limite. El entorno virtual es ademas lo que cualquiera espera al clonar un proyecto Python.",
+      "consecuencia": null,
+      "estado": "vigente",
+      "impacto": "parche",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Entorno virtual en el proyecto",
+          "elegida": true,
+          "motivo": "Reproducible al clonar y no toca nada del sistema"
+        },
+        {
+          "opcion": "Anadir el directorio de scripts al PATH de usuario",
+          "elegida": false,
+          "motivo": "Funciona, pero engorda un PATH que ya esta saturado"
+        },
+        {
+          "opcion": "Instalar las herramientas globalmente",
+          "elegida": false,
+          "motivo": "Mezcla las dependencias de este proyecto con las de los demas"
         }
       ],
       "causada_por": [],
