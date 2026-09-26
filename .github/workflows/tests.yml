@@ -42,3 +42,26 @@ jobs:
             exit 1
           fi
           echo "Sin secretos a la vista."
+
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.16.2"
+
+      - name: Formato
+        run: terraform -chdir=infra fmt -check -recursive
+
+      # `validate` no necesita credenciales de Google: comprueba la sintaxis, los
+      # tipos y las referencias entre recursos. `plan` si las necesita, y llega
+      # cuando este montada la federacion de identidades. Mejor esto ahora que
+      # nada hasta entonces.
+      - name: Init sin backend
+        run: terraform -chdir=infra init -backend=false
+
+      - name: Validar
+        run: terraform -chdir=infra validate
