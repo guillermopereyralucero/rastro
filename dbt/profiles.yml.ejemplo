@@ -1,0 +1,34 @@
+# Copia este fichero a profiles.yml, que esta ignorado por git.
+#
+# `method: oauth` usa las credenciales de aplicacion por defecto que deja
+# `gcloud auth application-default login`. No hay ninguna clave en ningun sitio,
+# que es como tiene que ser: una clave de cuenta de servicio en el disco es un
+# secreto de larga duracion esperando a filtrarse.
+
+rastro:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth
+      project: rastro-509715
+      # En dev los datasets salen prefijados (dev_staging, dev_marts) para no
+      # pisar produccion mientras se trabaja.
+      dataset: dev
+      location: europe-southwest1
+      threads: 4
+      priority: interactive
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+
+    prod:
+      type: bigquery
+      method: oauth
+      project: rastro-509715
+      # En prod se escribe en los datasets que crea Terraform, sin prefijo.
+      dataset: staging
+      location: europe-southwest1
+      threads: 4
+      priority: interactive
+      job_execution_timeout_seconds: 300
+      job_retries: 1

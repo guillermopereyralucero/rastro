@@ -43,14 +43,28 @@ cambios pendientes.
 
 ## F3 · Modelado con dbt
 
-**Estado: sin empezar.**
+**Estado: la cadena funciona.** 36 comprobaciones en verde contra BigQuery.
 
-- [ ] staging → intermediate → marts
-- [ ] Test de rango plausible por tecnología (el primero, ver
-      [la anomalía](anomalia-generacion.md))
+- [x] staging → intermediate → marts, con `dbt build` en verde
+- [x] **Test de rango plausible por tecnología.** Verificado que cazaría la suma:
+      la eólica sumada da 46.096 MW y el rango termina en 33.000
+- [x] Deduplicación en staging por `(indicador_id, instante, geo_id)` con el
+      `ingerido_en` más alto, y un test que lo comprueba
+- [x] Agregación horaria por **media**, no por suma, con la energía en MWh
+      calculada con la duración explícita
+- [x] Guarda de cobertura: el porcentaje renovable sale nulo si falta alguna
+      tecnología
+- [x] Test de reconciliación contra la demanda, con severidad de aviso. Es el que
+      detectó el doble conteo del solar
+- [x] Comprobación de frescura de la fuente: aviso a las 6 h, error a las 24
+- [x] `dbt docs generate`: el manifiesto ya tiene el grafo que leerá F5
 - [ ] Medir la consulta típica con y sin partición, y poner la cifra en el
       README. Sin cifra, la decisión de particionar es una opinión
-- [ ] Dashboard público en Looker Studio
+- [ ] Dashboard público en Looker Studio ← **te toca a ti**, es producto de UI
+- [ ] Resolver qué mide el indicador 10004: dice ser demanda y marca 46.976 MW
+      donde el 1293 marca 28.167 (`r037`)
+- [ ] Confirmar contra la documentación de ESIOS que la hidráulica es neta de
+      bombeo (`r029`), y qué relación exacta tiene el 552 con 1294 y 1295 (`r036`)
 
 ## F4 · Streaming
 

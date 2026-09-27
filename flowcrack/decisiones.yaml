@@ -1092,3 +1092,128 @@ decisiones:
       Artifact Registry y en los topes compartidos, no en los datos.
     estado: vigente
     impacto: menor
+
+  # === 27-sep · F3, el modelado con dbt =============================
+
+  - id: r036
+    fecha: 2026-09-27
+    orden: 36
+    carril: analisis
+    tipo: medicion
+    titulo: "El indicador 552 (Solar) solapa con 1294 y 1295: sumarlos inflaba la generacion a 52 GW"
+    detalle: >
+      Al construir el primer mart con los 16 indicadores, la generacion total daba
+      entre 50 y 52 GW. El pico de demanda peninsular espanol ronda los 45 GW, asi
+      que era imposible. La causa es que el indicador 552 "Generacion T.Real solar"
+      solapa con 1294 (solar termica) y 1295 (solar fotovoltaica), y los tres
+      estaban en la suma. Excluyendo el 552 la generacion baja a 31-36 GW contra
+      una demanda de 26-29, razon 1,15-1,28, que es lo que cabe esperar con
+      exportacion y bombeo.
+    porque: >
+      Salio al comparar el total contra la demanda, no al mirar cada indicador. Y
+      esa es la parte importante: cada tecnologia estaba dentro de su rango, la
+      hora estaba completa, la cobertura estaba completa y ninguna comprobacion por
+      pieza se quejaba. Un total imposible formado por partes correctas solo se ve
+      contrastandolo contra una medida independiente.
+    consecuencia: >
+      El seed `tecnologias` gana una columna `sumable`, y 552 va a `false`. Se
+      conserva en el modelo en lugar de borrarlo del seed porque un agregado
+      publicado por la fuente es la mejor referencia contra la que contrastar la
+      suma de las partes. Y se anade el test de reconciliacion contra la demanda,
+      con severidad de aviso: no es una especificacion -la generacion nunca iguala
+      la demanda- sino la alarma que detecta esta clase de error.
+    estado: vigente
+    impacto: mayor
+    causada_por: [r012]
+
+  - id: r037
+    fecha: 2026-09-27
+    orden: 37
+    carril: analisis
+    tipo: hallazgo
+    titulo: "Sin explicar: el indicador 10004 marca 46.976 MW de demanda donde el 1293 marca 28.167"
+    detalle: >
+      Los dos dicen ser demanda. El 1293 "Demanda real" da 28.167 MW a mediodia del
+      27-sep, que cuadra con la realidad conocida del sistema peninsular en
+      septiembre. El 10004 "Demanda real suma de generacion" da 46.976 a la misma
+      hora. No es doble conteo del solar, porque son indicadores independientes de
+      la suma que hace el mart.
+    porque: >
+      Aparecio al buscar una medida independiente contra la que reconciliar la
+      generacion. Queda anotado como pregunta abierta en lugar de elegir uno de los
+      dos a ojo.
+    consecuencia: >
+      La reconciliacion se hace contra el 1293, que es el que cuadra con la
+      realidad. El 10004 se sigue ingiriendo pero no se usa para nada hasta saber
+      que mide. Esta escrito en el propio test para que quien lo lea sepa que hay
+      algo sin cerrar y no lo tome por verificado.
+    estado: vigente
+    impacto: menor
+
+  - id: r038
+    fecha: 2026-09-27
+    orden: 38
+    carril: metodo
+    titulo: "Vistas en staging e intermediate, tabla en marts, y sin paquetes de dbt"
+    detalle: >
+      36 comprobaciones en verde contra BigQuery. Staging e intermediate como
+      vistas; el mart como tabla particionada por dia y SIN agrupamiento. Los tests
+      genericos `entre` y `combinacion_unica` son propios, sin `dbt_utils`.
+    porque: >
+      Las vistas no ocupan almacenamiento y se recalculan al consultarlas, que con
+      1 TiB de consultas gratis al mes es lo mas barato. El mart es tabla porque el
+      dashboard lo consulta muchas veces al dia y una vista recalcularia la cadena
+      entera cada vez. Y hay un beneficio lateral que no es casual: las vistas
+      anidadas son justo lo que hace interesante el linaje que Rastro tiene que
+      dibujar, asi que la plataforma y la herramienta se refuerzan.
+
+      Sin agrupamiento en el mart porque agrupar necesita una columna con
+      selectividad, y ahi hay una fila por hora y una sola zona geografica. Poner
+      `cluster_by` seria ruido que aparenta optimizacion.
+
+      Y sin `dbt_utils` porque el test de rango tiene que comparar cada fila contra
+      el rango de SU tecnologia, que vive en una tabla: `accepted_range` no hace
+      eso, y quince lineas propias evitan una dependencia que habria que fijar,
+      actualizar y explicar.
+    estado: vigente
+    impacto: menor
+    hito: metodo
+    alternativas:
+      - opcion: Vistas hasta marts, tabla en marts, tests propios
+        elegida: true
+        motivo: Coste minimo, y las vistas anidadas alimentan la capa 2
+      - opcion: Tablas en toda la cadena
+        elegida: false
+        motivo: Ocupa y hay que reconstruir, sin ganar nada a este volumen
+      - opcion: Traer dbt_utils
+        elegida: false
+        motivo: No resuelve el test que importa y anade una dependencia
+
+  - id: r039
+    fecha: 2026-09-27
+    orden: 39
+    carril: analisis
+    titulo: El porcentaje renovable sale nulo si falta alguna tecnologia
+    porque: >
+      Con solo la hidraulica y la eolica cargadas, el mart publicaba 100 %
+      renovable y una potencia total NEGATIVA -la hidraulica resta cuando bombea-,
+      y el test de rango 0-100 lo aceptaba porque 100 esta entre 0 y 100. El test
+      no estaba mal: faltaba comprobar la cobertura.
+    consecuencia: >
+      El mart cuenta las tecnologias presentes, las compara con las declaradas en
+      el seed y solo publica el porcentaje si coinciden. Un hueco en el dashboard
+      se ve; un 100 % falso no. Y `porcentaje_renovable` NO lleva `not_null` a
+      proposito: el nulo es el comportamiento correcto, y exigir que no lo sea
+      obligaria a publicar un numero que no se sostiene.
+    estado: vigente
+    impacto: mayor
+    alternativas:
+      - opcion: Nulo cuando la cobertura esta incompleta
+        elegida: true
+        motivo: Un hueco visible es mejor que un numero falso
+      - opcion: Publicar el porcentaje parcial
+        elegida: false
+        motivo: Es exactamente el 100 % falso que se acaba de detectar
+      - opcion: No publicar la fila entera
+        elegida: false
+        motivo: Se perderia la potencia por tecnologia, que si es correcta

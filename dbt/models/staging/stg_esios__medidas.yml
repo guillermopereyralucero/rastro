@@ -1,0 +1,31 @@
+version: 2
+
+models:
+  - name: stg_esios__medidas
+    description: >
+      Medidas de ESIOS deduplicadas: una fila por indicador, instante y zona, con
+      la ultima version que publico REE. `raw` conserva las anteriores.
+
+    data_tests:
+      # La prueba de que la deduplicacion funciona. Si falla, la ventana revisable
+      # esta metiendo duplicados en lugar de revisiones.
+      - combinacion_unica:
+          arguments:
+            columnas: ["indicador_id", "instante", "coalesce(geo_id, -1)"]
+
+    columns:
+      - name: indicador_id
+        data_tests: [not_null]
+
+      - name: instante
+        description: En UTC.
+        data_tests: [not_null]
+
+      - name: potencia_mw
+        description: >
+          Potencia instantanea en MW, tal y como la publica ESIOS cada 5 minutos.
+          Sin agregar.
+        data_tests: [not_null]
+
+      - name: ingerido_en
+        data_tests: [not_null]

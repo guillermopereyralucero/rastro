@@ -1,0 +1,43 @@
+version: 2
+
+models:
+  - name: mart_generacion_horaria
+    description: >
+      Generacion electrica peninsular por hora, con el porcentaje renovable. Es lo
+      que consume el dashboard publico. Solo horas completas.
+
+    columns:
+      - name: hora
+        data_tests:
+          - not_null
+
+      - name: potencia_total_mw
+        description: Suma de la potencia media de todas las tecnologias de generacion.
+        data_tests:
+          - not_null
+
+      - name: tecnologias
+        description: Cuantas tecnologias de generacion aportaron datos en esa hora.
+        data_tests: [not_null]
+
+      - name: tecnologias_esperadas
+        description: Cuantas declara el seed. Si no coinciden, falta ingerir algo.
+        data_tests: [not_null]
+
+      - name: cobertura_completa
+        description: >
+          Estan todas las tecnologias de generacion. Cuando es falso, el
+          porcentaje renovable sale nulo a proposito.
+        data_tests: [not_null]
+
+      - name: porcentaje_renovable
+        description: >
+          Entre 0 y 100, y NULO cuando la cobertura no esta completa. No lleva
+          `not_null`: el nulo es el comportamiento correcto mientras falten
+          tecnologias por ingerir, y poner `not_null` obligaria a publicar un
+          numero que no se sostiene.
+        data_tests:
+          - entre:
+              arguments:
+                minimo: 0
+                maximo: 100

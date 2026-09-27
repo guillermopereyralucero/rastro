@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: int_potencia_horaria
+    description: >
+      Una fila por hora, indicador y zona. La potencia horaria es la MEDIA de las
+      lecturas de cinco minutos, no su suma: ahi estaba el error de 37.483 que
+      arrastraba la API. Ver docs/anomalia-generacion.md.
+
+    columns:
+      - name: hora
+        data_tests: [not_null]
+
+      - name: tecnologia
+        description: >
+          Sale del seed. Si es nulo, hay un indicador ingerido que nadie declaro,
+          y el test de rango lo detecta.
+
+      - name: potencia_media_mw
+        description: Potencia media de la hora, en MW. Esto es lo que se grafica.
+        data_tests: [not_null]
+
+      - name: energia_mwh
+        description: >
+          Energia de la hora, en MWh. Coincide numericamente con la potencia media
+          cuando la hora esta completa, y eso es exactamente por lo que confundir
+          las dos magnitudes pasa desapercibido.
+        data_tests: [not_null]
+
+      - name: lecturas
+        description: Cuantas de las 12 esperadas hay. Menos de 12 es hora parcial.
+        data_tests: [not_null]
+
+      - name: hora_completa
+        description: >
+          Las 12 lecturas presentes. Los marts solo usan horas completas: una hora
+          a medias falsearia el porcentaje renovable.
+        data_tests: [not_null]

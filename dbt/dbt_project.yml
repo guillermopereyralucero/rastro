@@ -1,0 +1,45 @@
+name: rastro
+version: "0.1.0"
+config-version: 2
+
+profile: rastro
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+clean-targets: ["target", "dbt_packages"]
+
+# Sin paquetes externos. `dbt_utils` traeria `accepted_range` hecho, pero el test
+# de rango de este proyecto necesita comparar cada fila contra el rango de SU
+# tecnologia, que vive en una tabla. Un test propio de quince lineas lo hace y no
+# anade dependencias.
+
+models:
+  rastro:
+    staging:
+      # Vistas: no ocupan almacenamiento y se recalculan al consultarlas, que con
+      # 1 TiB de consultas gratis al mes es lo mas barato. Y hay un beneficio
+      # lateral que no es casual: las vistas anidadas son justo lo que hace
+      # interesante el linaje que Rastro tiene que dibujar.
+      +materialized: view
+      +schema: staging
+    intermediate:
+      +materialized: view
+      +schema: staging
+    marts:
+      # Tablas: el dashboard consulta esto muchas veces al dia y una tabla se lee
+      # una vez en lugar de recalcular la cadena entera cada vez.
+      +materialized: table
+      +schema: marts
+
+seeds:
+  rastro:
+    +schema: staging
+    tecnologias:
+      +column_types:
+        indicador_id: INT64
+        renovable: BOOLEAN
+        min_mw: FLOAT64
+        max_mw: FLOAT64

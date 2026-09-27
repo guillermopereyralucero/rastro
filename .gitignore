@@ -41,6 +41,8 @@ target/
 dbt_packages/
 logs/
 profiles.yml
+# Lo genera dbt con un identificador de esta maquina. Es ruido local, no config.
+.user.yml
 
 # --- Python ---
 __pycache__/

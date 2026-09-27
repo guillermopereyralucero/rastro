@@ -1,0 +1,59 @@
+version: 2
+
+sources:
+  - name: esios
+    description: >
+      Datos crudos de la API de ESIOS, tal y como los deja la ingesta. No se
+      transforma nada aqui. La tabla es de solo anadir: cuando la ventana
+      revisable se vuelve a pedir, las mismas medidas llegan otra vez con un
+      `ingerido_en` posterior, y eso es a proposito.
+    database: rastro-509715
+    schema: raw
+
+    tables:
+      - name: medidas
+        description: >
+          Una fila por indicador, instante y zona geografica, con el valor tal y
+          como lo publica ESIOS cada 5 minutos. Puede haber varias filas para el
+          mismo punto si REE lo reviso: el modelo de staging se queda con la
+          ultima.
+
+        # La frescura es la senal de que la ingesta dejo de correr. Un aviso a las
+        # 6 horas da margen a un fallo pasajero; un error a las 24 significa que
+        # nadie se ha dado cuenta en un dia entero.
+        config:
+          loaded_at_field: ingerido_en
+          freshness:
+            warn_after: { count: 6, period: hour }
+            error_after: { count: 24, period: hour }
+
+        columns:
+          - name: indicador_id
+            description: Id del indicador en ESIOS.
+            data_tests:
+              - not_null
+
+          - name: instante
+            description: Momento de la medida, en UTC.
+            data_tests:
+              - not_null
+
+          - name: valor
+            description: >
+              Valor publicado. Para la generacion en tiempo real, potencia
+              instantanea en MW. NO se ha agregado: ver docs/anomalia-generacion.md.
+            data_tests:
+              - not_null
+
+          - name: geo_id
+            description: >
+              Zona geografica. Importa: sumar zonas sin mirar es la forma facil de
+              inflar un total.
+
+          - name: ingerido_en
+            description: >
+              Cuando lo trajo la ingesta. Es lo que permite distinguir una
+              revision de REE de un dato nuevo, y lo que usa staging para
+              deduplicar.
+            data_tests:
+              - not_null

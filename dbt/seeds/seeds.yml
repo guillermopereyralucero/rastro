@@ -1,0 +1,67 @@
+version: 2
+
+seeds:
+  - name: tecnologias
+    description: >
+      Los 16 indicadores que se ingieren, con su tecnologia y el rango fisicamente
+      plausible de cada uno. Los rangos son el corazon del primer test del
+      proyecto, y por eso viven en una tabla y no en un fichero de configuracion:
+      un rango es un dato del dominio, se consulta y se revisa como cualquier otro.
+
+      Los limites son GENEROSOS a proposito. Buscan lo imposible, no lo raro.
+
+    columns:
+      - name: indicador_id
+        description: Id en ESIOS. Es la clave.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: tecnologia
+        description: Nombre legible de la tecnologia.
+        data_tests:
+          - not_null
+
+      - name: familia
+        description: Para que se puedan sumar solo cosas sumables entre si.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["generacion", "demanda", "intercambio"]
+
+      - name: renovable
+        description: >
+          Solo tiene sentido para la familia `generacion`. Es lo que permite
+          calcular el porcentaje renovable sin enumerar tecnologias en el SQL.
+        data_tests:
+          - not_null
+
+      - name: min_mw
+        description: >
+          Suelo plausible. Negativo donde tiene que serlo: la hidraulica consume
+          cuando bombea y los intercambios van en los dos sentidos.
+        data_tests:
+          - not_null
+
+      - name: max_mw
+        description: Techo plausible, por encima de la potencia instalada conocida.
+        data_tests:
+          - not_null
+
+      - name: sumable
+        description: >
+          Si entra en los totales. El indicador 552 (Solar) es un AGREGADO que
+          solapa con 1294 (solar termica) y 1295 (fotovoltaica), asi que va a
+          `false`: sumar los tres contaba el solar dos veces y daba 52 GW de
+          generacion cuando el pico de demanda espanol ronda los 45.
+
+          Medido el 27-sep-2026: la fotovoltaica sola marcaba 14.425 MW y el
+          "Solar" total 12.226 MW. Que la parte supere al todo es la prueba de que
+          no son la misma cosa, y de que no se pueden sumar sin mirar.
+
+          Se conserva en el modelo -no se borra del seed- porque sirve para
+          contrastar: un agregado publicado por la fuente es la mejor referencia
+          contra la que comparar la suma de las partes.
+        data_tests:
+          - not_null

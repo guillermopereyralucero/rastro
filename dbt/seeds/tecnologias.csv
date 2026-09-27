@@ -1,0 +1,17 @@
+indicador_id,tecnologia,familia,renovable,min_mw,max_mw,nota_rango,sumable
+546,Hidraulica,generacion,true,-6000,20000,"Suelo negativo a proposito: el bombeo consume energia. Espana tiene del orden de 6 GW de bombeo. Observado -3.600 MW el 27-sep-2026.",true
+547,Carbon,generacion,false,0,5000,"Practicamente desmantelado; queda poca potencia.",true
+548,Fuel-gas,generacion,false,0,3000,"Solo sistemas no peninsulares y respaldo.",true
+549,Nuclear,generacion,false,0,7500,"Unos 7,1 GW instalados.",true
+550,Ciclo combinado,generacion,false,0,27000,"Unos 26 GW instalados.",true
+551,Eolica,generacion,true,0,33000,"Unos 32 GW instalados. Este es el rango que habria cazado el 37.483.",true
+552,Solar,generacion,true,0,35000,"Agregado de fotovoltaica y termica; crece rapido.",false
+553,Intercambios,intercambio,false,-10000,10000,"Puede ir en los dos sentidos: importacion y exportacion.",true
+555,Resto generacion,generacion,false,0,5000,"Cajon de sastre de ESIOS.",true
+1293,Demanda real,demanda,false,10000,55000,"Demanda peninsular. El minimo de un agosto de madrugada y el maximo de una ola de frio.",true
+1294,Solar termica,generacion,true,0,2500,"Unos 2,3 GW instalados.",true
+1295,Solar fotovoltaica,generacion,true,0,32000,"La que mas crece del sistema.",true
+1296,Termica renovable,generacion,true,0,2000,"Biomasa y residuos.",true
+1297,Cogeneracion y resto,generacion,false,0,8000,"Cogeneracion industrial.",true
+2037,Demanda real nacional,demanda,false,10000,60000,"Incluye sistemas no peninsulares, asi que su techo es mayor.",true
+10004,Demanda real suma generacion,demanda,false,10000,60000,"Demanda calculada como suma de generacion.",true
