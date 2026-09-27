@@ -33,6 +33,13 @@ Las consultas a `INFORMATION_SCHEMA` **no se facturan en BigQuery**. La
 herramienta cuesta cero euros ejecutarla, y ese detalle es lo que hace viable
 la capa entera.
 
+**Y por qué existe, en una línea que sale de la lista de precios de Google:** el
+linaje de datos en Google Cloud vive en el nivel *premium* de Knowledge Catalog
+—antes Dataplex, renombrado en abril de 2026—, que **no tiene capa gratuita** y
+factura desde el primer segundo a 0,089 USD por DCU-hora, con un mínimo de un
+minuto. Rastro hace la parte de BigQuery y dbt gratis y en abierto. No es una
+frase de marketing: es el precio de lista de la alternativa.
+
 ---
 
 ## Empezar
@@ -121,21 +128,58 @@ El relato completo, con las tres hipótesis y cómo se descartaron dos, está en
 dbt del proyecto será un rango plausible por tecnología, que habría cazado esto
 el primer día.
 
-### 3 · Pub/Sub con suscripción a BigQuery, no Dataflow
+### 3 · El camino largo del streaming, y por qué es el correcto
 
-Dataflow en streaming factura por trabajador y hora de forma continua: un job
-trivial son decenas de euros al mes. La suscripción directa de Pub/Sub a
-BigQuery hace el mismo trabajo dentro de la capa gratuita.
+**Corrección: una versión anterior de este README decía que la suscripción
+BigQuery de Pub/Sub entra en la capa gratuita. Es falso.** La página oficial de
+precios lo dice con esa misma letra: *"The first 10 GiB of BigQuery subscription
+throughput is not free"*. Son 50 USD/TiB desde el primer byte. Se queda escrito
+porque el error es parte del registro.
 
-*Saber cuándo no usar la herramienta cara es mejor respuesta que haberla
-usado.*
+Ahora, los números de verdad. A volumen de Rastro —4.608 filas al día, unos
+13 MB al mes en Pub/Sub— esa suscripción costaría **0,0006 USD al mes**. Es
+decir: el problema nunca fue la factura de este proyecto.
 
-### 4 · Cloud Scheduler + Cloud Run Jobs, no Composer ni Argo
+El problema es otro, y es el que decide. **La ruta corta ahorra código y con él
+borra la evidencia.** Una suscripción gestionada que escribe sola en BigQuery no
+demuestra nada sobre quien la configuró. Así que la plataforma usa el camino
+largo:
 
-Cloud Composer arranca en unos 300 €/mes sin hacer nada; Argo Workflows
-necesita un clúster de Kubernetes. Para un DAG de cinco pasos, ambos son
-desproporcionados. (Comparativa con cifras, y cuándo sí compensan, pendiente de
-escribir cuando la capa esté montada.)
+```
+Pub/Sub → suscripción push → consumidor propio → Storage Write API (gRPC)
+```
+
+Los primeros **2 TiB al mes de la Storage Write API son gratis**, y ese camino
+obliga a resolver a mano lo que la ruta corta esconde: **idempotencia**,
+**esquemas que cambian** y **cola de mensajes muertos**. Eso es exactamente lo
+que un proyecto que existe para enseñarse tiene que enseñar.
+
+Un detalle de Pub/Sub que conviene saber: el throughput facturable cuenta
+**publicación más suscripción**, así que los 10 GiB gratis del SKU normal son
+unos 5 GiB de carga real, alrededor de 170 MB al día.
+
+### 4 · Dataflow y Composer: medidos, y fuera
+
+Ninguno de los dos tiene capa gratuita, así que el objetivo de 0 € decide solo:
+
+| | Coste real | Se puede apagar |
+|---|---|---|
+| **Dataflow** streaming, worker por defecto | ~0,37 USD/hora → 3 h = 1,10 USD; un mes = **~270 USD** | Sí |
+| **Cloud Composer**, entorno pequeño | 0,35 USD/hora de cuota → **~255 USD/mes fijos** antes de un solo DAG | **No** |
+
+**Dataflow entra en una ventana de 2 a 4 horas y sale.** El tiempo justo de
+capturar el grafo de ejecución, el retraso del sistema, el watermark y las
+métricas de eventos tardíos; luego `drain` y borrar. Y el drenado lo programa
+**Cloud Scheduler, no la memoria de nadie**.
+
+**Composer queda fuera del proyecto.** No es que sea desproporcionado: es que no
+se puede apagar. La misma competencia se demuestra con **Argo Workflows** —que
+ya se usa a diario en producción, así que es una brecha de evidencia y no de
+capacidad— más **Airflow 3 en local con `docker compose`**, que además cierra la
+brecha de Docker sin gastar un euro.
+
+*Saber cuándo no usar la herramienta cara es mejor respuesta que haberla usado.
+Pero solo si los números están comprobados.*
 
 ### 5 · El núcleo se instala sin dependencias
 

@@ -120,10 +120,16 @@ enseña nada. La herramienta y la plataforma se diseñan a la vez a propósito.
 
 ## Lo que NO se crea, y por qué
 
-- **Cloud Composer.** Arranca en unos 300 €/mes sin hacer nada. Para un DAG de
-  cinco pasos es desproporcionado.
-- **Dataflow.** En streaming factura por trabajador y hora de forma continua.
-  La suscripción directa de Pub/Sub a BigQuery hace el mismo trabajo gratis.
-- **Un clúster de Kubernetes para Argo.** Mismo razonamiento.
+- **Cloud Composer.** 0,35 USD/hora de cuota de entorno pequeño, unos 255
+  USD/mes fijos, y **no se puede apagar por horas**. Queda fuera del proyecto.
+- **Dataflow.** Sin capa gratuita: el worker de streaming por defecto sale a
+  ~0,37 USD/hora, unos 270 USD si se deja un mes. Entra en ventanas medidas de
+  2 a 4 horas, con `drain` programado por Cloud Scheduler, y se borra.
+- **La suscripción BigQuery de Pub/Sub.** Tampoco es gratis: 50 USD/TiB desde el
+  primer byte. A volumen de Rastro serían 0,0006 USD/mes, así que no se descarta
+  por dinero sino porque esconde el código que este proyecto existe para
+  enseñar. Ver la decisión 3 del [README](../README.md).
 
 Saber cuándo no usar la herramienta cara es parte del diseño, no una renuncia.
+Pero solo si los números están comprobados: la primera versión de este documento
+daba por gratis algo que no lo es.
