@@ -34,8 +34,14 @@ resource "google_billing_budget" "techo" {
     }
   }
 
-  # Tres umbrales y no uno. Al 50 % hay tiempo de mirarlo con calma; al 100 %
-  # ya hay que actuar. Un unico aviso al 100 % llega cuando el dano esta hecho.
+  # El primero es al 1 %, o sea a un centimo. Con objetivo de coste cero, lo que
+  # interesa saber no es cuando el gasto se acerca al techo sino que ha habido
+  # gasto: un aviso al 50 % de 1 EUR llega cuando ya se han ido cincuenta
+  # centimos, y eso ya es informacion vieja.
+  threshold_rules {
+    threshold_percent = 0.01
+  }
+
   threshold_rules {
     threshold_percent = 0.5
   }
@@ -79,6 +85,67 @@ resource "google_monitoring_notification_channel" "correo" {
 
   labels = {
     email_address = var.correo_avisos
+  }
+
+  depends_on = [google_project_service.apis]
+}
+
+# ---------------------------------------------------------------------------
+# El presupuesto que de verdad protege la cartera
+# ---------------------------------------------------------------------------
+# El de arriba solo vigila el proyecto de Rastro. Pero la cuenta de facturacion
+# tiene TRES proyectos colgando -app-fincrack, jobcrack-gmail y este- y varios
+# topes gratuitos de Google se cuentan **por cuenta de facturacion y no por
+# proyecto**:
+#
+#   - Artifact Registry: 0,5 GB de almacenamiento al mes, en total
+#   - Cloud Scheduler:   3 trabajos al mes, en total
+#
+# Con solo el presupuesto de Rastro, un cargo originado en otro proyecto no
+# avisaria a nadie. Este vigila la cuenta entera, que es lo que se paga.
+#
+# No lleva `projects` en el filtro: sin esa clave, el presupuesto cubre todos.
+
+resource "google_billing_budget" "cuenta_entera" {
+  billing_account = var.billing_account_id
+  display_name    = "Toda la cuenta · techo de ${var.presupuesto_cuenta_euros} EUR"
+
+  budget_filter {
+    calendar_period = "MONTH"
+  }
+
+  amount {
+    specified_amount {
+      currency_code = "EUR"
+      units         = tostring(var.presupuesto_cuenta_euros)
+    }
+  }
+
+  # Al primer centimo.
+  threshold_rules {
+    threshold_percent = 0.01
+  }
+
+  threshold_rules {
+    threshold_percent = 0.5
+  }
+
+  threshold_rules {
+    threshold_percent = 1.0
+  }
+
+  threshold_rules {
+    threshold_percent = 1.0
+    spend_basis       = "FORECASTED_SPEND"
+  }
+
+  dynamic "all_updates_rule" {
+    for_each = var.correo_avisos == "" ? [] : [1]
+
+    content {
+      monitoring_notification_channels = [google_monitoring_notification_channel.correo[0].id]
+      disable_default_iam_recipients   = false
+    }
   }
 
   depends_on = [google_project_service.apis]

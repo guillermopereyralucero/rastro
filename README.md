@@ -158,28 +158,48 @@ Un detalle de Pub/Sub que conviene saber: el throughput facturable cuenta
 **publicación más suscripción**, así que los 10 GiB gratis del SKU normal son
 unos 5 GiB de carga real, alrededor de 170 MB al día.
 
-### 4 · Dataflow y Composer: medidos, y fuera
+### 4 · Dataflow y Composer: medidos, y fuera del proyecto
 
 Ninguno de los dos tiene capa gratuita, así que el objetivo de 0 € decide solo:
 
+Precios verificados en el ejemplo trabajado que publica Google para us-central1:
+0,069 USD por vCPU de streaming y hora, 0,003557 USD por GB de memoria y hora, y
+0,089 USD por unidad de cómputo de Streaming Engine y hora.
+
 | | Coste real | Se puede apagar |
 |---|---|---|
-| **Dataflow** streaming, worker por defecto | ~0,37 USD/hora → 3 h = 1,10 USD; un mes = **~270 USD** | Sí |
+| **Dataflow** streaming, 1 trabajador con Streaming Engine | ~0,25 USD/hora → 3 h = 0,76 USD; un mes = **~185 USD** | Sí |
 | **Cloud Composer**, entorno pequeño | 0,35 USD/hora de cuota → **~255 USD/mes fijos** antes de un solo DAG | **No** |
 
-**Dataflow entra en una ventana de 2 a 4 horas y sale.** El tiempo justo de
-capturar el grafo de ejecución, el retraso del sistema, el watermark y las
-métricas de eventos tardíos; luego `drain` y borrar. Y el drenado lo programa
-**Cloud Scheduler, no la memoria de nadie**.
+Lo que de verdad importa de esa tabla no es la cifra: es que **Dataflow cobra por
+estar encendido, no por trabajo hecho**. El volumen mensual entero de esta
+plataforma son 13,2 MB, así que un mes de Dataflow saldría a unos **14 USD por
+megabyte movido**.
 
-**Composer queda fuera del proyecto.** No es que sea desproporcionado: es que no
-se puede apagar. La misma competencia se demuestra con **Argo Workflows** —que
-ya se usa a diario en producción, así que es una brecha de evidencia y no de
-capacidad— más **Airflow 3 en local con `docker compose`**, que además cierra la
-brecha de Docker sin gastar un euro.
+**Así que Dataflow tampoco entra**, ni en una ventana corta. El grafo de
+ejecución, que era la única razón para encenderlo, se obtiene gratis:
+
+- `apache_beam.runners.render.RenderRunner` escribe la pipeline en **SVG**, que se
+  versiona en el repositorio. Es mejor que una captura: lo regenera cualquiera que
+  clone el proyecto.
+- `TestStream` con DirectRunner permite **dirigir el watermark** y meter eventos
+  tardíos de forma determinista. Un test que fija qué ocurre con un dato que llega
+  diez minutos tarde demuestra que se entiende la semántica; un panel en verde
+  demuestra que se supo lanzar el trabajo.
+
+Lo único que se pierde es el autoescalado de un servicio gestionado, que es la
+parte menos explicable desde una captura de pantalla.
+
+**Composer queda fuera por otro motivo:** no es que sea desproporcionado, es que
+**no se puede apagar**. La misma competencia se demuestra con **Argo Workflows**
+—que ya se usa a diario en producción, así que es una brecha de evidencia y no de
+capacidad— más **Airflow 3 en local con `docker compose`**.
 
 *Saber cuándo no usar la herramienta cara es mejor respuesta que haberla usado.
 Pero solo si los números están comprobados.*
+
+El desglose completo, componente a componente y con lo que no se ha podido
+verificar marcado como tal, está en [docs/coste.md](docs/coste.md).
 
 ### 5 · El núcleo se instala sin dependencias
 

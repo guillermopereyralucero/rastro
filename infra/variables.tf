@@ -56,3 +56,14 @@ variable "dias_retencion_raw" {
   type        = number
   default     = 0
 }
+
+variable "presupuesto_cuenta_euros" {
+  description = <<-TXT
+    Techo para la cuenta de facturacion COMPLETA, con sus tres proyectos. Es el
+    que protege la cartera: el de Rastro solo sirve para saber de donde viene un
+    cargo. Dos euros deja un margen minimo sin dejar de ser un aviso temprano,
+    porque el primer umbral salta al 1 % -o sea, a dos centimos-.
+  TXT
+  type        = number
+  default     = 2
+}

@@ -2,7 +2,7 @@
 // Fuente: decisiones.yaml
 window.FLOWCRACK = {
   "formato": 2,
-  "generado": "2026-09-27 16:59",
+  "generado": "2026-09-27 17:39",
   "proyecto": {
     "nombre": "Rastro",
     "perfil": "investigacion",
@@ -1121,7 +1121,9 @@ window.FLOWCRACK = {
       "abre": [],
       "cierra": [],
       "supera_a": [],
-      "superada_por": [],
+      "superada_por": [
+        "r033"
+      ],
       "mata_riesgo": null,
       "espera_hasta": null,
       "commit": null,
@@ -1352,6 +1354,160 @@ window.FLOWCRACK = {
       "causada_por": [
         "r024"
       ],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r032",
+      "fecha": "2026-09-27",
+      "orden": 32,
+      "carril": "metodo",
+      "titulo": "El coste cero deja de ser objetivo y pasa a ser requisito del proyecto",
+      "tipo": "decision",
+      "detalle": "Techo declarado por Guillermo el 27-sep: 0 EUR, y como maximo 1 o 2 EUR al mes. Deja de ser una preferencia de diseno y pasa a condicionar que herramientas entran. Queda escrito en docs/coste.md, componente a componente, marcando con interrogacion lo que no se ha podido verificar en la pagina oficial de precios en lugar de rellenarlo con una estimacion.",
+      "porque": "Situacion economica personal. Una cifra inventada en un documento de coste no es un error tecnico: le cuesta dinero a alguien.",
+      "consecuencia": "Dataflow sale del plan (r033). Antes de la primera compilacion de la imagen del job hace falta una politica de limpieza en Artifact Registry, que es el riesgo mas alto que queda.",
+      "estado": "vigente",
+      "impacto": "mayor",
+      "irreversible": false,
+      "hito": "metodo",
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Cero euros como requisito, con alerta al primer centimo",
+          "elegida": true,
+          "motivo": "Es la restriccion real, y ademas es material de entrevista"
+        },
+        {
+          "opcion": "Aceptar unos pocos euros al mes de margen",
+          "elegida": false,
+          "motivo": "No hay margen que aceptar"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r033",
+      "fecha": "2026-09-27",
+      "orden": 33,
+      "carril": "metodo",
+      "titulo": "Dataflow sale del proyecto; el grafo de ejecucion se hace con Beam en local",
+      "tipo": "decision",
+      "detalle": "La ventana medida de 2-4 horas que fijaba r024 se cancela. En su lugar, `apache_beam.runners.render.RenderRunner`, que escribe el grafo de la pipeline en SVG en local y ademas levanta un servidor para explorarlo, y `TestStream` con DirectRunner para la semantica de streaming.",
+      "porque": "Se pregunto si el grafo de ejecucion se podia obtener gratis, y se puede. RenderRunner da el grafo como fichero SVG, que es mejor que una captura de pantalla: se versiona en el repositorio y lo regenera cualquiera que clone. Y `TestStream` permite dirigir el watermark y los eventos tardios de forma determinista, asi que la semantica de streaming se demuestra con tests que pasan siempre igual, no con una captura de un panel.",
+      "consecuencia": "Se ahorran los 0,76 USD de la ventana de demostracion, que con techo de 1-2 EUR al mes no son despreciables. Lo que se pierde es el comportamiento de autoescalado de un servicio gestionado y las metricas de retraso del sistema de Dataflow, que es la parte menos importante y la mas difícil de explicar desde una captura. La interfaz web de un runner distribuido de verdad -Flink o Spark- daria casi lo mismo gratis, pero en esta maquina no hay Java ni Docker y Flink ya no trae scripts para Windows, asi que necesitaria WSL: queda anotado como opcional, no como plan.",
+      "estado": "vigente",
+      "impacto": "mayor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Beam con RenderRunner y TestStream, en local y en CI",
+          "elegida": true,
+          "motivo": "Gratis, reproducible al clonar y mejor evidencia que una captura"
+        },
+        {
+          "opcion": "Una ventana de Dataflow de 3 horas",
+          "elegida": false,
+          "motivo": "0,76 USD y solo anade autoescalado, que es lo que menos aporta"
+        },
+        {
+          "opcion": "Flink o Spark en local con su interfaz web",
+          "elegida": false,
+          "motivo": "Da casi lo mismo gratis, pero exige Java o Docker y WSL en Windows"
+        }
+      ],
+      "causada_por": [
+        "r031",
+        "r032"
+      ],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [
+        "r024"
+      ],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r034",
+      "fecha": "2026-09-27",
+      "orden": 34,
+      "carril": "metodo",
+      "titulo": "Varios topes gratuitos se cuentan por cuenta de facturacion, no por proyecto",
+      "tipo": "hallazgo",
+      "detalle": "Verificado el 27-sep: los 0,5 GB de Artifact Registry y los 3 trabajos de Cloud Scheduler son el total de la cuenta de facturacion, sumando todos sus proyectos. La cuenta tenia cinco proyectos; Guillermo quito los dos de pruebas de dbt ese mismo dia y quedan tres: rastro-509715, app-fincrack y jobcrack-gmail. Ninguno usa todavia Scheduler ni Artifact Registry.",
+      "porque": "Salio al auditar el coste. Y destapo un fallo en lo aplicado el dia anterior: el presupuesto solo filtraba por el proyecto de Rastro, asi que un cargo originado en app-fincrack o jobcrack-gmail no habria avisado a nadie. Lo que se paga es la cuenta, no el proyecto.",
+      "consecuencia": "Se anade un segundo presupuesto sobre la cuenta completa, y los dos bajan su primer umbral al 1 % -un centimo en el de Rastro, dos en el de la cuenta-. Con objetivo de coste cero lo que hay que saber no es que el gasto se acerca al techo sino que ha habido gasto. Y queda pendiente, antes de construir ninguna imagen, una politica de limpieza en Artifact Registry: cada compilacion deja la imagen anterior sin etiqueta pero ocupando, y con tres o cuatro se agota el medio giga.",
+      "estado": "vigente",
+      "impacto": "mayor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [],
+      "causada_por": [
+        "r032"
+      ],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r035",
+      "fecha": "2026-09-27",
+      "orden": 35,
+      "carril": "analisis",
+      "titulo": "Medido: 51 bytes por fila, unos 86 MB al ano",
+      "tipo": "medicion",
+      "detalle": "Primera carga real en BigQuery: 1.146 filas ocupan 0,057 MB. A 4.608 filas al dia son unos 0,23 MB diarios, 7 MB al mes y 86 MB al ano. El tope gratuito de BigQuery son 10 GiB, asi que a este ritmo tardaria mas de un siglo en agotarse.",
+      "porque": "Se midio en lugar de estimarlo, ahora que ya hay datos de verdad cargados.",
+      "consecuencia": "El almacenamiento queda descartado como riesgo de coste. El riesgo esta en Artifact Registry y en los topes compartidos, no en los datos.",
+      "estado": "vigente",
+      "impacto": "menor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [],
+      "causada_por": [],
       "abre": [],
       "cierra": [],
       "supera_a": [],

@@ -70,15 +70,27 @@ cambios pendientes.
 - [ ] La idempotencia, el manejo de esquemas que cambian y la cola de mensajes
       muertos, **en código propio**. La ruta corta ahorra código y borra la
       evidencia, que es justo lo que este proyecto tiene que demostrar.
-- [ ] **Dataflow: ventana de 2-4 horas y fuera.** No tiene capa gratuita; el worker
-      de streaming por defecto sale a **~0,37 USD/hora** (3 h = 1,10 USD; un mes
-      encendido = **~270 USD**). Capturar el grafo de ejecución, el retraso del
-      sistema, el watermark y las métricas de eventos tardíos → `drain` y borrar.
-      **Programar el drain con Cloud Scheduler, no con la memoria.**
+- [x] ~~Dataflow: ventana de 2-4 horas y fuera.~~ **Cancelado el 27-sep** (`r033`):
+      el coste pasó a ser requisito y el grafo de ejecución se obtiene gratis.
+      Medido: ~0,25 USD/hora con un trabajador y Streaming Engine, 0,76 USD una
+      ventana de 3 h, 185 USD un mes encendido. **Dataflow cobra por estar
+      encendido, no por trabajo hecho**: los 13,2 MB mensuales de Rastro saldrían
+      a ~14 USD por megabyte.
+- [ ] **El grafo de ejecución, gratis**: `apache_beam.runners.render.RenderRunner`
+      escribe la pipeline en SVG, que se versiona en el repo y lo regenera quien
+      clone. Mejor que una captura de pantalla.
+- [ ] **La semántica de streaming, gratis y determinista**: `TestStream` con
+      DirectRunner permite dirigir el watermark y los eventos tardíos. Unos tests
+      que fijan qué pasa con un dato que llega 10 minutos tarde demuestran más que
+      un panel en verde.
 - [ ] **Composer queda fuera del proyecto.** No tiene capa gratuita **ni se puede
       apagar por horas**: la cuota de entorno pequeño son 0,35 USD/hora, es decir
       **~255 USD/mes de tarifa fija antes de ejecutar un solo DAG**. La misma
       competencia se demuestra con **Argo** más **Airflow 3 en local con `docker compose`**, sin coste.
+- [ ] **Política de limpieza en Artifact Registry, antes de la primera imagen.**
+      Los 0,5 GB gratis se cuentan por cuenta de facturación y cada compilación
+      deja la imagen anterior sin etiqueta pero ocupando. Es el riesgo de coste
+      más alto que queda: ver [coste](coste.md).
 
 **Si F4 necesita volumen de streaming real que ESIOS no da** (`r025`): el stream
 `recentchange` de **Wikimedia EventStreams filtrado a `wikidatawiki`**. Es SSE de
