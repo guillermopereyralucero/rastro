@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: mart_calidad_datos
+    description: >
+      Salud de la plataforma por dia: cobertura, revisiones de REE, frescura y
+      peticiones. Es la parte del cuadro de mando que responde si los datos que se
+      estan graficando son fiables, que es la pregunta de la que vive este
+      proyecto.
+
+    columns:
+      - name: dia
+        data_tests: [not_null, unique]
+
+      - name: porcentaje_horas_completas
+        description: De 0 a 100. Por debajo de 100 hay horas con lecturas que faltan.
+        data_tests:
+          - entre:
+              arguments:
+                minimo: 0
+                maximo: 100
+
+      - name: puntos_revisados
+        description: >
+          Puntos que REE cambio despues de publicarlos. Solo se puede saber porque
+          `raw` es de solo anadir: si se sobreescribiera, la pregunta no tendria
+          respuesta.
+        data_tests: [not_null]
+
+      - name: peticiones_fallidas
+        description: Deberia ser cero. Si no lo es, mirar `error` en el staging.
+        data_tests: [not_null]
+
+      - name: minutos_desde_el_ultimo_dato
+        description: >
+          Frescura. En minutos y no en horas porque la serie se publica cada cinco
+          minutos y en horas se pierde el detalle que importa.

@@ -1,0 +1,38 @@
+version: 2
+
+sources:
+  - name: control
+    description: >
+      Estado de la ingesta: hasta donde esta cargado cada indicador y que
+      peticiones se hicieron a ESIOS. No son datos del sistema electrico, son
+      datos sobre el propio proceso, y por eso viven en su propio dataset.
+    database: rastro-509715
+    schema: control
+
+    tables:
+      - name: peticiones
+        description: >
+          Una fila por ventana pedida a ESIOS, con su desenlace. Es la respuesta
+          exacta a "cuantas peticiones habeis hecho", que ante un proveedor que
+          pide uso responsable no se contesta con una estimacion.
+        columns:
+          - name: momento
+            data_tests: [not_null]
+          - name: indicador_id
+            data_tests: [not_null]
+          - name: intentos
+            description: Peticiones HTTP reales, reintentos incluidos.
+            data_tests: [not_null]
+          - name: puntos
+            description: Medidas devueltas. Cero si fallo.
+            data_tests: [not_null]
+
+      - name: marca_de_agua
+        description: >
+          Hasta donde hay datos de cada indicador. Limite superior exclusivo, en
+          UTC. Nunca retrocede, y eso se garantiza en el MERGE que la escribe.
+        columns:
+          - name: indicador_id
+            data_tests: [not_null, unique]
+          - name: hasta
+            data_tests: [not_null]

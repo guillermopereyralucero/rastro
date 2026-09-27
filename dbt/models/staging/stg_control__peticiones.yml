@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: stg_control__peticiones
+    description: Peticiones a ESIOS con el desenlace ya derivado.
+    columns:
+      - name: momento
+        data_tests: [not_null]
+      - name: exito
+        description: Codigo 200 y sin error. La regla vive aqui y solo aqui.
+        data_tests: [not_null]
+      - name: reintentos
+        description: >
+          Cuantos intentos de mas hicieron falta. Alto significa que ESIOS iba mal.
+        data_tests: [not_null]

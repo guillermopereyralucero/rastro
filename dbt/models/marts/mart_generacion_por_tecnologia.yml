@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: mart_generacion_por_tecnologia
+    description: >
+      Una fila por hora y tecnologia, con su peso en el mix. Es lo que alimenta el
+      grafico de areas apiladas. Solo tecnologias sumables: apilar el indicador 552
+      junto a la fotovoltaica y la termica dibujaria el solar dos veces.
+
+    data_tests:
+      - combinacion_unica:
+          arguments:
+            columnas: ["hora", "indicador_id", "coalesce(geo_id, -1)"]
+
+    columns:
+      - name: hora
+        data_tests: [not_null]
+      - name: tecnologia
+        data_tests: [not_null]
+      - name: potencia_media_mw
+        data_tests: [not_null]
+      - name: porcentaje_del_mix
+        description: >
+          Peso de esta tecnologia en su hora. Los de una hora suman 100, y es NULO
+          cuando la hora no tiene todas las tecnologias: un total parcial como
+          denominador daria porcentajes por encima de 100. Puede ser negativo
+          -la hidraulica resta cuando bombea-, asi que el rango va de -100 a 100.
+        data_tests:
+          - entre:
+              arguments:
+                minimo: -100
+                maximo: 100
