@@ -702,3 +702,114 @@ decisiones:
       - opcion: Instalar las herramientas globalmente
         elegida: false
         motivo: Mezcla las dependencias de este proyecto con las de los demas
+
+  - id: r024
+    fecha: 2026-09-27
+    orden: 24
+    carril: metodo
+    tipo: medicion
+    titulo: "El plan escrito de F4 rompe el objetivo de 0 EUR: la suscripcion BigQuery de Pub/Sub no tiene capa gratuita"
+    detalle: >
+      Verificado en las paginas oficiales de precios de 2026, componente a
+      componente. La suscripcion BigQuery de Pub/Sub -que es el ultimo paso del
+      plan escrito de F4- NO tiene capa gratuita: la propia pagina de precios lo
+      dice con una frase literal, "The first 10 GiB of BigQuery subscription
+      throughput is not free". Cuesta 50 USD/TiB desde el primer byte. Ademas el
+      throughput facturable de Pub/Sub cuenta publicacion MAS suscripcion, asi
+      que los 10 GiB gratis del SKU normal equivalen a unos 5 GiB de payload
+      real, unos 170 MB al dia. Y dos costes mas que hay que tener fichados:
+      Dataflow no tiene capa gratuita y el worker de streaming por defecto sale a
+      unos 0,37 USD/hora -tres horas son 1,10 USD, un mes encendido son unos 270-,
+      y Cloud Composer no tiene capa gratuita NI se puede apagar por horas: la
+      cuota de entorno pequeno son 0,35 USD/hora, es decir unos 255 USD al mes de
+      tarifa fija antes de ejecutar un solo DAG.
+    porque: >
+      Salio al investigar, para otro proyecto, si un proyecto de datos podia
+      sostenerse en la capa gratuita de GCP. El objetivo de coste de Rastro es 0
+      EUR con alerta de presupuesto a 1 EUR, y el camino escrito en F4 activaria
+      esa alerta en cuanto suba el volumen.
+    consecuencia: >
+      El camino gratuito es el largo: suscripcion push normal, consumidor propio,
+      y escritura con la Storage Write API por gRPC, cuyos primeros 2 TiB al mes
+      son gratis. Y tiene un beneficio que no es menor: ese camino largo es el que
+      obliga a poner la idempotencia, el manejo de esquemas que cambian y la cola
+      de mensajes muertos en codigo propio, que es exactamente lo que este
+      proyecto quiere mostrar. La ruta corta ahorra codigo y borra la evidencia.
+      Para Dataflow, la regla operativa es ventana de 2-4 horas con captura del
+      grafo de ejecucion, el retraso del sistema, el watermark y las metricas de
+      eventos tardios, y despues drain y borrar - con un Cloud Scheduler que lo
+      drene, no con la memoria-. Composer queda fuera del proyecto: la misma
+      orquestacion se demuestra con Argo Workflows mas Airflow 3 en local con
+      docker compose, sin coste.
+    estado: vigente
+    impacto: mayor
+    decidido_por: ia
+    ref: seguimiento.md#f4-streaming
+
+  - id: r025
+    fecha: 2026-09-27
+    orden: 25
+    carril: fuentes
+    tipo: hallazgo
+    titulo: "Si F4 necesita una fuente en streaming de verdad, Wikidata via EventStreams es la unica con replay y licencia CC0"
+    detalle: >
+      El stream recentchange de Wikimedia EventStreams es Server-Sent Events
+      sobre HTTP -conexion abierta, no consulta periodica-, con unos 1,38 millones
+      de eventos al dia en todos los proyectos y unos 500.000 solo en Wikidata. Y
+      trae algo que ninguna otra fuente gratuita tiene: el parametro `since`
+      permite consumo historico con entre 7 y 31 dias de retencion.
+    porque: >
+      Ese replay es lo que convierte la idempotencia, el reproceso, el backfill y
+      los datos que llegan tarde en algo DEMOSTRABLE y reproducible por cualquiera
+      que clone el repo, en vez de una afirmacion en el README. Y el filtro a
+      wikidatawiki resuelve de una linea el problema de licencia: el contenido de
+      los wikis es CC BY-SA 4.0, es decir share-alike, que obliga a propagar la licencia a cualquier obra derivada,
+      mientras que
+      Wikidata publica TODO bajo CC0, sin atribucion obligatoria y sin
+      share-alike. Eso permite publicar el dataset derivado en el repo, usarlo en
+      un articulo y en material de curso sin pedir permiso ni contaminar la
+      licencia.
+    consecuencia: >
+      NO sustituye a ESIOS, que es la fuente con sentido para la pregunta de
+      Rastro. Queda anotada como la opcion si F4 necesita volumen de streaming
+      real que ESIOS no da. Dos avisos operativos documentados: la capa HTTP de
+      Wikimedia corta la conexion a los 15 minutos, asi que hay que reconectar
+      con `since` para no perder eventos, y el User-Agent es obligatorio. El
+      coste total verificado de esa arquitectura, con la conexion viviendo en una
+      VM e2-micro Always Free en us-central1 y no en un servicio de Cloud Run
+      -que con conexion de larga duracion serian unos 44 USD/mes-, esta entre
+      0,00 y 0,07 USD al mes.
+    estado: vigente
+    impacto: menor
+    decidido_por: ia
+    ref: seguimiento.md#f4-streaming
+    causada_por: [r024]
+
+  - id: r026
+    fecha: 2026-09-27
+    orden: 26
+    carril: difusion
+    tipo: hallazgo
+    titulo: "El argumento de venta de Rastro estaba en la lista de precios de Google"
+    detalle: >
+      Dataplex se llama Knowledge Catalog desde el 10-abr-2026. Su procesado
+      estandar tiene 100 DCU-horas al mes gratis, pero el nivel PREMIUM -que es
+      exactamente donde viven el LINAJE DE DATOS, la calidad y el perfilado- NO
+      tiene capa gratuita y factura desde el primer segundo a 0,089 USD por
+      DCU-hora, con minimo de un minuto.
+    porque: >
+      No se eligio nada, se leyo la pagina de precios. Y es el argumento que
+      faltaba: el linaje de BigQuery en Google Cloud es un producto de PAGO sin
+      nivel gratuito, y Rastro hace la parte de BigQuery y dbt gratis y en
+      abierto. Eso no es una frase de marketing: es un precio de lista de la
+      alternativa, citable y verificable.
+    consecuencia: >
+      Entra en el README: explica en una linea por que este proyecto existe. El
+      linaje de BigQuery en Google Cloud es un producto de pago sin nivel
+      gratuito, y Rastro hace la parte de BigQuery y dbt en abierto. Aviso
+      operativo si se prueba Dataplex para comparar: ventana corta y medida,
+      contando DCU-horas, igual que con Dataflow.
+    estado: vigente
+    impacto: menor
+    decidido_por: ia
+    ref: seguimiento.md#f4-streaming

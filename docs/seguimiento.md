@@ -50,10 +50,51 @@ abriendo `flowcrack/index.html`.
 
 ## F4 · Streaming
 
-**Estado: sin empezar.**
+**Estado: sin empezar.** Y el plan que estaba escrito aquí **rompía el objetivo de
+0 €** — corregido el 27-sep-2026 con precios oficiales verificados (`r024`).
 
-- [ ] Cloud Scheduler → Cloud Run Job → Pub/Sub → suscripción a BigQuery
-- [ ] Comparativa de coste frente a Dataflow, con cifras
+> **⚠️ La suscripción BigQuery de Pub/Sub NO tiene capa gratuita.** La página
+> oficial de precios lo dice literal: *"The first 10 GiB of BigQuery subscription
+> throughput is not free"*. Son **50 USD/TiB desde el primer byte**. Y el
+> throughput facturable de Pub/Sub cuenta **publicación + suscripción**, así que
+> los 10 GiB gratis del SKU normal son ~5 GiB de payload real, unos **170 MB/día**.
+
+**El camino gratuito es el largo**, y encima es el que hay que enseñar:
+
+- [ ] Suscripción **push normal** → consumidor propio → **Storage Write API por
+      gRPC** (primeros **2 TiB/mes gratis**).
+- [ ] La idempotencia, el manejo de esquemas que cambian y la cola de mensajes
+      muertos, **en código propio**. La ruta corta ahorra código y borra la
+      evidencia, que es justo lo que este proyecto tiene que demostrar.
+- [ ] **Dataflow: ventana de 2-4 horas y fuera.** No tiene capa gratuita; el worker
+      de streaming por defecto sale a **~0,37 USD/hora** (3 h = 1,10 USD; un mes
+      encendido = **~270 USD**). Capturar el grafo de ejecución, el retraso del
+      sistema, el watermark y las métricas de eventos tardíos → `drain` y borrar.
+      **Programar el drain con Cloud Scheduler, no con la memoria.**
+- [ ] **Composer queda fuera del proyecto.** No tiene capa gratuita **ni se puede
+      apagar por horas**: la cuota de entorno pequeño son 0,35 USD/hora, es decir
+      **~255 USD/mes de tarifa fija antes de ejecutar un solo DAG**. La misma
+      competencia se demuestra con **Argo** más **Airflow 3 en local con `docker compose`**, sin coste.
+
+**Si F4 necesita volumen de streaming real que ESIOS no da** (`r025`): el stream
+`recentchange` de **Wikimedia EventStreams filtrado a `wikidatawiki`**. Es SSE de
+verdad, ~500.000 eventos/día, y trae lo que ninguna otra fuente gratuita tiene —
+**replay histórico con el parámetro `since`, 7-31 días de retención**, que convierte
+la idempotencia y el reproceso en algo **reproducible por quien clone el repo**. Y
+el filtro resuelve la licencia de una línea: los wikis son CC BY-SA 4.0
+(share-alike, que se propaga a la obra derivada), pero **Wikidata es CC0**.
+
+Dos avisos operativos: la capa HTTP de Wikimedia **corta la conexión a los 15
+minutos** —hay que reconectar con `since` para no perder eventos— y el
+**User-Agent es obligatorio**. La conexión de larga duración tiene que vivir en una
+**VM e2-micro Always Free** (us-central1, disco persistente **estándar**, red
+**Standard**): en un *servicio* de Cloud Run serían **~44 USD/mes**. Coste total
+verificado de esa arquitectura: **0,00-0,07 USD/mes**.
+
+**Y el crédito de bienvenida de 300 USD**: son 90 días, solo para clientes que
+**nunca** hayan pagado Google Cloud, Maps **ni Firebase**, y no se renueva por
+proyecto nuevo. **Comprobar la elegibilidad antes de contar con ese crédito**: cualquier uso
+previo de Firebase, aunque sea de Crashlytics en otro proyecto, la invalida.
 
 ## F5 · Rastro, la herramienta
 
