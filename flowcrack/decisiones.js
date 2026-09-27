@@ -2,7 +2,7 @@
 // Fuente: decisiones.yaml
 window.FLOWCRACK = {
   "formato": 2,
-  "generado": "2026-09-27 18:19",
+  "generado": "2026-09-27 19:10",
   "proyecto": {
     "nombre": "Rastro",
     "perfil": "investigacion",
@@ -1659,6 +1659,215 @@ window.FLOWCRACK = {
           "opcion": "No publicar la fila entera",
           "elegida": false,
           "motivo": "Se perderia la potencia por tecnologia, que si es correcta"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r040",
+      "fecha": "2026-09-27",
+      "orden": 40,
+      "carril": "analisis",
+      "titulo": "El grafo cruza dos fuentes, y el motivo de cada arista es una senal de confianza",
+      "tipo": "decision",
+      "detalle": "`dbt.desde_manifiesto` lee lo que dbt gestiona y `bigquery.desde_information_schema` lee lo que HAY en la base de datos. Cuando las dos ven la misma dependencia no se guardan dos aristas: se guarda una con los motivos acumulados -`vista+dbt`- y una propiedad `confirmada`. En la plataforma real salen 10 nodos, 11 aristas y 3 confirmadas por las dos.",
+      "porque": "La primera version guardaba una arista por motivo y daba 14 donde hay 11. Al deduplicar aparecio algo mejor que un numero limpio: quien vio cada dependencia dice cuanto fiarse. Solo dbt puede ser un manifiesto viejo de antes del ultimo despliegue; solo el SQL puede ser una vista creada a mano o un error del analizador; las dos a la vez es lo mas fiable que hay.",
+      "consecuencia": "Es la diferencia con `dbt docs`, que solo puede dibujar el grafo de dbt. Y requiere que los nodos de las dos fuentes tengan el MISMO identificador, asi que el de dbt se construye como `database.schema.name` en minusculas y no con su clave interna: eso es lo que hace que se fusionen sin tabla de equivalencias.",
+      "estado": "vigente",
+      "impacto": "mayor",
+      "irreversible": false,
+      "hito": "metodo",
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Una arista por dependencia, con los motivos acumulados",
+          "elegida": true,
+          "motivo": "El motivo pasa a decir cuanto fiarse de la arista"
+        },
+        {
+          "opcion": "Una arista por cada fuente que la ve",
+          "elegida": false,
+          "motivo": "Infla el grafo y duplica las lineas del visor sin anadir nada"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r041",
+      "fecha": "2026-09-27",
+      "orden": 41,
+      "carril": "metodo",
+      "titulo": "Analisis de SQL en dos pasadas, con sqlglot opcional",
+      "tipo": "decision",
+      "detalle": "`sqlglot` primero, que entiende SQL de verdad y sabe que una expresion comun no es una tabla. Expresiones regulares despues, SIEMPRE, no solo cuando el analizador falla. Y si `sqlglot` no esta instalado, se usa solo la segunda pasada y el resultado lo declara con `aproximada`.",
+      "porque": "Los analizadores fallan: dialectos con extensiones, SQL generado, procedimientos largos con `EXECUTE IMMEDIATE` dentro. Quedarse sin respuesta cuando el analizador se atraganta es peor que dar una respuesta aproximada y decir que lo es. Y el respaldo se suma siempre porque encuentra cosas que sqlglot no marca como tabla -un procedimiento en un `CALL`-: en un grafo de dependencias, sobrar una arista dudosa cuesta menos que faltar una real.",
+      "consecuencia": "Una herramienta de diagnostico que no arranca porque falta una dependencia no diagnostica nada, asi que `sqlglot` va en el extra `grafo` y no en el nucleo.\nLas referencias que aparecen en COMENTARIOS se devuelven aparte, con un patron mas permisivo -sin exigir palabra clave delante-, porque ahi el resultado es una pista y no una arista: casi siempre es una dependencia que alguien quito hace meses sin borrarla, y eso explica por que una tabla parece huerfana.",
+      "estado": "vigente",
+      "impacto": "menor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Analizador con respaldo por regex, y el analizador opcional",
+          "elegida": true,
+          "motivo": "Siempre da una respuesta, y dice cuando es aproximada"
+        },
+        {
+          "opcion": "Solo sqlglot",
+          "elegida": false,
+          "motivo": "Deja huecos silenciosos cuando falla, que es lo peor que puede pasar"
+        },
+        {
+          "opcion": "Solo expresiones regulares",
+          "elegida": false,
+          "motivo": "Confunde expresiones comunes y alias con tablas"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r042",
+      "fecha": "2026-09-27",
+      "orden": 42,
+      "carril": "analisis",
+      "titulo": "Las huerfanas son la pregunta, no la respuesta",
+      "tipo": "decision",
+      "detalle": "",
+      "porque": "En la plataforma real la lista da tres: la marca de agua y dos marts. Ninguna es basura. Los marts son puntos finales legitimos -los lee el cuadro de mando, que esta fuera del grafo- y la marca de agua la lee el codigo de ingesta, no una consulta. Una herramienta que las presentase como candidatas a borrar seria peligrosa.",
+      "consecuencia": "La orden imprime la advertencia junto al resultado, no en la documentacion: lo que se lee es la salida del comando, no el manual. Y las externas se excluyen por defecto, porque un nodo descubierto solo porque una vista lo mencionaba no se puede declarar huerfano sin haberlo mirado. Cerrar la pregunta necesita cruzar esto con el uso real -quien consulto la tabla en 90 dias-, que es lo siguiente de F5.",
+      "estado": "vigente",
+      "impacto": "menor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Listarlas con la advertencia en la propia salida del comando",
+          "elegida": true,
+          "motivo": "Lo que se lee es la salida, no el manual"
+        },
+        {
+          "opcion": "Llamarlas \"candidatas a borrar\"",
+          "elegida": false,
+          "motivo": "Alguien borraria un mart que si se usa, desde fuera del grafo"
+        },
+        {
+          "opcion": "No ofrecer la consulta hasta poder cruzarla con el uso real",
+          "elegida": false,
+          "motivo": "La lista ya sirve para revisar, aunque no cierre la decision"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r043",
+      "fecha": "2026-09-27",
+      "orden": 43,
+      "carril": "metodo",
+      "titulo": "Los heredocs de Git Bash corrompen escapes: aparecio un byte 0x08 en una regex",
+      "tipo": "hallazgo",
+      "detalle": "Un `\\\\b` escrito dentro de un heredoc acabo como un byte de retroceso real (0x08) en el fichero fuente, y la expresion regular dejo de encontrar nada sin dar ningun error. Se detecto porque un test fallaba y el patron en memoria salia con `\\\\x08`.",
+      "porque": "Es la tercera vez que los heredocs largos causan un problema en este proyecto, despues del YAML de FlowCrack y de unos `\\\\n` convertidos en saltos de linea de verdad dentro de cli.py. RETOMAR ya avisaba de que fallan; ahora hay tres casos concretos.",
+      "consecuencia": "Regla operativa: cualquier fichero con escapes -expresiones regulares, cadenas con `\\\\n`, YAML largo- se escribe con la herramienta de escritura o con un script en el scratchpad, nunca con un heredoc. Y despues de generar codigo asi, comprobar que no hay bytes de control: un `grep` no lo ve, pero rompe en silencio.",
+      "estado": "vigente",
+      "impacto": "parche",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r044",
+      "fecha": "2026-09-27",
+      "orden": 44,
+      "carril": "difusion",
+      "titulo": "El cuadro de mando lleva una pagina de calidad del dato",
+      "tipo": "decision",
+      "detalle": "Cuatro paginas especificadas en docs/dashboard.md: estado actual, el dia, renovables y calidad. La cuarta mide frescura, horas incompletas, revisiones de REE y peticiones a la API.",
+      "porque": "Las tres primeras paginas las hace cualquiera con un tutorial. La cuarta demuestra que se entiende que un dato bonito puede estar mal, que es la pregunta de la que vive todo el proyecto. La metrica de puntos revisados solo se puede calcular porque `raw` es de solo anadir: si sobreescribiera, no existiria.",
+      "consecuencia": "Hacen falta dos marts nuevos: `mart_generacion_por_tecnologia` para el apilado y `mart_calidad_datos` para esa pagina. Y dos avisos que no son cosmeticos: el anillo del mix tiene que filtrar valores positivos porque la hidraulica es negativa cuando bombea -y decirlo en el informe en lugar de esconderlo-, y los campos de porcentaje ya vienen en escala 0-100, asi que el tipo Porcentaje de Looker Studio los multiplicaria otra vez.",
+      "estado": "vigente",
+      "impacto": "menor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Cuatro paginas, con una dedicada a la calidad del dato",
+          "elegida": true,
+          "motivo": "Es la unica que no sale de un tutorial, y la que explica el proyecto"
+        },
+        {
+          "opcion": "Tres paginas de generacion, sin calidad",
+          "elegida": false,
+          "motivo": "Mas bonito y indistinguible de cualquier otro portfolio"
+        },
+        {
+          "opcion": "Las metricas de calidad repartidas por las otras paginas",
+          "elegida": false,
+          "motivo": "Se diluyen; juntas cuentan una historia sobre como se construyo"
         }
       ],
       "causada_por": [],

@@ -28,6 +28,11 @@ dependencies = []
 [project.optional-dependencies]
 bigquery = ["google-cloud-bigquery>=3.25"]
 dbt = ["dbt-bigquery>=1.9"]
+# sqlglot analiza el SQL de las vistas para sacar el linaje. Es OPCIONAL: sin el,
+# rastro.grafo.sql cae al respaldo por expresiones regulares y lo dice en el
+# resultado. Una herramienta de diagnostico que no arranca por una dependencia que
+# falta no diagnostica nada.
+grafo = ["sqlglot>=25.0"]
 dev = ["pytest>=8.0", "ruff>=0.6"]
 
 [project.scripts]

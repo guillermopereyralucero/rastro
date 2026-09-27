@@ -1,7 +1,11 @@
 """Linea de ordenes de Rastro.
 
-De momento cubre la ingesta. Los subcomandos del grafo (`linaje`, `impacto`,
-`huerfanas`) llegan cuando exista plataforma que analizar.
+Dos familias de ordenes. La ingesta -`buscar`, `plan`, `ingesta`, `diagnostico`-
+alimenta la plataforma. El grafo -`linaje`, `impacto`, `huerfanas`, `ciclos`,
+`grafo`- la analiza, y es la parte que da nombre al proyecto.
+
+Las del grafo leen `INFORMATION_SCHEMA`, que **no se factura**, y el manifiesto de
+dbt, que es un fichero local. Cuestan cero euros ejecutarlas.
 """
 
 from __future__ import annotations
@@ -76,7 +80,223 @@ def _analizador() -> argparse.ArgumentParser:
     diag.add_argument("--dia", default="2026-09-24", help="AAAA-MM-DD")
     diag.set_defaults(funcion=_diagnostico)
 
+    # --- el grafo (la capa 2) ---------------------------------------
+
+    for nombre, ayuda, funcion in (
+        ("linaje", "de donde sale una tabla", _linaje),
+        ("impacto", "que se rompe si la tocas", _impacto),
+    ):
+        orden = subs.add_parser(nombre, help=ayuda)
+        orden.add_argument("tabla", help="proyecto.dataset.tabla, o solo el nombre")
+        orden.add_argument("--saltos", type=int, default=None, help="profundidad maxima")
+        _opciones_grafo(orden)
+        orden.set_defaults(funcion=funcion)
+
+    huerf = subs.add_parser("huerfanas", help="tablas que nadie consulta")
+    _opciones_grafo(huerf)
+    huerf.set_defaults(funcion=_huerfanas)
+
+    cic = subs.add_parser("ciclos", help="dependencias circulares")
+    _opciones_grafo(cic)
+    cic.set_defaults(funcion=_ciclos)
+
+    grf = subs.add_parser("grafo", help="el grafo entero, con resumen o en JSON")
+    grf.add_argument("--salida", default=None, help="fichero JSON donde escribirlo")
+    _opciones_grafo(grf)
+    grf.set_defaults(funcion=_grafo)
+
     return raiz
+
+
+def _opciones_grafo(p: argparse.ArgumentParser) -> None:
+    p.add_argument("--proyecto", default="rastro-509715")
+    p.add_argument(
+        "--dataset",
+        action="append",
+        dest="datasets",
+        help="se puede repetir. Por defecto: raw, staging, marts, control",
+    )
+    p.add_argument(
+        "--manifiesto",
+        default="dbt/target/manifest.json",
+        help="manifest.json de dbt. Vacio para no usarlo",
+    )
+    p.add_argument(
+        "--sin-bigquery",
+        action="store_true",
+        help="solo el manifiesto de dbt, sin consultar la nube",
+    )
+
+
+def _construir_grafo(args):
+    """Cruza las dos fuentes y devuelve (grafo, avisos).
+
+    Se puede prescindir de cualquiera de las dos, y eso es a proposito: sin nube se
+    puede trabajar con el manifiesto, y sin dbt se puede analizar una plataforma que
+    nadie modelo. Exigir las dos convertiria la herramienta en algo que solo sirve
+    para proyectos que ya estan ordenados, que son justo los que no la necesitan.
+    """
+    from .grafo import Grafo
+
+    grafo = Grafo()
+    avisos: list[str] = []
+
+    if not args.sin_bigquery:
+        from .grafo.bigquery import desde_information_schema
+
+        datasets = args.datasets or ["raw", "staging", "marts", "control"]
+        extraccion = desde_information_schema(args.proyecto, datasets)
+        grafo.fusionar(extraccion.grafo)
+        avisos.extend(f"{a.donde}: {a.motivo}" for a in extraccion.avisos)
+
+    ruta = (args.manifiesto or "").strip()
+    if ruta:
+        from pathlib import Path as _Path
+
+        from .grafo.dbt import desde_manifiesto
+
+        if _Path(ruta).exists():
+            grafo.fusionar(desde_manifiesto(ruta))
+        else:
+            avisos.append(
+                f"no hay manifiesto en {ruta}; se genera con `dbt docs generate`"
+            )
+
+    if not grafo.nodos:
+        print(
+            "El grafo esta vacio. Sin BigQuery y sin manifiesto no hay nada que leer.",
+            file=sys.stderr,
+        )
+        raise SystemExit(6)
+
+    return grafo, avisos
+
+
+def _resolver(grafo, texto: str) -> str:
+    """Acepta el nombre corto si no hay ambiguedad.
+
+    Escribir `proyecto.dataset.tabla` entero cada vez invita a no usar la
+    herramienta. Si el nombre corto senala a un solo nodo, se usa; si senala a
+    varios, se dice cuales y se para, porque adivinar el que queria seria peor.
+    """
+    texto = texto.lower()
+    if texto in grafo:
+        return texto
+
+    candidatos = [n for n in grafo.nodos if n.endswith("." + texto)]
+    if len(candidatos) == 1:
+        return candidatos[0]
+    if len(candidatos) > 1:
+        print(f"`{texto}` es ambiguo. Puede ser:", file=sys.stderr)
+        for c in sorted(candidatos):
+            print(f"  {c}", file=sys.stderr)
+        raise SystemExit(7)
+    return texto  # que falle en la consulta, con sus sugerencias
+
+
+def _avisar(avisos: list[str]) -> None:
+    if avisos:
+        print(f"\n{len(avisos)} aviso(s) al construir el grafo:", file=sys.stderr)
+        for aviso in avisos[:10]:
+            print(f"  {aviso}", file=sys.stderr)
+
+
+def _linaje(args) -> int:
+    from .grafo import linaje
+
+    grafo, avisos = _construir_grafo(args)
+    objetivo = _resolver(grafo, args.tabla)
+
+    alcanzados = linaje(grafo, objetivo, args.saltos)
+    print(f"DE DONDE SALE {objetivo}\n")
+    if not alcanzados:
+        print("  De nada: es una raiz. Los datos entran aqui.")
+    for a in alcanzados:
+        nodo = grafo.nodos[a.id]
+        print(f"  {'  ' * (a.salto - 1)}<- [{nodo.tipo.value}] {a.id}")
+    _avisar(avisos)
+    return 0
+
+
+def _impacto(args) -> int:
+    from .grafo import impacto
+
+    grafo, avisos = _construir_grafo(args)
+    objetivo = _resolver(grafo, args.tabla)
+
+    alcanzados = impacto(grafo, objetivo, args.saltos)
+    print(f"QUE SE ROMPE SI TOCAS {objetivo}\n")
+    if not alcanzados:
+        print("  Nada. Nadie lo consume dentro del grafo.")
+        print("  Ojo: un cuadro de mando o un script externo no salen aqui.")
+    else:
+        print(f"  {len(alcanzados)} objeto(s) afectados:\n")
+        for a in alcanzados:
+            nodo = grafo.nodos[a.id]
+            print(f"  {'  ' * (a.salto - 1)}-> [{nodo.tipo.value}] {a.id}")
+    _avisar(avisos)
+    return 0
+
+
+def _huerfanas(args) -> int:
+    from .grafo import huerfanas
+
+    grafo, avisos = _construir_grafo(args)
+    encontradas = huerfanas(grafo)
+
+    print(f"NADIE CONSUME ESTO ({len(encontradas)})\n")
+    for id_ in encontradas:
+        nodo = grafo.nodos[id_]
+        print(f"  [{nodo.tipo.value}] {id_}")
+
+    print(
+        "\nNo son basura por si mismas: un mart que solo lee un cuadro de mando"
+        "\nesta aqui y es exactamente lo que tiene que ser. Esto es la pregunta,"
+        "\nno la respuesta."
+    )
+    _avisar(avisos)
+    return 0
+
+
+def _ciclos(args) -> int:
+    from .grafo import ciclos
+
+    grafo, avisos = _construir_grafo(args)
+    encontrados = ciclos(grafo)
+
+    if not encontrados:
+        print("Sin ciclos.")
+    else:
+        print(f"CICLOS ({len(encontrados)})\n")
+        for camino in encontrados:
+            print("  " + " -> ".join(camino))
+    _avisar(avisos)
+    return 0 if not encontrados else 1
+
+
+def _grafo(args) -> int:
+    grafo, avisos = _construir_grafo(args)
+    print(grafo.resumen())
+
+    if args.salida:
+        import json
+        from pathlib import Path as _Path
+
+        destino = _Path(args.salida)
+        destino.parent.mkdir(parents=True, exist_ok=True)
+        with destino.open("w", encoding="utf-8", newline="\n") as f:
+            json.dump(grafo.a_json(), f, ensure_ascii=False, indent=1)
+            f.write("\n")
+        print(f"\nEscrito en {destino}")
+    else:
+        print()
+        for nodo in sorted(grafo.nodos.values(), key=lambda n: (n.capa or "~", n.id)):
+            hijos = len(grafo.hijos(nodo.id))
+            padres = len(grafo.padres(nodo.id))
+            print(f"  [{nodo.tipo.value:<11}] {nodo.id}  ({padres} arriba, {hijos} abajo)")
+
+    _avisar(avisos)
+    return 0
 
 
 def _opciones_ingesta(p: argparse.ArgumentParser) -> None:

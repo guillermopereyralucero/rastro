@@ -128,12 +128,23 @@ previo de Firebase, aunque sea de Crashlytics en otro proyecto, la invalida.
 
 ## F5 · Rastro, la herramienta
 
-**Estado: sin empezar.**
+**Estado: el núcleo funciona contra la plataforma real.** 10 nodos, 11 aristas,
+3 confirmadas por las dos fuentes. 25 tests del grafo, ninguno con red.
 
-- [ ] Extracción de `INFORMATION_SCHEMA` y del manifiesto de dbt
-- [ ] Grafo dirigido de dependencias
-- [ ] CLI: `linaje`, `impacto`, `huerfanas`, `ciclos`
-- [ ] Visor HTML estático, de un solo fichero
+- [x] Extracción de `INFORMATION_SCHEMA` (sin coste) y del manifiesto de dbt
+- [x] Grafo dirigido, con los nodos de las dos fuentes fusionados por identificador
+- [x] El motivo de cada arista es una señal de confianza: `vista+dbt` vale más que
+      solo una de las dos
+- [x] Análisis de SQL en dos pasadas, con `sqlglot` **opcional** y respaldo por
+      expresiones regulares que declara cuándo el resultado es aproximado
+- [x] CLI: `linaje`, `impacto`, `huerfanas`, `ciclos`, `grafo --salida`
+- [x] Resolución de nombres cortos: `rastro impacto medidas` funciona
+- [x] Modo `--sin-bigquery`, para trabajar solo con el manifiesto
+- [ ] **Visor HTML estático de un solo fichero.** El JSON ya se genera con
+      `rastro grafo --salida`, así que falta solo la página que lo dibuja
+- [ ] Cruzar las huérfanas con el uso real (`INFORMATION_SCHEMA.JOBS`): quién
+      consultó cada tabla en 90 días. Es lo que convierte la pregunta en decisión
+- [ ] `rastro columnas`: linaje a nivel de columna, no solo de tabla
 
 ## F6 · Lenguaje natural
 
