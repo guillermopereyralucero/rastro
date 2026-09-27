@@ -2,7 +2,7 @@
 // Fuente: decisiones.yaml
 window.FLOWCRACK = {
   "formato": 2,
-  "generado": "2026-09-27 19:10",
+  "generado": "2026-09-27 19:48",
   "proyecto": {
     "nombre": "Rastro",
     "perfil": "investigacion",
@@ -1868,6 +1868,77 @@ window.FLOWCRACK = {
           "opcion": "Las metricas de calidad repartidas por las otras paginas",
           "elegida": false,
           "motivo": "Se diluyen; juntas cuentan una historia sobre como se construyo"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r045",
+      "fecha": "2026-09-27",
+      "orden": 45,
+      "carril": "difusion",
+      "titulo": "Looker Studio no permite reordenar las series de un apilado a mano",
+      "tipo": "hallazgo",
+      "detalle": "Verificado en la documentacion oficial del grafico de areas: el orden de las series lo controla la clasificacion de la dimension de desglose, y lo unico por lo que se puede clasificar es un campo de la fuente. No hay forma de arrastrar series. La primera version de docs/dashboard.md decia que si se podia.",
+      "porque": "Se comprobo porque Guillermo pidio verificar los pasos contra la documentacion antes de ponerse a configurar. La comprobacion valio la pena: habria perdido el rato buscando una opcion que no existe.",
+      "consecuencia": "El orden pasa a ser un dato del dominio. El seed gana `orden_apilado`, de 1 -nuclear, que no varia y va al fondo- a 11 -eolica, la mas variable, arriba-, y el informe clasifica el desglose por ese campo. Queda versionado y con test, en lugar de en un ajuste del informe que nadie puede reproducir.\nHace falta ademas subir \"Numero de series\" a 11: el valor por defecto es menor y agruparia las tecnologias pequenas en \"Otros\".",
+      "estado": "vigente",
+      "impacto": "menor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r046",
+      "fecha": "2026-09-27",
+      "orden": 46,
+      "carril": "analisis",
+      "titulo": "La demanda y la razon generacion/demanda entran en el mart",
+      "tipo": "decision",
+      "detalle": "`mart_generacion_horaria` gana `demanda_mw` -del indicador 1293- y `razon_generacion_demanda`. La razon lleva un test de rango entre 0,5 y 2,5.",
+      "porque": "El informe necesitaba graficar generacion contra demanda, y la alternativa era combinar dos fuentes dentro de Looker Studio. Eso dejaria la logica en el informe: sin versionar, sin test y sin que nadie mas pueda reproducirla. Una linea de SQL lo resuelve en el sitio correcto.",
+      "consecuencia": "La razon queda a la vista en el cuadro de mando, y eso no es adorno: es el indicador que detecto el doble conteo del solar cuando llego a 1,79. Se usa el 1293 y no el 10004 porque el primero cuadra con la realidad del sistema y el segundo sigue sin explicar (r037). El `join` es `left` a proposito: si falta la demanda de una hora, la generacion de esa hora sigue siendo correcta.",
+      "estado": "vigente",
+      "impacto": "menor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "La demanda dentro del mart",
+          "elegida": true,
+          "motivo": "La logica queda versionada y con test"
+        },
+        {
+          "opcion": "Combinar fuentes en Looker Studio",
+          "elegida": false,
+          "motivo": "Deja la logica en el informe, fuera del control de versiones"
         }
       ],
       "causada_por": [],

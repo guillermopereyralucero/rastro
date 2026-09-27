@@ -51,6 +51,23 @@ esperadas as (
 
 ),
 
+-- La demanda, para poder graficarla junto a la generacion sin que el informe tenga
+-- que combinar dos fuentes. Se usa el indicador 1293 y no el 10004: los dos dicen
+-- ser demanda, pero el 1293 cuadra con la realidad conocida del sistema -28 GW un
+-- mediodia de septiembre- y el 10004 marcaba 46.976 MW a la misma hora. Hasta saber
+-- que mide el segundo, manda el primero. Ver la decision r037.
+demanda as (
+
+    select
+        hora,
+        geo_id,
+        potencia_media_mw as demanda_mw
+    from {{ ref('int_potencia_horaria') }}
+    where indicador_id = 1293
+      and hora_completa
+
+),
+
 agregada as (
 
     select
@@ -82,6 +99,14 @@ select
     agregada.potencia_renovable_mw,
     agregada.potencia_no_renovable_mw,
 
+    demanda.demanda_mw,
+
+    -- Cuanto se genera por cada unidad que se consume. Por encima de 1 se exporta o
+    -- se bombea; por debajo, se importa. Es la comprobacion que detecto el doble
+    -- conteo del solar, asi que tenerla a la vista en el cuadro de mando no es
+    -- adorno: es el indicador que avisa de que algo no cuadra.
+    round(safe_divide(agregada.potencia_total_mw, demanda.demanda_mw), 3) as razon_generacion_demanda,
+
     agregada.tecnologias,
     esperadas.tecnologias_esperadas,
     agregada.tecnologias = esperadas.tecnologias_esperadas as cobertura_completa,
@@ -104,3 +129,9 @@ select
 
 from agregada
 cross join esperadas
+-- `left join`: si falta la demanda de una hora, la generacion de esa hora sigue
+-- siendo correcta y se publica. Un `inner join` la borraria por un dato que falta
+-- en otra serie.
+left join demanda
+    on agregada.hora = demanda.hora
+    and agregada.geo_id = demanda.geo_id

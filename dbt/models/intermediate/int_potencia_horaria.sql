@@ -40,6 +40,7 @@ select
     tecnologias.familia,
     tecnologias.renovable,
     tecnologias.sumable,
+    tecnologias.orden_apilado,
     medidas.geo_id,
     medidas.geo_nombre,
 
@@ -67,5 +68,6 @@ group by
     tecnologias.familia,
     tecnologias.renovable,
     tecnologias.sumable,
+    tecnologias.orden_apilado,
     medidas.geo_id,
     medidas.geo_nombre

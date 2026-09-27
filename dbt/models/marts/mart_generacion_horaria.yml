@@ -41,3 +41,20 @@ models:
               arguments:
                 minimo: 0
                 maximo: 100
+
+      - name: demanda_mw
+        description: >
+          Demanda real peninsular de la misma hora (indicador 1293). Esta aqui para
+          que el informe pueda graficar generacion contra demanda sin combinar dos
+          fuentes de datos.
+
+      - name: razon_generacion_demanda
+        description: >
+          Generacion dividida por demanda. Por encima de 1 se exporta o se bombea;
+          por debajo, se importa. Entre 0,5 y 2,5 es margen amplio a proposito: es
+          el indicador que detecto el doble conteo del solar, cuando llego a 1,79.
+        data_tests:
+          - entre:
+              arguments:
+                minimo: 0.5
+                maximo: 2.5

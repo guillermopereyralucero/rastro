@@ -45,6 +45,13 @@ select
     horaria.tecnologia,
     horaria.renovable,
 
+    -- Orden del apilado, de abajo arriba. Existe porque Looker Studio NO permite
+    -- reordenar las series a mano: el apilado sigue el orden de clasificacion, y
+    -- lo unico por lo que se puede clasificar es un campo. Asi que el orden es un
+    -- dato del dominio -abajo lo estable, arriba lo variable- y vive en el seed,
+    -- versionado, en lugar de en un ajuste del informe que nadie puede reproducir.
+    horaria.orden_apilado,
+
     horaria.potencia_media_mw,
     horaria.potencia_min_mw,
     horaria.potencia_max_mw,
