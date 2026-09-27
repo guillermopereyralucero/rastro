@@ -2,7 +2,7 @@
 // Fuente: decisiones.yaml
 window.FLOWCRACK = {
   "formato": 2,
-  "generado": "2026-09-27 20:11",
+  "generado": "2026-09-27 21:15",
   "proyecto": {
     "nombre": "Rastro",
     "perfil": "investigacion",
@@ -2065,6 +2065,84 @@ window.FLOWCRACK = {
       "alternativas": [],
       "causada_por": [
         "r045"
+      ],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r050",
+      "fecha": "2026-09-27",
+      "orden": 50,
+      "carril": "metodo",
+      "titulo": "Las consultas a INFORMATION_SCHEMA SI se facturan: 10 MB minimos y sin cache",
+      "tipo": "hallazgo",
+      "detalle": "La pagina oficial lo dice con estas palabras: en precios bajo demanda, las consultas a las vistas de INFORMATION_SCHEMA tienen un minimo facturable de 10 MB, y como NO se cachean, se cobra cada ejecucion aunque el texto de la consulta sea identico. El README de este proyecto afirmaba lo contrario en su seccion de cabecera, y lo repetian cinco sitios mas.",
+      "porque": "Salio al ir a implementar el cruce con el historial de consultas, comprobando si esa consulta costaria algo. La creencia de que INFORMATION_SCHEMA es gratis esta muy extendida, y este proyecto la llevaba escrita como argumento principal de por que la herramienta es viable.",
+      "consecuencia": "La conclusion practica NO cambia -Rastro sigue saliendo a 0 EUR- pero el motivo es otro y ahora hay cifra en lugar de mito: 1 TiB gratuito entre 10 MB son 104.857 consultas al mes. Una ejecucion de `rastro visor` sobre cuatro conjuntos de datos son 12 consultas, o 120 MB, asi que caben 8.738 ejecuciones al mes y lanzarlo cada hora durante un mes consume el 8,35 % del tramo.\nCorregido en seis sitios, dejando escrito el error en el README en lugar de borrarlo. Saber el modelo de facturacion de verdad es mejor respuesta en una entrevista que repetir que algo es gratis, sobre todo cuando el que escucha sabe que no lo es.",
+      "estado": "vigente",
+      "impacto": "mayor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": "coste.md",
+      "alternativas": [],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r051",
+      "fecha": "2026-09-27",
+      "orden": 51,
+      "carril": "analisis",
+      "titulo": "Las huerfanas se cruzan con el historial, y lo que decide es QUIEN leyo",
+      "tipo": "decision",
+      "detalle": "`rastro huerfanas` lee `INFORMATION_SCHEMA.JOBS_BY_PROJECT` y clasifica en tres: sin lecturas, solo la tuberia, o la usan personas. Solo la primera es candidata a borrar. La distincion sale de si el `user_email` acaba en `.gserviceaccount.com`.",
+      "porque": "Que nadie consuma una tabla dentro del grafo no significa que no se use. Y la distincion entre una lectura de cuenta de servicio y una de persona es la que cierra la pregunta: una tabla que solo lee la tuberia para construir la siguiente es un paso intermedio; una que lee una persona es un producto. Sin esa distincion, la lista de huerfanas es un dato curioso; con ella, es una decision.",
+      "consecuencia": "Probado contra el historial real: las tres huerfanas del proyecto tienen lector humano, asi que ninguna es borrable. Respuesta correcta.\nQuedan dos limitaciones escritas en el modulo, porque fiarse de esto sin saberlas lleva a borrar algo que se usa. Primera: mirar tambien deja huella, asi que una tabla recien creada parece usada solo porque alguien la reviso -la medida es fiable a las semanas, no al dia siguiente-. Segunda: mientras todo corra con una cuenta de usuario, incluido dbt con `method: oauth`, todo sale como lectura humana y la distincion no informa; empezara a hacerlo cuando la ingesta corra en la nube con su propia cuenta.\nY si falta el permiso `bigquery.jobs.listAll`, el comando NO declara nada borrable: dice que no pudo leer el historial. Confundir \"no lo sabemos\" con \"nadie la usa\" es el error que haria peligrosa la herramienta.",
+      "estado": "vigente",
+      "impacto": "mayor",
+      "irreversible": false,
+      "hito": "metodo",
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Cruzar con el historial y distinguir persona de cuenta de servicio",
+          "elegida": true,
+          "motivo": "Es lo que convierte la lista en una decision"
+        },
+        {
+          "opcion": "Solo contar consultas, sin mirar quien",
+          "elegida": false,
+          "motivo": "Una tabla que solo lee la tuberia contaria igual que una que lee gente, y son cosas distintas\n"
+        },
+        {
+          "opcion": "Dejarlo en la lista del grafo, sin historial",
+          "elegida": false,
+          "motivo": "Da la pregunta y no la respuesta, que es donde estaba antes"
+        }
+      ],
+      "causada_por": [
+        "r042"
       ],
       "abre": [],
       "cierra": [],

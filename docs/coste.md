@@ -35,7 +35,7 @@ El almacenamiento no es el riesgo. Nunca lo fue.
 | BigQuery · almacenamiento | 10 GiB/mes ✔ | ~86 MB/año | Ninguno |
 | BigQuery · consultas | 1 TiB/mes ✔ | Kilobytes | Ninguno |
 | BigQuery · trabajos de carga | Gratis ✔ | 1 por ventana | Ninguno |
-| BigQuery · `INFORMATION_SCHEMA` | **No se factura** ✔ | Es la base de Rastro | Ninguno |
+| BigQuery · `INFORMATION_SCHEMA` | **10 MB mínimos por consulta, sin caché** ✔ | 12 consultas por ejecución de Rastro = 120 MB | Bajo: 8.738 ejecuciones al mes en el tramo gratuito |
 | Cloud Scheduler | **3 trabajos/mes, por cuenta de facturación** ✔ | 1 | Bajo, ver abajo |
 | Artifact Registry | **0,5 GB, por cuenta de facturación** ✔ | 1 imagen | **El más alto**, ver abajo |
 | Secret Manager | ? | 1 secreto, 1 versión | Bajo |
@@ -116,7 +116,8 @@ BigQuery y dbt gratis.
 
 ## Cómo se comprueba, sin creerse este documento
 
-Las consultas a `INFORMATION_SCHEMA` no se facturan, así que medir es gratis:
+Medir cuesta 10 MB por consulta, que es el mínimo facturable de
+`INFORMATION_SCHEMA`. Con 1 TiB gratis al mes, dan para 104.857 consultas:
 
 ```bash
 # Cuánto ocupa cada tabla

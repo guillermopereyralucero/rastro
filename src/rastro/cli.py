@@ -4,8 +4,11 @@ Dos familias de ordenes. La ingesta -`buscar`, `plan`, `ingesta`, `diagnostico`-
 alimenta la plataforma. El grafo -`linaje`, `impacto`, `huerfanas`, `ciclos`,
 `grafo`- la analiza, y es la parte que da nombre al proyecto.
 
-Las del grafo leen `INFORMATION_SCHEMA`, que **no se factura**, y el manifiesto de
-dbt, que es un fichero local. Cuestan cero euros ejecutarlas.
+Las del grafo leen `INFORMATION_SCHEMA` y el manifiesto de dbt. Ojo con la creencia
+habitual: las consultas a `INFORMATION_SCHEMA` SI se facturan, con un minimo de 10 MB
+cada una y sin cache. Lo que pasa es que a ese precio caben unas 8.738 ejecuciones al
+mes en el TiB gratuito, asi que en la practica cuestan cero, pero por una razon
+distinta de la que suele decirse.
 """
 
 from __future__ import annotations
@@ -134,6 +137,22 @@ def _opciones_grafo(p: argparse.ArgumentParser) -> None:
         action="store_true",
         help="solo el manifiesto de dbt, sin consultar la nube",
     )
+    p.add_argument(
+        "--region",
+        default="europe-southwest1",
+        help="region de los datos, para el historial de consultas",
+    )
+    p.add_argument(
+        "--dias",
+        type=int,
+        default=90,
+        help="cuantos dias de historial mirar (la vista guarda 180)",
+    )
+    p.add_argument(
+        "--sin-historial",
+        action="store_true",
+        help="no leer el historial de consultas",
+    )
 
 
 def _construir_grafo(args):
@@ -247,21 +266,73 @@ def _impacto(args) -> int:
 
 
 def _huerfanas(args) -> int:
+    """Las huerfanas del grafo, cruzadas con quien las ha leido de verdad.
+
+    El grafo solo sabe quien consume una tabla DENTRO de la plataforma. El historial
+    de consultas sabe quien la ha leido de verdad, y distingue una cuenta de servicio
+    de una persona. Una tabla sin consumidores en el grafo y sin lecturas humanas es
+    una candidata a borrar; con cualquiera de las dos cosas, no lo es.
+    """
     from .grafo import huerfanas
+    from .grafo.uso import desde_jobs, juzgar
 
     grafo, avisos = _construir_grafo(args)
     encontradas = huerfanas(grafo)
 
-    print(f"NADIE CONSUME ESTO ({len(encontradas)})\n")
-    for id_ in encontradas:
-        nodo = grafo.nodos[id_]
-        print(f"  [{nodo.tipo.value}] {id_}")
+    if args.sin_historial or args.sin_bigquery:
+        uso = None
+    else:
+        uso = desde_jobs(args.proyecto, region=args.region, dias=args.dias)
 
-    print(
-        "\nNo son basura por si mismas: un mart que solo lee un cuadro de mando"
-        "\nesta aqui y es exactamente lo que tiene que ser. Esto es la pregunta,"
-        "\nno la respuesta."
-    )
+    print(f"NADIE LAS CONSUME DENTRO DEL GRAFO ({len(encontradas)})")
+
+    if uso is None:
+        print()
+        for id_ in encontradas:
+            print(f"  [{grafo.nodos[id_].tipo.value}] {id_}")
+        print(
+            chr(10) + "Sin cruzar con el historial de lecturas, esto es la pregunta y no"
+            + chr(10) + "la respuesta: un mart que solo lee un cuadro de mando sale aqui y"
+            + chr(10) + "es exactamente lo que tiene que ser."
+        )
+        _avisar(avisos)
+        return 0
+
+    if not uso.disponible:
+        print()
+        print(f"  El historial NO se pudo leer: {uso.error}")
+        print(
+            chr(10) + "  Ver los trabajos de todos los usuarios necesita el permiso"
+            + chr(10) + "  `bigquery.jobs.listAll`. Sin el, NO se puede distinguir"
+            + chr(10) + "  'nadie la usa' de 'no lo sabemos', asi que ninguna de estas"
+            + chr(10) + "  tablas se puede declarar borrable:" + chr(10)
+        )
+        for id_ in encontradas:
+            print(f"    [{grafo.nodos[id_].tipo.value}] {id_}")
+        _avisar(avisos)
+        return 0
+
+    print(f"cruzado con {uso.resumen()}" + chr(10))
+
+    veredictos = juzgar(encontradas, uso)
+    borrables = [v for v in veredictos if v.candidata_a_borrar]
+
+    for v in veredictos:
+        marca = "BORRAR?" if v.candidata_a_borrar else "       "
+        print(f"  {marca}  {v.tabla}")
+        print(f"           {v.clasificacion}: {v.explicacion()}")
+
+    print()
+    if borrables:
+        print(
+            f"{len(borrables)} candidata(s) a borrar: nadie las consume en el grafo"
+            + chr(10) + f"y nadie las ha leido en {args.dias} dias."
+        )
+    else:
+        print(
+            "Ninguna candidata a borrar. Todas las que el grafo da por huerfanas"
+            + chr(10) + "tienen lectores, dentro o fuera de la plataforma."
+        )
     _avisar(avisos)
     return 0
 

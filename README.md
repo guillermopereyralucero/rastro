@@ -55,9 +55,19 @@ a la derecha de **todo** lo que necesita, así que el dibujo se lee de izquierda
 derecha como se lee el flujo de datos, y dos ejecuciones dan el mismo resultado. Se
 calcula en Python, no en el navegador, para poder probarla.
 
-Las consultas a `INFORMATION_SCHEMA` **no se facturan en BigQuery**. La
-herramienta cuesta cero euros ejecutarla, y ese detalle es lo que hace viable
-la capa entera.
+**Corrección: una versión anterior de este README decía que las consultas a
+`INFORMATION_SCHEMA` no se facturan. Es falso**, y es una creencia bastante extendida.
+Sí se facturan, con un **mínimo de 10 MB por consulta**, y además **no se cachean**:
+cada ejecución cuesta aunque el texto de la consulta sea idéntico.
+
+Lo que no cambia es la conclusión, y ahora con una cifra en lugar de un mito. El TiB
+gratuito mensual da para **104.857 consultas de metadatos**. Una ejecución de
+`rastro visor` sobre cuatro conjuntos de datos son 12 consultas, o 120 MB: caben
+**8.738 ejecuciones al mes** dentro del tramo gratuito, y ejecutarlo cada hora durante
+un mes entero consume el **8,35 %**.
+
+Saber el modelo de facturación de verdad es mejor respuesta que repetir que algo es
+gratis.
 
 **Y por qué existe, en una línea que sale de la lista de precios de Google:** el
 linaje de datos en Google Cloud vive en el nivel *premium* de Knowledge Catalog
@@ -282,7 +292,7 @@ src/rastro/
 ├── grafo/               # la capa 2: el linaje
 │   ├── modelos.py       # nodos, aristas, y el motivo como señal de confianza
 │   ├── sql.py           # dos pasadas: sqlglot y respaldo por regex
-│   ├── bigquery.py      # INFORMATION_SCHEMA, que no se factura
+│   ├── bigquery.py      # INFORMATION_SCHEMA: 10 MB mínimos por consulta
 │   ├── dbt.py           # el manifiesto, que es la verdad de lo que dbt gestiona
 │   ├── consultas.py     # linaje, impacto, ciclos, huérfanas
 │   ├── disposicion.py   # por capas, calculada en Python para poder probarla

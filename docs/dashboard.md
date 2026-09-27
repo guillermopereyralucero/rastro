@@ -125,17 +125,17 @@ apilado se lee de un golpe sin consultar la leyenda.
 
 | Tecnología | Color |
 |---|---|
-| Eólica | `#4A90D9` |
+| Eolica | `#4A90D9` |
 | Solar fotovoltaica | `#F2B300` |
-| Solar térmica | `#E88B00` |
-| Térmica renovable | `#27AE60` |
-| Hidráulica | `#00A9B7` |
+| Solar termica | `#E88B00` |
+| Termica renovable | `#27AE60` |
+| Hidraulica | `#00A9B7` |
 | Nuclear | `#8E44AD` |
 | Ciclo combinado | `#7F8C8D` |
-| Carbón | `#34495E` |
+| Carbon | `#34495E` |
 | Fuel-gas | `#95A5A6` |
-| Cogeneración y resto | `#BDC3C7` |
-| Resto generación | `#D5DBDB` |
+| Cogeneracion y resto | `#BDC3C7` |
+| Resto generacion | `#D5DBDB` |
 
 ---
 
@@ -290,6 +290,30 @@ base se queda quieta. Es como lo dibuja Red Eléctrica, y por la misma razón.
 
 El paso 7 hace falta porque hay 11 tecnologías y el valor por defecto de *Número de
 series* es menor: sin subirlo, las de menor aportación se agrupan en «Otros».
+
+### ¿Y aquí también filtro por aportación positiva? **No.**
+
+En el anillo (paso 1.4) sí, porque un anillo no puede dibujar un sector negativo. En
+un apilado **sí puede**: los valores negativos se apilan hacia abajo, por debajo del
+eje cero, y eso es correcto y es lo que quieres ver.
+
+Medido sobre los datos que hay: la **hidráulica es negativa en 17 de 49 horas**, el
+35 % del tiempo, con un mínimo de −3.572 MW. Ninguna otra tecnología baja de cero. Y
+esa banda turquesa bajo el eje es la historia del día: **España bombea a mediodía,
+cuando sobra el solar, para soltar el agua por la tarde.** Filtrarla dejaría el
+gráfico más limpio y sin lo más interesante que cuenta.
+
+Lo que sí conviene es explicarlo. Pon un cuadro de texto debajo:
+
+> *La hidráulica baja de cero cuando el sistema bombea: consume energía para subir
+> agua y almacenarla. Suele coincidir con las horas de más sol.*
+
+**Un aviso de otro tipo, que salió al mirar los datos:** el **fuel-gas vale 0 en todas
+las horas**, porque solo opera en los sistemas no peninsulares y estos datos son de la
+Península. Ocupa un color de la leyenda sin dibujar nada. Puedes dejarlo —es honesto:
+esa tecnología existe y aporta cero— o filtrarlo con `potencia_media_mw > 0`
+**solo si decides que la leyenda importa más que el inventario completo**. Yo lo
+dejaría.
 
 📄 [Referencia del gráfico de áreas](https://cloud.google.com/looker/docs/studio/area-chart-reference)
 

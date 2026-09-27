@@ -131,7 +131,8 @@ previo de Firebase, aunque sea de Crashlytics en otro proyecto, la invalida.
 **Estado: el núcleo funciona contra la plataforma real.** 10 nodos, 11 aristas,
 3 confirmadas por las dos fuentes. 25 tests del grafo, ninguno con red.
 
-- [x] Extracción de `INFORMATION_SCHEMA` (sin coste) y del manifiesto de dbt
+- [x] Extracción de `INFORMATION_SCHEMA` (10 MB mínimos por consulta, 12 por
+      ejecución) y del manifiesto de dbt
 - [x] Grafo dirigido, con los nodos de las dos fuentes fusionados por identificador
 - [x] El motivo de cada arista es una señal de confianza: `vista+dbt` vale más que
       solo una de las dos
@@ -145,8 +146,10 @@ previo de Firebase, aunque sea de Crashlytics en otro proyecto, la invalida.
       protocolo `file:`. Disposición por capas calculada en Python —y por tanto
       probada— en lugar de por fuerzas en el navegador. Hay un
       [ejemplo generado](ejemplo-grafo.html) en el repo
-- [ ] Cruzar las huérfanas con el uso real (`INFORMATION_SCHEMA.JOBS`): quién
-      consultó cada tabla en 90 días. Es lo que convierte la pregunta en decisión
+- [x] **Cruzar las huérfanas con el uso real** (`JOBS_BY_PROJECT`): tres
+      clasificaciones —sin lecturas, solo la tubería, la usan personas— y solo la
+      primera es candidata a borrar. Sin el permiso `jobs.listAll`, no declara nada
+      borrable: dice que no pudo saberlo
 - [ ] `rastro columnas`: linaje a nivel de columna, no solo de tabla
 
 ## F6 · Lenguaje natural

@@ -1,9 +1,18 @@
 """El grafo segun BigQuery, leido de `INFORMATION_SCHEMA`.
 
-**Estas consultas no se facturan.** Es el dato que hace viable la herramienta
-entera: analizar una plataforma de datos con Rastro cuesta cero euros, mientras el
-linaje de datos de Google Cloud vive en el nivel de pago de Knowledge Catalog. No es
-un detalle de coste, es la razon de que el proyecto tenga sentido.
+**Cuanto cuesta esto, de verdad.** Las consultas a `INFORMATION_SCHEMA` SI se
+facturan -es una creencia extendida que no, y este modulo llevaba el error escrito-:
+minimo **10 MB por consulta**, y **sin cache**, asi que repetir la misma consulta
+vuelve a costar.
+
+Con 1 TiB gratuito al mes eso da para 104.857 consultas. Cada recorrido completo son
+tres consultas por conjunto de datos -TABLES, VIEWS y ROUTINES-, o sea 12 en esta
+plataforma: unas 8.738 ejecuciones al mes sin salir del tramo gratuito.
+
+O sea que analizar una plataforma con Rastro sigue costando cero euros en la practica,
+mientras el linaje de datos de Google Cloud vive en el nivel de pago de Knowledge
+Catalog. Pero el argumento es "12 consultas de 10 MB" y no "es gratis": lo primero se
+puede comprobar.
 
 Dos vistas hacen el trabajo:
 
@@ -92,7 +101,11 @@ def desde_information_schema(
     cliente: Any = None,
     incluir_rutinas: bool = True,
 ) -> Extraccion:
-    """Construye el grafo leyendo los metadatos de BigQuery. Sin coste."""
+    """Construye el grafo leyendo los metadatos de BigQuery.
+
+    Tres consultas por conjunto de datos, a 10 MB minimos cada una. Con cuatro
+    conjuntos son 120 MB por ejecucion: unas 8.738 al mes en el TiB gratuito.
+    """
     if cliente is None:
         from ..ingesta.bigquery import cliente_por_defecto
 
