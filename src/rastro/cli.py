@@ -7,6 +7,7 @@ De momento cubre la ingesta. Los subcomandos del grafo (`linaje`, `impacto`,
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 from datetime import UTC, datetime, timedelta
@@ -85,6 +86,16 @@ def _opciones_ingesta(p: argparse.ArgumentParser) -> None:
     p.add_argument("--dias-por-tramo", type=int, default=7)
     p.add_argument("--max-peticiones", type=int, default=50)
     p.add_argument("--marcas", default="datos/marcas.json")
+    p.add_argument(
+        "--destino",
+        choices=["local", "bigquery"],
+        default="local",
+        help=(
+            "donde se guarda. `local` escribe JSON y JSONL en disco; `bigquery` "
+            "usa la marca de agua y las tablas del proyecto"
+        ),
+    )
+    p.add_argument("--proyecto", default="rastro-509715", help="proyecto de GCP")
 
 
 def _politica(args) -> Politica:
@@ -147,15 +158,27 @@ def _buscar(args) -> int:
     return 0
 
 
+def _marca_de_agua(args):
+    """La marca de agua local o la de BigQuery, segun el destino.
+
+    El planificador recibe una u otra sin notar la diferencia: por eso
+    `MarcaDeAgua` es un protocolo. Cambiar de almacen no toca su codigo ni sus
+    tests.
+    """
+    if args.destino == "bigquery":
+        from .ingesta.bigquery import MarcaDeAguaBigQuery
+
+        return MarcaDeAguaBigQuery(proyecto=args.proyecto)
+    return MarcaDeAguaJSON(args.marcas)
+
+
 def _plan(args) -> int:
     """Ensena el plan sin gastar ni una peticion. Es el modo por defecto mental."""
     catalogo = Catalogo.empaquetado()
     indicadores = _indicadores(args)
     catalogo.validar(indicadores)
 
-    plan = planificar(
-        indicadores, MarcaDeAguaJSON(args.marcas), _politica(args), ahora_utc()
-    )
+    plan = planificar(indicadores, _marca_de_agua(args), _politica(args), ahora_utc())
     print(plan.resumen())
     for peticion in plan.peticiones:
         print(f"  {peticion.indicador_id:>7}  {peticion.ventana}")
@@ -169,7 +192,7 @@ def _ingesta(args) -> int:
     indicadores = _indicadores(args)
     catalogo.validar(indicadores)
 
-    marca = MarcaDeAguaJSON(args.marcas)
+    marca = _marca_de_agua(args)
     politica = _politica(args)
     plan = planificar(indicadores, marca, politica, ahora_utc())
     print(plan.resumen(), "\n")
@@ -177,30 +200,66 @@ def _ingesta(args) -> int:
     api = ClienteESIOS(
         token=_token(), catalogo=catalogo, max_peticiones=politica.max_peticiones
     )
-    destino = Path(args.marcas).parent / "medidas.jsonl"
-    destino.parent.mkdir(parents=True, exist_ok=True)
+    guardar, donde = _almacen(args)
 
     total = 0
-    with destino.open("a", encoding="utf-8", newline="\n") as salida:
-        for peticion in plan.peticiones:
-            medidas = api.valores(peticion.indicador_id, peticion.ventana)
-            for medida in medidas:
-                salida.write(
-                    f'{{"indicador_id": {medida.indicador_id}, '
-                    f'"instante": "{medida.instante.isoformat()}", '
-                    f'"valor": {medida.valor}, '
-                    f'"geo_id": {medida.geo_id if medida.geo_id is not None else "null"}}}\n'
-                )
-            total += len(medidas)
-            # La marca solo avanza cuando la ventana esta escrita: si el
-            # proceso muere a mitad, la proxima ejecucion la repite entera en
-            # lugar de dejar un hueco que nadie volveria a pedir.
-            avanzar_con(marca, peticion.indicador_id, peticion.ventana)
-            print(f"  {peticion.indicador_id:>7}  {peticion.ventana}  {len(medidas)} puntos")
+    for peticion in plan.peticiones:
+        medidas = api.valores(peticion.indicador_id, peticion.ventana)
+        guardar(medidas)
+        total += len(medidas)
+        # La marca solo avanza cuando la ventana esta escrita: si el proceso
+        # muere a mitad, la proxima ejecucion la repite entera en lugar de
+        # dejar un hueco que nadie volveria a pedir.
+        avanzar_con(marca, peticion.indicador_id, peticion.ventana)
+        print(f"  {peticion.indicador_id:>7}  {peticion.ventana}  {len(medidas)} puntos")
 
-    print(f"\n{total} puntos en {destino}\n")
+    print(f"\n{total} puntos en {donde}\n")
     print(api.registro.resumen())
+
+    if args.destino == "bigquery":
+        from .ingesta.bigquery import AlmacenPeticiones
+
+        escritas = AlmacenPeticiones(proyecto=args.proyecto).guardar(api.registro)
+        print(f"\nauditoria         : {escritas} filas en control.peticiones")
+
     return 0
+
+
+def _almacen(args):
+    """Devuelve la funcion que guarda medidas, y donde las guarda.
+
+    En local, un JSONL al lado de las marcas: sirve para mirar el dato a ojo
+    mientras se desarrolla. En BigQuery, un trabajo de carga por ventana, que es
+    gratuito a diferencia de las inserciones en streaming.
+    """
+    if args.destino == "bigquery":
+        from .ingesta.bigquery import AlmacenMedidas
+
+        almacen = AlmacenMedidas(proyecto=args.proyecto)
+        return almacen.guardar, almacen.ruta
+
+    ruta = Path(args.marcas).parent / "medidas.jsonl"
+    ruta.parent.mkdir(parents=True, exist_ok=True)
+
+    def guardar(medidas) -> int:
+        with ruta.open("a", encoding="utf-8", newline="\n") as salida:
+            for m in medidas:
+                salida.write(
+                    json.dumps(
+                        {
+                            "indicador_id": m.indicador_id,
+                            "instante": m.instante.isoformat(),
+                            "valor": m.valor,
+                            "geo_id": m.geo_id,
+                            "geo_nombre": m.geo_nombre,
+                        },
+                        ensure_ascii=False,
+                    )
+                    + "\n"
+                )
+        return len(medidas)
+
+    return guardar, ruta
 
 
 def _diagnostico(args) -> int:

@@ -75,10 +75,15 @@ class Anotacion:
     El registro completo se guarda para poder responder con exactitud a
     cuantas peticiones se hicieron y por que. Ante un proveedor que pide uso
     responsable, "creo que pocas" no es una respuesta.
+
+    La ventana se guarda como las dos fechas y no como texto: el texto es para
+    leerlo, y reconstruir fechas a partir de algo pensado para leerse pierde
+    precision y se rompe en cuanto alguien cambia el formato.
     """
 
     indicador_id: int
-    ventana: str
+    ventana_inicio: datetime
+    ventana_fin: datetime
     codigo: int | None
     intentos: int
     puntos: int
@@ -88,6 +93,11 @@ class Anotacion:
     @property
     def ok(self) -> bool:
         return self.codigo == 200 and not self.error
+
+    @property
+    def ventana(self) -> str:
+        """La ventana en formato legible, para los resumenes."""
+        return f"{self.ventana_inicio:%Y-%m-%d %H:%M}Z .. {self.ventana_fin:%Y-%m-%d %H:%M}Z"
 
 
 @dataclass
@@ -239,7 +249,8 @@ class ClienteESIOS:
         self.registro.anotaciones.append(
             Anotacion(
                 indicador_id=indicador_id,
-                ventana=str(ventana),
+                ventana_inicio=ventana.inicio,
+                ventana_fin=ventana.fin,
                 codigo=codigo,
                 intentos=intentos,
                 puntos=0,
@@ -264,7 +275,8 @@ class ClienteESIOS:
         self.registro.anotaciones.append(
             Anotacion(
                 indicador_id=indicador_id,
-                ventana=str(ventana),
+                ventana_inicio=ventana.inicio,
+                ventana_fin=ventana.fin,
                 codigo=codigo,
                 intentos=intentos,
                 puntos=puntos,

@@ -2,7 +2,7 @@
 // Fuente: decisiones.yaml
 window.FLOWCRACK = {
   "formato": 2,
-  "generado": "2026-09-27 16:15",
+  "generado": "2026-09-27 16:59",
   "proyecto": {
     "nombre": "Rastro",
     "perfil": "investigacion",
@@ -1243,6 +1243,116 @@ window.FLOWCRACK = {
       "abre": [
         "r027"
       ],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r029",
+      "fecha": "2026-09-27",
+      "orden": 29,
+      "carril": "analisis",
+      "titulo": "La hidraulica marca -3.600 MW: el test de rango no puede exigir valores positivos",
+      "tipo": "medicion",
+      "detalle": "Primera ingesta real a BigQuery, 1.146 medidas de dos dias. El indicador 546 (Generacion T.Real hidraulica) va de -3.600 a 6.593 MW; el 551 (eolica), de 1.368 a 7.478 MW, siempre positivo. Una sola zona geografica en los dos casos, la Peninsula.",
+      "porque": "Salio al mirar los datos ya cargados en lugar de darlos por buenos. La hipotesis es que el indicador recoge la hidraulica NETA de bombeo: el bombeo consume energia para subir agua, y Espana tiene del orden de 6 GW de potencia de bombeo, asi que -3.600 MW es plausible. Queda como hipotesis, no como hecho: hay que confirmarlo contra la documentacion de ESIOS antes de escribirlo en el README.",
+      "consecuencia": "El test de rango plausible por tecnologia no puede ser uno solo. Un `valor >= 0` aplicado a todo habria marcado como roto un dato correcto, que es el error contrario al del 37.483 y igual de malo: alli se acepto un numero imposible, aqui se rechazaria uno real. El rango tiene que ser por tecnologia, y para la hidraulica con suelo negativo.",
+      "estado": "vigente",
+      "impacto": "mayor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [],
+      "causada_por": [
+        "r012"
+      ],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r030",
+      "fecha": "2026-09-27",
+      "orden": 30,
+      "carril": "metodo",
+      "titulo": "Trabajos de carga y `raw` de solo anadir: la revision de REE se conserva",
+      "tipo": "decision",
+      "detalle": "La escritura en `raw.medidas` usa trabajos de carga de BigQuery, no inserciones en streaming. Y no borra ni actualiza: cuando la ventana revisable trae otra vez las mismas medidas, se anaden con un `ingerido_en` posterior. La deduplicacion es cosa de `staging`, que se queda con la ultima version de cada punto.",
+      "porque": "Los trabajos de carga son gratuitos y las inserciones en streaming de la API antigua se facturan por volumen, asi que a 4.608 filas al dia la eleccion es obvia. Y sobre la duplicacion: borrar la version anterior perderia informacion real, porque el hecho de que REE haya revisado un valor y cuando lo hizo es un dato en si mismo, no ruido.",
+      "consecuencia": "`staging` tiene que deduplicar por (indicador_id, instante, geo_id) quedandose con el maximo `ingerido_en`. A cambio se puede responder a \"que valores ha revisado REE\" con una consulta, que en una plataforma de datos de generacion electrica es exactamente lo que interesa poder auditar. La Storage Write API queda para la fase de streaming, donde si hace falta latencia baja: sus primeros 2 TiB al mes son gratis.",
+      "estado": "vigente",
+      "impacto": "mayor",
+      "irreversible": false,
+      "hito": "metodo",
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Trabajos de carga, y raw de solo anadir",
+          "elegida": true,
+          "motivo": "Gratis, y conserva la evidencia de las revisiones de REE"
+        },
+        {
+          "opcion": "Inserciones en streaming",
+          "elegida": false,
+          "motivo": "Se facturan por volumen sin que aqui haga falta baja latencia"
+        },
+        {
+          "opcion": "Borrar la ventana y reinsertarla",
+          "elegida": false,
+          "motivo": "Deja raw limpio y borra el hecho de que hubo una revision"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r031",
+      "fecha": "2026-09-27",
+      "orden": 31,
+      "carril": "metodo",
+      "titulo": "Dataflow en streaming cuesta unos 0,25 USD/hora y no depende del volumen",
+      "tipo": "medicion",
+      "detalle": "Precios verificados en el ejemplo trabajado que publica Google para us-central1: 0,069 USD por vCPU de streaming y hora, 0,003557 USD por GB de memoria y hora, y 0,089 USD por unidad de computo de Streaming Engine y hora. Con la configuracion minima realista -un trabajador n1-standard-2 con Streaming Engine- sale a unos 0,25 USD/hora: 0,76 USD una ventana de tres horas, 6,09 USD un dia, 185 USD un mes encendido. Sin Streaming Engine el valor por defecto son 4 vCPU y 400 GB de disco, y sube a unos 0,33 USD/hora mas disco.",
+      "porque": "Guillermo pregunto cuanto costaria de verdad. La cifra importa menos que la forma de la factura: Dataflow en streaming cobra por estar encendido, no por trabajo hecho. El volumen mensual entero de Rastro son 13,2 MB, asi que un mes de Dataflow saldria a unos 14 USD por megabyte movido.",
+      "consecuencia": "Se confirma la regla de r024: Dataflow entra en ventanas medidas de 2 a 4 horas y sale, con el drenado programado por Cloud Scheduler. Y aparece una alternativa mejor para lo que hay que demostrar: Apache Beam con DirectRunner y `TestStream` corre el MISMO codigo de pipeline en local y en CI, gratis, y permite dirigir el watermark y los datos que llegan tarde de forma determinista. Unos tests asi son mejor prueba de entender semantica de streaming que una captura de un trabajo de Dataflow.",
+      "estado": "vigente",
+      "impacto": "menor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [],
+      "causada_por": [
+        "r024"
+      ],
+      "abre": [],
       "cierra": [],
       "supera_a": [],
       "superada_por": [],
