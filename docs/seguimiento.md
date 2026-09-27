@@ -17,25 +17,29 @@ abriendo `flowcrack/index.html`.
 - [x] Registro de auditoría con reconciliación
 - [x] 47 tests, todos sin red
 - [x] Arranque sin carga histórica por omisión (`--desde` para pedirla)
-- [ ] Marca de agua sobre `control.marca_de_agua` en BigQuery
+- [ ] Marca de agua sobre `control.marca_de_agua` en BigQuery — la tabla ya
+      existe, y la interfaz `MarcaDeAgua` está preparada: es otra
+      implementación, sin tocar el planificador
 - [ ] Escritura de medidas en `raw.medidas` en vez de JSONL local
 - [ ] Volcado del registro de peticiones a `control.peticiones`
 
 ## F2 · Infraestructura
 
-**Estado: escrita y validada; falta aplicarla.**
+**Estado: aplicada.** 25 recursos en `rastro-509715`, `terraform plan` sin
+cambios pendientes.
 
 - [x] `gcloud`, `terraform`, `gh`, `dbt` instalados
 - [x] Entorno virtual del proyecto con el paquete en modo editable
 - [x] Terraform: APIs, 4 datasets, tabla de medidas particionada, marca de
       agua, registro de peticiones, cuenta de servicio, secreto, presupuesto
 - [x] `terraform validate` en verde
-- [ ] **Facturación activada y vinculada al proyecto** (pasos 2.1–2.4 de
-      [puesta en marcha](puesta-en-marcha.md)) ← bloquea todo lo demás
-- [ ] `gcloud auth login` y `application-default login`
-- [ ] `terraform apply`
-- [ ] Meter el token en Secret Manager
-- [ ] `terraform plan` en cada PR, en CI
+- [x] Facturación activada y vinculada (`billingEnabled: true`)
+- [x] `gcloud auth login` y `application-default login`
+- [x] `terraform apply` — 25 recursos, sin cambios pendientes
+- [x] Token en Secret Manager, verificado por hash contra el local
+- [x] Presupuesto de 1 € vivo, con cuatro umbrales, acotado al proyecto
+- [ ] `terraform plan` en cada PR, en CI — necesita federación de identidades
+      (Workload Identity Federation), que es lo siguiente de infraestructura
 
 ## F3 · Modelado con dbt
 
@@ -118,7 +122,5 @@ previo de Firebase, aunque sea de Crashlytics en otro proyecto, la invalida.
 
 ## Lo que está esperando a alguien
 
-| Qué | De quién | Bloquea |
-|---|---|---|
-| Activar facturación y vincularla a `rastro-509715` | Guillermo, en el navegador | F2 entera, y con ella F3 y F4 |
-| El id de la cuenta de facturación, para `terraform.tfvars` | Guillermo | `terraform apply` |
+Nada bloqueado por nadie. Lo siguiente es trabajo: cerrar el circuito de la
+ingesta contra BigQuery (F1) y empezar dbt (F3).

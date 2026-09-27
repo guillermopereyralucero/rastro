@@ -68,6 +68,24 @@ gcloud billing projects describe rastro-509715
 # billingEnabled: true   <- esto es lo que tiene que salir
 ```
 
+## 3 bis · Una API a mano, la única: el problema del huevo y la gallina
+
+```bash
+gcloud services enable cloudresourcemanager.googleapis.com --project=rastro-509715
+```
+
+Terraform declara las APIs que hace falta habilitar, pero para **leer** el
+proyecto necesita la API de Cloud Resource Manager, y esa lectura ocurre durante
+el `plan`, antes de que exista el recurso que la habilitaría. Así que la primera
+vez hay que habilitarla a mano. Está declarada igualmente en `infra/main.tf`,
+para que quede registrada y se recree sola si el proyecto se rehace.
+
+El error que sale si se olvida es confuso, así que merece estar escrito:
+`accessNotConfigured` con el mensaje *"Cloud Resource Manager API has not been
+used in project..."*. Y tarda **un par de minutos en propagarse** después de
+habilitarla: si el `apply` siguiente falla igual, no es que no haya funcionado,
+es que hay que esperar.
+
 ## 4 · La alerta de presupuesto va en Terraform, no en la consola
 
 Esto merece un párrafo porque es una decisión de diseño, no un detalle.
@@ -93,9 +111,21 @@ terraform apply
 Personal e intransferible. Pide el tuyo en
 <https://www.esios.ree.es/es/pagina/api>.
 
+Para trabajar en local:
+
 ```bash
 cp .env.ejemplo .env     # y pon tu token dentro
 ```
+
+Y para que lo lea el job de ingesta en la nube, en el secreto que creó Terraform
+vacío:
+
+```bash
+printf '%s' 'TU-TOKEN' | gcloud secrets versions add esios-token   --data-file=- --project=rastro-509715
+```
+
+Se pasa por la entrada estándar y no por un fichero ni un argumento a propósito:
+un argumento queda en el historial del shell.
 
 `.env` está ignorado por git, y el CI falla si alguna vez se cuela un fichero
 que parezca un secreto.
@@ -111,8 +141,15 @@ que parezca un secreto.
 | Dataset `staging` | Limpieza y tipado con dbt | 0 € |
 | Dataset `marts` | Modelos de consumo | 0 € |
 | Dataset `control` | Marca de agua de la ingesta | 0 € |
+| Tabla `raw.medidas` | Aterrizaje, particionada por día y agrupada por indicador | 0 € |
+| Tabla `control.marca_de_agua` | Hasta dónde está cargado cada indicador | 0 € |
+| Tabla `control.peticiones` | Auditoría de cada llamada a ESIOS | 0 € |
 | Service account `ingesta` | Identidad del job que habla con ESIOS | 0 € |
-| APIs habilitadas | BigQuery, Cloud Run, Pub/Sub, Scheduler | 0 € |
+| Secreto `esios-token` | Creado vacío; el valor se mete aparte | 0 € |
+| APIs habilitadas | BigQuery, Cloud Run, Pub/Sub, Scheduler, Secret Manager | 0 € |
+
+Son **25 recursos** y el `apply` completo tarda unos dos minutos. Lo más lento es
+la cuenta de servicio, que puede pasar de veinte segundos.
 
 Los datasets son cuatro y no uno porque el linaje que Rastro va a dibujar
 necesita capas distinguibles: un grafo en el que todo vive en el mismo sitio no

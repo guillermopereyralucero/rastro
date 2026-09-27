@@ -813,3 +813,60 @@ decisiones:
     impacto: menor
     decidido_por: ia
     ref: seguimiento.md#f4-streaming
+
+  # === 27-sep · la plataforma aplicada ==============================
+
+  - id: r027
+    fecha: 2026-09-27
+    orden: 27
+    carril: metodo
+    tipo: hito-externo
+    titulo: La plataforma esta aplicada en GCP, 25 recursos y sin cambios pendientes
+    detalle: >
+      `terraform apply` completo contra rastro-509715. Cuatro datasets, la tabla
+      `raw.medidas` particionada por dia sobre `instante` y agrupada por
+      `indicador_id` -verificado leyendo la tabla, no el plan-, las dos tablas de
+      control, la cuenta de servicio `rastro-ingesta` con dataEditor solo sobre
+      raw y control, el secreto y el presupuesto de 1 EUR con cuatro umbrales.
+      `terraform plan` devuelve sin cambios. El token ya esta en Secret Manager y
+      se comprobo por hash que coincide con el local, sin imprimirlo.
+    porque: >
+      La facturacion quedo activada y vinculada, que era lo unico que bloqueaba
+      las fases 2, 3 y 4.
+    consecuencia: >
+      Queda desbloqueado cerrar el circuito de la ingesta contra BigQuery y
+      empezar dbt. La marca de agua en JSON local pasa a ser solo el modo de
+      desarrollo.
+    estado: vigente
+    impacto: mayor
+
+  - id: r028
+    fecha: 2026-09-27
+    orden: 28
+    carril: metodo
+    tipo: hallazgo
+    titulo: "Con credenciales de usuario, el provider de Google necesita billing_project y user_project_override"
+    detalle: >
+      El presupuesto fallaba con un 403 SERVICE_DISABLED contra el proyecto
+      764086051850, que no es el nuestro sino el del cliente de gcloud.
+      `billingbudgets` es una API que no cuelga de ningun proyecto, asi que
+      Google necesita que se le diga cual paga la cuota, y con Application
+      Default Credentials el provider no lo manda solo. Se arregla con
+      `billing_project` y `user_project_override = true`, que hacen que envie la
+      cabecera X-Goog-User-Project.
+    porque: >
+      Salio al aplicar. El mensaje de error despista mucho: acusa a un numero de
+      proyecto desconocido de tener una API deshabilitada, cuando en el proyecto
+      propio si estaba habilitada.
+    consecuencia: >
+      Al activar la atribucion de cuota aparecio un segundo problema encadenado:
+      leer el proyecto pasa a necesitar `cloudresourcemanager.googleapis.com`, y
+      esa lectura ocurre en el `plan`, antes de que Terraform pueda habilitarla.
+      Es el huevo y la gallina clasico de Terraform contra GCP: la primera vez se
+      habilita a mano, y se declara igualmente para que quede registrada. Tarda un
+      par de minutos en propagarse, asi que el primer reintento puede fallar sin
+      que nada este mal. Los dos tropiezos estan escritos en
+      docs/puesta-en-marcha.md porque le van a pasar a cualquiera que clone.
+    estado: vigente
+    impacto: menor
+    abre: [r027]

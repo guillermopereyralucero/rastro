@@ -30,6 +30,10 @@ gha-creds-*.json
 *.tfstate.*
 *.tfvars
 !*.tfvars.ejemplo
+# Un plan guardado es un binario que lleva dentro los valores resueltos,
+# incluido el id de la cuenta de facturacion. Y git no ensena diffs binarios,
+# asi que no salta a la vista al revisar. Fuera.
+*.tfplan
 crash.log
 
 # --- dbt ---
