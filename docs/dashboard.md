@@ -8,11 +8,19 @@ Todos los nombres de campo son los reales de las tablas, copiados del esquema. C
 paso de interfaz está comprobado contra la documentación oficial, y al final de cada
 bloque hay enlace a la página que lo respalda.
 
-> **Una corrección que afecta a lo que puedes hacer.** Una versión anterior de esta
-> guía decía que el orden de las series del gráfico apilado se podía colocar a mano.
-> **No se puede**: en Looker Studio el apilado sigue el orden de clasificación de la
-> dimensión de desglose, y no hay forma de arrastrar series. La solución está
-> resuelta en los datos —el campo `orden_apilado`— y se explica en la página 2.
+> **Dos correcciones que afectan a lo que puedes hacer.** Las dos salieron de
+> comprobar la documentación y de que Guillermo se topara con la segunda montándolo.
+>
+> 1. **El orden de las series de un apilado no se puede colocar a mano.** El apilado
+>    sigue la clasificación de la dimensión de desglose, y no hay forma de arrastrar
+>    series. Resuelto con el campo `orden_apilado` (página 2, paso 2.2).
+> 2. **El control de periodo no filtra horas.** La documentación es explícita: *«se
+>    puede usar una dimensión de fecha y hora, pero **las unidades de tiempo las
+>    ignora** el filtro de periodo»*. No existe «últimas 2 horas». Resuelto con los
+>    campos `es_ultima_hora` y `horas_de_antiguedad` (paso 1.1).
+>
+> Las dos se arreglan igual: en SQL, no en el informe. Lo que vive en el informe no
+> está versionado, no tiene test y nadie más puede reproducirlo.
 
 ---
 
@@ -81,7 +89,8 @@ Mismo sitio (**Editar** la fuente), en la lista de campos, columna *Tipo*:
 | `potencia_*_mw`, `energia_*_mwh`, `demanda_mw` | Número | 0 decimales |
 | `porcentaje_*` | Número | 1 decimal |
 | `razon_generacion_demanda` | Número | 2 decimales |
-| `cobertura_completa`, `renovable` | Booleano | — |
+| `cobertura_completa`, `renovable`, `es_ultima_hora` | Booleano | — |
+| `horas_de_antiguedad` | Número | 0 decimales |
 | `orden_apilado`, `tecnologias`, `lecturas` | Número | 0 decimales |
 
 > **No pongas tipo Porcentaje en los campos `porcentaje_*`.** Vienen ya en escala
@@ -132,12 +141,36 @@ apilado se lee de un golpe sin consultar la leyenda.
 
 ## Página 1 · `1 · Ahora mismo`
 
-### 1.1 · Control de periodo
+### 1.1 · Filtro de la página, no control de periodo
 
-1. **Añadir un control → Control de periodo**.
-2. Colócalo arriba a la derecha.
-3. Panel *Configuración* → *Periodo predeterminado* → **Personalizado** → **Últimas
-   2 horas**.
+**Aquí no va un control de periodo.** El de Looker Studio ignora las horas, así que
+«últimas 2 horas» no se puede pedir. La página 1 muestra *la última hora que hay*, y
+eso se filtra con un campo.
+
+**Page → Configuración de la página actual** → sección *Filtro* → **Añadir un
+filtro** → **Crear un filtro**:
+
+```
+Nombre:    Solo la ultima hora
+Incluir    es_ultima_hora    Igual a (=)    true
+```
+
+Ese filtro aplica a todos los gráficos de la página 1, y deja fuera el histórico.
+
+**Si prefieres una ventana de varias horas** —por ejemplo las 6 últimas— usa el otro
+campo en lugar de ese:
+
+```
+Incluir    horas_de_antiguedad    Menor que (<)    6
+```
+
+> **Por qué se calcula respecto al último dato y no respecto a la hora actual.** Si
+> la ingesta se para, «las 2 últimas horas contando desde ahora» dejaría la página
+> **vacía**. Con `es_ultima_hora` sigue mostrando el último dato bueno, y la tarjeta
+> de *Antigüedad del dato* —en rojo, justo al lado— dice que es viejo. Una página
+> vieja y marcada como vieja informa más que una página vacía.
+
+📄 [Control de periodo](https://cloud.google.com/looker/docs/studio/date-range-control)
 
 ### 1.2 · Cuatro tarjetas de puntuación
 
@@ -222,7 +255,14 @@ Ocultar el problema sin decirlo sería peor que el problema.
 
 ### 2.1 · Control de periodo
 
-Igual que en la página 1, pero con **Últimos 2 días**.
+Aquí **sí** va un control de periodo, porque aquí el grano es el día y eso el control
+lo hace bien.
+
+1. **Añadir un control → Control de periodo**.
+2. Panel *Configuración* → *Periodo predeterminado* → **Últimos 7 días**.
+
+Con tres días de datos da igual lo que pongas; en un mes, esto es lo que te deja
+navegar.
 
 ### 2.2 · Áreas apiladas · `Generación por tecnología`
 
@@ -322,7 +362,9 @@ extremo parece plano.
 
 ### 3.3 · Tres tarjetas · `Récords`
 
-Sobre `Generación horaria`, **sin** control de periodo (o con *Todo el tiempo*):
+Sobre `Generación horaria`. Si esta página tiene control de periodo, desactiva la
+herencia en estas tres tarjetas: *Configuración* → sección *Filtro* → interruptor de
+herencia. Un récord calculado sobre siete días no es un récord.
 
 | Nombre | Métrica | Agregación |
 |---|---|---|
@@ -441,13 +483,15 @@ que el proyecto pueda ser público.
 `hora`, `geo_id`, `geo_nombre`, `potencia_total_mw`, `energia_total_mwh`,
 `potencia_renovable_mw`, `potencia_no_renovable_mw`, `demanda_mw`,
 `razon_generacion_demanda`, `tecnologias`, `tecnologias_esperadas`,
-`cobertura_completa`, `porcentaje_renovable`, `ingerido_en`
+`cobertura_completa`, `porcentaje_renovable`, `es_ultima_hora`,
+`horas_de_antiguedad`, `ingerido_en`
 
 ### `marts.mart_generacion_por_tecnologia`
 
 `hora`, `geo_id`, `geo_nombre`, `indicador_id`, `tecnologia`, `renovable`,
 `orden_apilado`, `potencia_media_mw`, `potencia_min_mw`, `potencia_max_mw`,
-`energia_mwh`, `porcentaje_del_mix`, `ingerido_en`
+`energia_mwh`, `porcentaje_del_mix`, `es_ultima_hora`, `horas_de_antiguedad`,
+`ingerido_en`
 
 ### `marts.mart_calidad_datos`
 

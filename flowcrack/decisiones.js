@@ -2,7 +2,7 @@
 // Fuente: decisiones.yaml
 window.FLOWCRACK = {
   "formato": 2,
-  "generado": "2026-09-27 19:48",
+  "generado": "2026-09-27 20:11",
   "proyecto": {
     "nombre": "Rastro",
     "perfil": "investigacion",
@@ -1942,6 +1942,130 @@ window.FLOWCRACK = {
         }
       ],
       "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r047",
+      "fecha": "2026-09-27",
+      "orden": 47,
+      "carril": "analisis",
+      "titulo": "El visor dispone por capas, no por fuerzas, y se calcula en Python",
+      "tipo": "decision",
+      "detalle": "Cada nodo queda a la derecha de TODAS sus dependencias, usando el camino mas largo desde una raiz y no el mas corto. Dentro de cada capa, heuristica del baricentro con desempate por id. En la plataforma real salen cinco capas: tablas crudas, vistas de staging, el modelo intermedio y los dos niveles de marts.",
+      "porque": "Un grafo por fuerzas queda bonito y no dice nada: los nodos caen donde caben, asi que la posicion no significa nada y cada vez que se abre sale distinto. Por capas, la posicion significa el flujo de datos y el dibujo se lee de izquierda a derecha. Y el camino MAS LARGO importa: con el mas corto, un mart que lee de `raw` y de `staging` se pintaria junto a `raw`, sugiriendo que no depende de la capa intermedia.",
+      "consecuencia": "Se calcula en Python y no en el navegador para poder probarla: 16 tests cubren que nadie pisa a nadie, que las capas avanzan hacia la derecha, que un ciclo no cuelga el calculo y que el orden es estable entre ejecuciones. Una disposicion que solo existe al abrir la pagina no se puede comprobar, y es codigo con muchas formas silenciosas de estar mal.",
+      "estado": "vigente",
+      "impacto": "mayor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Por capas, calculada en Python",
+          "elegida": true,
+          "motivo": "La posicion significa algo, es estable y se puede probar"
+        },
+        {
+          "opcion": "Grafo dirigido por fuerzas en el navegador",
+          "elegida": false,
+          "motivo": "Bonito, no determinista y la posicion no informa de nada"
+        },
+        {
+          "opcion": "Delegar en una libreria de grafos",
+          "elegida": false,
+          "motivo": "Una dependencia por una busqueda en anchura de veinte lineas"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r048",
+      "fecha": "2026-09-27",
+      "orden": 48,
+      "carril": "difusion",
+      "titulo": "El visor es un fichero de 17 KiB con los datos dentro, sin CDN",
+      "tipo": "decision",
+      "detalle": "`rastro visor` genera un HTML autonomo. Los datos van embebidos en una etiqueta script, no en un JSON al lado.",
+      "porque": "Un fichero abierto con doble clic usa el protocolo `file:`, y ahi el navegador bloquea leer un fichero vecino. Embebiendolos, el visor se puede mandar por correo, adjuntar a un ticket o abrir en una maquina sin red. Y sin CDN porque una herramienta de diagnostico que necesita internet para dibujar un grafo no sirve cuando mas falta hace, ademas de que cada script de terceros es superficie de ataque en algo que se va a abrir dentro de una empresa.",
+      "consecuencia": "Hay que escapar `</` en el JSON embebido: un nombre de tabla con un cierre de etiqueta dentro romperia la pagina. No deberia pasar nunca, pero el grafo se construye a partir de SQL ajeno y \"nunca\" no es una garantia; hay un test que lo fija. Se versiona un ejemplo generado en docs/ejemplo-grafo.html para que se pueda ver sin clonar ni ejecutar nada.",
+      "estado": "vigente",
+      "impacto": "menor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Un HTML autonomo con los datos embebidos",
+          "elegida": true,
+          "motivo": "Funciona con doble clic, sin servidor y sin red"
+        },
+        {
+          "opcion": "HTML que carga un JSON vecino",
+          "elegida": false,
+          "motivo": "El protocolo file: lo bloquea, asi que exigiria levantar un servidor"
+        },
+        {
+          "opcion": "Libreria de grafos desde un CDN",
+          "elegida": false,
+          "motivo": "No funciona sin red y anade superficie de ataque"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r049",
+      "fecha": "2026-09-27",
+      "orden": 49,
+      "carril": "difusion",
+      "titulo": "El control de periodo de Looker Studio ignora las horas",
+      "tipo": "hallazgo",
+      "detalle": "La documentacion es explicita: se puede usar una dimension de fecha y hora, pero las unidades de tiempo las ignora el filtro de periodo. No existe \"ultimas 2 horas\", que es lo que decia la guia del cuadro de mando.",
+      "porque": "Guillermo se topo con ello montando la pagina 1: la opcion de horas no aparecia y lo tomaba como fecha. Se verifico en la documentacion antes de proponer nada.",
+      "consecuencia": "Se resuelve en SQL, no en el informe. Los dos marts ganan `es_ultima_hora` y `horas_de_antiguedad`, y la pagina 1 filtra por el primero.\nLos dos se calculan respecto al MAXIMO de la tabla y no respecto a `current_timestamp`. Es deliberado: si la ingesta se para, \"las dos ultimas horas contando desde ahora\" dejaria la pagina vacia, mientras que \"la ultima hora que hay\" sigue ensenando algo y la tarjeta de frescura -en rojo al lado- avisa de que es viejo. Una pagina vieja y marcada como vieja informa mas que una pagina vacia.",
+      "estado": "vigente",
+      "impacto": "menor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [],
+      "causada_por": [
+        "r045"
+      ],
       "abre": [],
       "cierra": [],
       "supera_a": [],

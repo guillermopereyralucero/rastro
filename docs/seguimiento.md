@@ -140,8 +140,11 @@ previo de Firebase, aunque sea de Crashlytics en otro proyecto, la invalida.
 - [x] CLI: `linaje`, `impacto`, `huerfanas`, `ciclos`, `grafo --salida`
 - [x] Resolución de nombres cortos: `rastro impacto medidas` funciona
 - [x] Modo `--sin-bigquery`, para trabajar solo con el manifiesto
-- [ ] **Visor HTML estático de un solo fichero.** El JSON ya se genera con
-      `rastro grafo --salida`, así que falta solo la página que lo dibuja
+- [x] **Visor HTML de un solo fichero**: `rastro visor`. 17 KiB, sin servidor, sin
+      CDN y sin dependencias, con los datos embebidos para que funcione con el
+      protocolo `file:`. Disposición por capas calculada en Python —y por tanto
+      probada— en lugar de por fuerzas en el navegador. Hay un
+      [ejemplo generado](ejemplo-grafo.html) en el repo
 - [ ] Cruzar las huérfanas con el uso real (`INFORMATION_SCHEMA.JOBS`): quién
       consultó cada tabla en 90 días. Es lo que convierte la pregunta en decisión
 - [ ] `rastro columnas`: linaje a nivel de columna, no solo de tabla

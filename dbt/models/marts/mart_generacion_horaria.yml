@@ -58,3 +58,18 @@ models:
               arguments:
                 minimo: 0.5
                 maximo: 2.5
+
+      - name: es_ultima_hora
+        description: >
+          La hora mas reciente que hay en la tabla. Existe porque el control de
+          periodo de Looker Studio ignora las unidades de tiempo y no puede filtrar
+          "la ultima hora". Se calcula respecto al maximo de la tabla y no respecto a
+          la hora actual: si la ingesta se para, esto sigue ensenando el ultimo dato
+          bueno en lugar de dejar la pagina vacia, y la tarjeta de frescura avisa.
+        data_tests: [not_null]
+
+      - name: horas_de_antiguedad
+        description: >
+          Horas desde la hora mas reciente de la tabla. 0 es la ultima. Permite
+          filtrar "las ultimas N horas" con un filtro numerico en el informe.
+        data_tests: [not_null]

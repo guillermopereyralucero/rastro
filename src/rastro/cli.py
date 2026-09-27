@@ -105,6 +105,14 @@ def _analizador() -> argparse.ArgumentParser:
     _opciones_grafo(grf)
     grf.set_defaults(funcion=_grafo)
 
+    vis = subs.add_parser(
+        "visor",
+        help="genera un HTML de un solo fichero con el grafo navegable",
+    )
+    vis.add_argument("--salida", default="grafo.html")
+    _opciones_grafo(vis)
+    vis.set_defaults(funcion=_visor)
+
     return raiz
 
 
@@ -272,6 +280,26 @@ def _ciclos(args) -> int:
             print("  " + " -> ".join(camino))
     _avisar(avisos)
     return 0 if not encontrados else 1
+
+
+def _visor(args) -> int:
+    """Escribe el visor: un HTML que se abre con doble clic.
+
+    Los datos van dentro del fichero, no en un JSON al lado: con el protocolo `file:`
+    el navegador bloquea leer un fichero vecino. Asi el visor se puede mandar por
+    correo o adjuntar a un ticket y funciona en una maquina sin red.
+    """
+    from .grafo.visor import escribir
+
+    grafo, avisos = _construir_grafo(args)
+    destino = escribir(grafo, args.salida)
+    tamano = destino.stat().st_size
+
+    print(grafo.resumen())
+    print(f"\nVisor en {destino} ({tamano / 1024:.0f} KiB)")
+    print("Abrelo con doble clic: no necesita servidor ni internet.")
+    _avisar(avisos)
+    return 0
 
 
 def _grafo(args) -> int:

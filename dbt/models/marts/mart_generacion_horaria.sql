@@ -107,6 +107,20 @@ select
     -- adorno: es el indicador que avisa de que algo no cuadra.
     round(safe_divide(agregada.potencia_total_mw, demanda.demanda_mw), 3) as razon_generacion_demanda,
 
+
+    -- Filtrar "las ultimas N horas" en el informe es imposible: el control de periodo
+    -- de Looker Studio IGNORA las unidades de tiempo, solo trabaja con fechas. Asi
+    -- que la ventana reciente se resuelve aqui, con dos campos que el informe puede
+    -- filtrar como numeros.
+    --
+    -- Se calculan respecto al MAXIMO de la tabla y no respecto a `current_timestamp`.
+    -- Es deliberado: si la ingesta se para, "las dos ultimas horas contando desde
+    -- ahora" dejaria la pagina vacia, mientras que "la ultima hora que hay" sigue
+    -- ensenando algo -y la tarjeta de frescura, en rojo al lado, ya avisa de que es
+    -- viejo-. Una pagina vieja y marcada como vieja informa mas que una pagina vacia.
+    agregada.hora = max(agregada.hora) over () as es_ultima_hora,
+    timestamp_diff(max(agregada.hora) over (), agregada.hora, hour) as horas_de_antiguedad,
+
     agregada.tecnologias,
     esperadas.tecnologias_esperadas,
     agregada.tecnologias = esperadas.tecnologias_esperadas as cobertura_completa,

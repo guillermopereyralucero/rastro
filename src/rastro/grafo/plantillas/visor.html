@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rastro · grafo de dependencias</title>
+<!--
+  Un solo fichero. Sin servidor, sin CDN, sin dependencias.
+
+  Los datos van EMBEBIDOS abajo y no se cargan con fetch: un fichero abierto con
+  doble clic usa el protocolo file:, y ahi fetch de un JSON vecino lo bloquea el
+  navegador. Embeberlos es lo que permite mandar esto por correo y que funcione.
+
+  Y sin CDN a proposito: una herramienta de diagnostico que necesita internet para
+  dibujar un grafo no sirve cuando mas falta hace, y cada script de terceros es
+  superficie de ataque en algo que se va a abrir dentro de una empresa.
+-->
+<style>
+:root {
+  --fondo: #fbfbfa;
+  --panel: #ffffff;
+  --borde: #e2e0dc;
+  --texto: #1c1b19;
+  --suave: #6b6864;
+  --linea: #c9c6c1;
+  --linea-fuerte: #8a8681;
+  --resalte: #b45309;
+  --arriba: #1d4ed8;
+  --abajo: #b91c1c;
+  --tabla: #0e7490;
+  --vista: #7c3aed;
+  --externo: #a8a29e;
+  --sombra: 0 1px 3px rgba(0,0,0,.07), 0 8px 24px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="claro"]) {
+    --fondo: #17161a;
+    --panel: #201f24;
+    --borde: #35333a;
+    --texto: #f0eeea;
+    --suave: #a49f99;
+    --linea: #45424a;
+    --linea-fuerte: #75707a;
+    --resalte: #fbbf24;
+    --arriba: #7aa2f7;
+    --abajo: #f77a7a;
+    --tabla: #22d3ee;
+    --vista: #c4b5fd;
+    --externo: #78716c;
+    --sombra: 0 1px 3px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+  }
+}
+:root[data-tema="oscuro"] {
+  --fondo: #17161a; --panel: #201f24; --borde: #35333a; --texto: #f0eeea;
+  --suave: #a49f99; --linea: #45424a; --linea-fuerte: #75707a; --resalte: #fbbf24;
+  --arriba: #7aa2f7; --abajo: #f77a7a; --tabla: #22d3ee; --vista: #c4b5fd;
+  --externo: #78716c; --sombra: 0 1px 3px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--fondo); color: var(--texto);
+  font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+header {
+  padding: 18px 16px 14px; border-bottom: 1px solid var(--borde);
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: baseline;
+}
+h1 { margin: 0; font-size: 1.15rem; letter-spacing: -.01em; }
+h1 span { color: var(--suave); font-weight: 400; }
+.resumen { color: var(--suave); font-size: .875rem; font-variant-numeric: tabular-nums; }
+.crece { flex: 1 1 auto; }
+
+.barra { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+input[type=search], button {
+  font: inherit; color: var(--texto); background: var(--panel);
+  border: 1px solid var(--borde); border-radius: 8px; padding: 7px 11px;
+}
+input[type=search] { min-width: 210px; }
+button { cursor: pointer; }
+button:hover { border-color: var(--linea-fuerte); }
+button[aria-pressed=true] { background: var(--texto); color: var(--fondo); }
+
+main { display: grid; grid-template-columns: 1fr 320px; gap: 0; align-items: start; }
+@media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+
+#lienzo { overflow: auto; max-height: calc(100vh - 150px); padding: 8px 0 24px; }
+svg { display: block; }
+
+.arista { fill: none; stroke: var(--linea); stroke-width: 1.4; }
+.arista.una-fuente { stroke-dasharray: 5 4; }
+.arista.arriba { stroke: var(--arriba); stroke-width: 2.4; }
+.arista.abajo { stroke: var(--abajo); stroke-width: 2.4; }
+.arista.apagada { opacity: .12; }
+
+.nodo { cursor: pointer; }
+.nodo rect {
+  fill: var(--panel); stroke: var(--linea-fuerte); stroke-width: 1.2; rx: 7;
+}
+.nodo text { font-size: 12.5px; fill: var(--texto); }
+.nodo .capa { font-size: 10.5px; fill: var(--suave); }
+.nodo.tabla rect { stroke: var(--tabla); }
+.nodo.vista rect { stroke: var(--vista); }
+.nodo.externo rect { stroke: var(--externo); stroke-dasharray: 4 3; }
+.nodo.elegido rect { stroke: var(--resalte); stroke-width: 2.6; }
+.nodo.arriba rect { stroke: var(--arriba); stroke-width: 2; }
+.nodo.abajo rect { stroke: var(--abajo); stroke-width: 2; }
+.nodo.apagado { opacity: .2; }
+.nodo.hallado rect { fill: var(--resalte); fill-opacity: .16; }
+
+aside {
+  border-left: 1px solid var(--borde); padding: 16px; min-height: 200px;
+  max-height: calc(100vh - 150px); overflow: auto;
+}
+@media (max-width: 860px) { aside { border-left: 0; border-top: 1px solid var(--borde); } }
+aside h2 { margin: 0 0 4px; font-size: .95rem; word-break: break-all; }
+aside .tipo { color: var(--suave); font-size: .8rem; margin-bottom: 14px; }
+aside h3 {
+  margin: 16px 0 6px; font-size: .74rem; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--suave);
+}
+aside ul { margin: 0; padding-left: 0; list-style: none; }
+aside li {
+  padding: 3px 0; font-size: .82rem; word-break: break-all; cursor: pointer;
+  border-bottom: 1px solid var(--borde);
+}
+aside li:hover { color: var(--resalte); }
+aside li .salto {
+  display: inline-block; min-width: 1.6em; color: var(--suave);
+  font-variant-numeric: tabular-nums;
+}
+.vacio { color: var(--suave); font-size: .82rem; font-style: italic; }
+.pista {
+  margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--borde);
+  color: var(--suave); font-size: .78rem;
+}
+.leyenda { display: flex; flex-wrap: wrap; gap: 14px; padding: 10px 16px;
+  border-top: 1px solid var(--borde); color: var(--suave); font-size: .78rem; }
+.leyenda i { display: inline-block; width: 22px; height: 0; vertical-align: middle;
+  border-top: 2px solid var(--linea); margin-right: 5px; }
+.leyenda i.discontinua { border-top-style: dashed; }
+.leyenda b { font-weight: 600; color: var(--texto); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Rastro <span>· grafo de dependencias</span></h1>
+  <div class="resumen" id="resumen"></div>
+  <div class="crece"></div>
+  <div class="barra">
+    <input type="search" id="buscar" placeholder="Buscar tabla…" autocomplete="off">
+    <button id="btn-externos" aria-pressed="false">Ocultar externos</button>
+    <button id="btn-limpiar">Limpiar</button>
+    <button id="btn-tema" title="Cambiar tema">◐</button>
+  </div>
+</header>
+
+<main>
+  <div id="lienzo"></div>
+  <aside id="panel"></aside>
+</main>
+
+<div class="leyenda">
+  <span><i></i> dependencia vista por <b>una</b> fuente&nbsp;<i class="discontinua"></i></span>
+  <span><i></i> confirmada por <b>dos</b> (SQL de la vista y manifiesto de dbt)</span>
+  <span>Se lee de <b>izquierda a derecha</b>: cada nodo está a la derecha de todo lo que necesita.</span>
+</div>
+
+<script id="datos" type="application/json">/*DATOS*/</script>
+<script>
+"use strict";
+
+const DATOS = JSON.parse(document.getElementById("datos").textContent);
+const NODOS = new Map(DATOS.nodos.map(n => [n.id, n]));
+const POS = DATOS.disposicion;
+
+// Adyacencia en los dos sentidos. Se construye una vez: recorrer la lista de aristas
+// en cada clic es barato con 11 aristas y deja de serlo con diez mil, y este visor
+// tiene que servir para una plataforma de verdad.
+const HIJOS = new Map(), PADRES = new Map();
+for (const { origen, destino } of DATOS.aristas) {
+  if (!HIJOS.has(origen)) HIJOS.set(origen, []);
+  if (!PADRES.has(destino)) PADRES.set(destino, []);
+  HIJOS.get(origen).push(destino);
+  PADRES.get(destino).push(origen);
+}
+
+const ANCHO_NODO = 232, ALTO_NODO = 34;
+let elegido = null, ocultarExternos = false;
+
+/* Recorrido en anchura con control de visitados: un ciclo legitimo -un MERGE que
+   lee de la tabla que escribe- colgaria una busqueda ingenua. */
+function alcanzar(desde, mapa) {
+  const vistos = new Map(), cola = [[desde, 0]];
+  while (cola.length) {
+    const [actual, salto] = cola.shift();
+    for (const vecino of (mapa.get(actual) || [])) {
+      if (vecino === desde || vistos.has(vecino)) continue;
+      vistos.set(vecino, salto + 1);
+      cola.push([vecino, salto + 1]);
+    }
+  }
+  return vistos;
+}
+
+function dibujar() {
+  const visibles = DATOS.nodos.filter(n => !(ocultarExternos && n.tipo === "externo"));
+  const idsVisibles = new Set(visibles.map(n => n.id));
+
+  const arriba = elegido ? alcanzar(elegido, PADRES) : new Map();
+  const abajo = elegido ? alcanzar(elegido, HIJOS) : new Map();
+  const tocados = new Set([...arriba.keys(), ...abajo.keys()]);
+  if (elegido) tocados.add(elegido);
+
+  const partes = [];
+  partes.push(`<svg width="${DATOS.ancho}" height="${DATOS.alto}"
+    viewBox="0 0 ${DATOS.ancho} ${DATOS.alto}" xmlns="http://www.w3.org/2000/svg">`);
+
+  // Las aristas primero, para que queden debajo de los nodos.
+  for (const a of DATOS.aristas) {
+    if (!idsVisibles.has(a.origen) || !idsVisibles.has(a.destino)) continue;
+    const o = POS[a.origen], d = POS[a.destino];
+    if (!o || !d) continue;
+
+    const x1 = o.x + ANCHO_NODO / 2, y1 = o.y;
+    const x2 = d.x - ANCHO_NODO / 2, y2 = d.y;
+    const medio = (x1 + x2) / 2;
+
+    let clase = "arista" + (a.confirmada ? "" : " una-fuente");
+    if (elegido) {
+      if (arriba.has(a.origen) && (arriba.has(a.destino) || a.destino === elegido)) clase += " arriba";
+      else if (abajo.has(a.destino) && (abajo.has(a.origen) || a.origen === elegido)) clase += " abajo";
+      else clase += " apagada";
+    }
+    // Curva suave: una linea recta entre capas cruza los nodos intermedios.
+    partes.push(`<path class="${clase}" d="M${x1},${y1} C${medio},${y1} ${medio},${y2} ${x2},${y2}"/>`);
+  }
+
+  for (const n of visibles) {
+    const p = POS[n.id];
+    if (!p) continue;
+
+    let clase = `nodo ${n.tipo}`;
+    if (n.id === elegido) clase += " elegido";
+    else if (arriba.has(n.id)) clase += " arriba";
+    else if (abajo.has(n.id)) clase += " abajo";
+    else if (elegido) clase += " apagado";
+    if (n.hallado) clase += " hallado";
+
+    const x = p.x - ANCHO_NODO / 2, y = p.y - ALTO_NODO / 2;
+    const salto = arriba.get(n.id) ?? abajo.get(n.id);
+    const sufijo = salto ? ` · ${salto}` : "";
+
+    partes.push(`<g class="${clase}" data-id="${esc(n.id)}">
+      <rect x="${x}" y="${y}" width="${ANCHO_NODO}" height="${ALTO_NODO}"/>
+      <text x="${x + 10}" y="${p.y - 2}">${esc(recortar(n.nombre, 28))}</text>
+      <text class="capa" x="${x + 10}" y="${p.y + 11}">${esc(n.capa || n.dataset || "")}${sufijo}</text>
+    </g>`);
+  }
+
+  partes.push("</svg>");
+  document.getElementById("lienzo").innerHTML = partes.join("");
+
+  document.querySelectorAll(".nodo").forEach(g => {
+    g.addEventListener("click", () => elegir(g.dataset.id));
+  });
+
+  panel(arriba, abajo);
+}
+
+function panel(arriba, abajo) {
+  const destino = document.getElementById("panel");
+  if (!elegido) {
+    destino.innerHTML = `<p class="vacio">Pincha un nodo para ver de dónde sale y qué
+      se rompe si lo tocas.</p>
+      <div class="pista">Las aristas discontinuas las ha visto una sola fuente. Puede
+      ser un manifiesto de dbt anterior al último despliegue, una vista creada a mano
+      que dbt no gestiona, o un fallo del analizador de SQL. Las tres cosas merecen
+      una mirada.</div>`;
+    return;
+  }
+
+  const n = NODOS.get(elegido);
+  const lista = (mapa, vacio) => {
+    const filas = [...mapa.entries()].sort((a, b) => a[1] - b[1] || a[0].localeCompare(b[0]));
+    if (!filas.length) return `<p class="vacio">${vacio}</p>`;
+    return "<ul>" + filas.map(([id, salto]) =>
+      `<li data-ir="${esc(id)}"><span class="salto">${salto}</span>${esc(id)}</li>`
+    ).join("") + "</ul>";
+  };
+
+  destino.innerHTML = `
+    <h2>${esc(n.nombre)}</h2>
+    <div class="tipo">${esc(n.tipo)}${n.capa ? " · " + esc(n.capa) : ""}</div>
+    ${n.detalle ? `<p style="font-size:.82rem">${esc(n.detalle)}</p>` : ""}
+    <h3>De dónde sale (${arriba.size})</h3>
+    ${lista(arriba, "De nada: es una raíz. Los datos entran aquí.")}
+    <h3>Qué se rompe si lo tocas (${abajo.size})</h3>
+    ${lista(abajo, "Nada dentro del grafo. Ojo: un cuadro de mando o un script externo no salen aquí.")}
+    <div class="pista">El número es a cuántos saltos está.</div>`;
+
+  destino.querySelectorAll("li[data-ir]").forEach(li => {
+    li.addEventListener("click", () => elegir(li.dataset.ir));
+  });
+}
+
+function elegir(id) {
+  elegido = (elegido === id) ? null : id;
+  dibujar();
+}
+
+function buscar(texto) {
+  const aguja = texto.trim().toLowerCase();
+  let encontrados = 0;
+  for (const n of DATOS.nodos) {
+    n.hallado = Boolean(aguja) && n.id.toLowerCase().includes(aguja);
+    if (n.hallado) encontrados++;
+  }
+  dibujar();
+  if (aguja) resumen(`${encontrados} coinciden con "${texto.trim()}"`);
+  else resumen();
+}
+
+function resumen(extra) {
+  const total = DATOS.nodos.length;
+  const externos = DATOS.nodos.filter(n => n.tipo === "externo").length;
+  const confirmadas = DATOS.aristas.filter(a => a.confirmada).length;
+  document.getElementById("resumen").textContent = extra || [
+    `${total} nodos`,
+    `${DATOS.aristas.length} aristas`,
+    `${confirmadas} confirmadas`,
+    externos ? `${externos} externos` : null,
+    `${DATOS.niveles} capas`,
+  ].filter(Boolean).join(" · ");
+}
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g,
+  c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const recortar = (s, n) => s.length <= n ? s : s.slice(0, n - 1) + "…";
+
+document.getElementById("buscar").addEventListener("input", e => buscar(e.target.value));
+document.getElementById("btn-limpiar").addEventListener("click", () => {
+  elegido = null;
+  document.getElementById("buscar").value = "";
+  buscar("");
+});
+document.getElementById("btn-externos").addEventListener("click", e => {
+  ocultarExternos = !ocultarExternos;
+  e.target.setAttribute("aria-pressed", String(ocultarExternos));
+  e.target.textContent = ocultarExternos ? "Mostrar externos" : "Ocultar externos";
+  dibujar();
+});
+document.getElementById("btn-tema").addEventListener("click", () => {
+  const raiz = document.documentElement;
+  const oscuro = matchMedia("(prefers-color-scheme: dark)").matches;
+  const actual = raiz.dataset.tema || (oscuro ? "oscuro" : "claro");
+  raiz.dataset.tema = actual === "oscuro" ? "claro" : "oscuro";
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") { elegido = null; dibujar(); }
+  if (e.key === "/" && document.activeElement.id !== "buscar") {
+    e.preventDefault();
+    document.getElementById("buscar").focus();
+  }
+});
+
+resumen();
+dibujar();
+</script>
+</body>
+</html>

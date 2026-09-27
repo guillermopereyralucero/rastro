@@ -22,12 +22,38 @@ Red Eléctrica.
 La segunda existe porque la primera la necesita: una plataforma de datos sin
 linaje es una plataforma en la que nadie se atreve a borrar nada.
 
-**Lo que responderá Rastro:**
+**Lo que responde Rastro** (`✔` ya funciona):
 
-- ¿De dónde sale esta tabla? — linaje aguas arriba, a través de vistas anidadas
-- ¿Qué se rompe si la borro o le cambio una columna? — radio de impacto
-- ¿Qué tablas no consulta nadie desde hace 90 días? — dinero en almacenamiento
-- ¿Hay dependencias rotas o ciclos?
+```
+$ rastro impacto medidas
+QUE SE ROMPE SI TOCAS rastro-509715.raw.medidas
+  5 objeto(s) afectados:
+  -> [tabla] marts.mart_calidad_datos
+  -> [vista] staging.stg_esios__medidas
+    -> [vista] staging.int_potencia_horaria
+      -> [tabla] marts.mart_generacion_horaria
+      -> [tabla] marts.mart_generacion_por_tecnologia
+```
+
+| Pregunta | Orden | |
+|---|---|---|
+| ¿De dónde sale esta tabla? | `rastro linaje <tabla>` | ✔ |
+| ¿Qué se rompe si la toco? | `rastro impacto <tabla>` | ✔ |
+| ¿Hay dependencias circulares? | `rastro ciclos` | ✔ |
+| ¿Qué no consume nadie? | `rastro huerfanas` | ✔ |
+| El grafo, navegable | `rastro visor` | ✔ |
+| ¿Qué tablas no consulta nadie desde hace 90 días? | — | pendiente |
+
+**El visor es un HTML de 17 KiB que se abre con doble clic.** Sin servidor, sin CDN y
+sin dependencias: los datos van embebidos, así que se puede mandar por correo o
+adjuntar a un ticket y funciona en una máquina sin red. Hay un
+[ejemplo generado](docs/ejemplo-grafo.html) en el repositorio.
+
+La disposición es **por capas y no por fuerzas**. Un grafo por fuerzas queda bonito y
+no dice nada: los nodos caen donde caben y cada vez sale distinto. Aquí cada nodo está
+a la derecha de **todo** lo que necesita, así que el dibujo se lee de izquierda a
+derecha como se lee el flujo de datos, y dos ejecuciones dan el mismo resultado. Se
+calcula en Python, no en el navegador, para poder probarla.
 
 Las consultas a `INFORMATION_SCHEMA` **no se facturan en BigQuery**. La
 herramienta cuesta cero euros ejecutarla, y ese detalle es lo que hace viable
@@ -50,7 +76,7 @@ source .venv/Scripts/activate      # Windows con Git Bash
 # source .venv/bin/activate        # Linux y macOS
 pip install -e ".[dev]"
 
-pytest                             # 47 tests, ninguno toca la red
+pytest                             # 102 tests, ninguno toca la red
 rastro buscar eolica               # busca en el catálogo local
 ```
 
@@ -253,12 +279,20 @@ src/rastro/
 │   ├── planificador.py  # las condiciones de REE convertidas en lógica pura
 │   ├── esios.py         # lo único que toca la red
 │   └── modelos.py       # todo en UTC, ventanas semiabiertas
+├── grafo/               # la capa 2: el linaje
+│   ├── modelos.py       # nodos, aristas, y el motivo como señal de confianza
+│   ├── sql.py           # dos pasadas: sqlglot y respaldo por regex
+│   ├── bigquery.py      # INFORMATION_SCHEMA, que no se factura
+│   ├── dbt.py           # el manifiesto, que es la verdad de lo que dbt gestiona
+│   ├── consultas.py     # linaje, impacto, ciclos, huérfanas
+│   ├── disposicion.py   # por capas, calculada en Python para poder probarla
+│   └── visor.py         # el HTML de un solo fichero
 ├── recursos/            # el catálogo de indicadores, cacheado
 └── cli.py
 infra/                   # Terraform: datasets, IAM, presupuesto
 docs/                    # la anomalía, la puesta en marcha y el seguimiento
 flowcrack/               # el registro de decisiones
-tests/                   # 47, ninguno con red
+tests/                   # 102, ninguno con red
 ```
 
 El planificador no hace red: entra estado y sale un plan. Por eso se puede

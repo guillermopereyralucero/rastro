@@ -30,3 +30,11 @@ models:
               arguments:
                 minimo: -100
                 maximo: 100
+
+      - name: es_ultima_hora
+        description: La hora mas reciente de la tabla. Para el anillo del mix actual.
+        data_tests: [not_null]
+
+      - name: horas_de_antiguedad
+        description: Horas desde la mas reciente. 0 es la ultima.
+        data_tests: [not_null]
