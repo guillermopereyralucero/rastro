@@ -1704,8 +1704,10 @@ decisiones:
       duplicar la etiqueta. Comprobado que cada tecnologia tiene un unico valor de
       `renovable`, asi que cada barra sale de un color limpio.
 
-      Queda sin verificar si vale poner el mismo campo como dimension y como desglose,
-      que seria la tercera salida. Esta escrito en la guia como no verificado.
+      Y la tercera salida quedo VERIFICADA el mismo dia, por Guillermo y en el
+      producto: poner el mismo campo como dimension y como desglose si vale, y activa
+      la opcion. La documentacion no lo dice; se comprobo haciendolo, que es mejor
+      prueba. Pasa a ser la salida principal de la guia.
     estado: vigente
     impacto: menor
     causada_por: [r053]
