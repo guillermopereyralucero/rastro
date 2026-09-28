@@ -2,7 +2,7 @@
 // Fuente: decisiones.yaml
 window.FLOWCRACK = {
   "formato": 2,
-  "generado": "2026-09-27 21:15",
+  "generado": "2026-09-28 19:54",
   "proyecto": {
     "nombre": "Rastro",
     "perfil": "investigacion",
@@ -1845,7 +1845,7 @@ window.FLOWCRACK = {
       "tipo": "decision",
       "detalle": "Cuatro paginas especificadas en docs/dashboard.md: estado actual, el dia, renovables y calidad. La cuarta mide frescura, horas incompletas, revisiones de REE y peticiones a la API.",
       "porque": "Las tres primeras paginas las hace cualquiera con un tutorial. La cuarta demuestra que se entiende que un dato bonito puede estar mal, que es la pregunta de la que vive todo el proyecto. La metrica de puntos revisados solo se puede calcular porque `raw` es de solo anadir: si sobreescribiera, no existiria.",
-      "consecuencia": "Hacen falta dos marts nuevos: `mart_generacion_por_tecnologia` para el apilado y `mart_calidad_datos` para esa pagina. Y dos avisos que no son cosmeticos: el anillo del mix tiene que filtrar valores positivos porque la hidraulica es negativa cuando bombea -y decirlo en el informe en lugar de esconderlo-, y los campos de porcentaje ya vienen en escala 0-100, asi que el tipo Porcentaje de Looker Studio los multiplicaria otra vez.",
+      "consecuencia": "Hacen falta dos marts nuevos: `mart_generacion_por_tecnologia` para el apilado y `mart_calidad_datos` para esa pagina. Y dos avisos que no son cosmeticos: el anillo del mix tiene que filtrar valores positivos porque la hidraulica es negativa cuando bombea -y decirlo en el informe en lugar de esconderlo-, y los campos de porcentaje ya vienen en escala 0-100, asi que el tipo Porcentaje de Data Studio los multiplicaria otra vez.",
       "estado": "vigente",
       "impacto": "menor",
       "irreversible": false,
@@ -1887,7 +1887,7 @@ window.FLOWCRACK = {
       "fecha": "2026-09-27",
       "orden": 45,
       "carril": "difusion",
-      "titulo": "Looker Studio no permite reordenar las series de un apilado a mano",
+      "titulo": "Data Studio no permite reordenar las series de un apilado a mano",
       "tipo": "hallazgo",
       "detalle": "Verificado en la documentacion oficial del grafico de areas: el orden de las series lo controla la clasificacion de la dimension de desglose, y lo unico por lo que se puede clasificar es un campo de la fuente. No hay forma de arrastrar series. La primera version de docs/dashboard.md decia que si se podia.",
       "porque": "Se comprobo porque Guillermo pidio verificar los pasos contra la documentacion antes de ponerse a configurar. La comprobacion valio la pena: habria perdido el rato buscando una opcion que no existe.",
@@ -1920,7 +1920,7 @@ window.FLOWCRACK = {
       "titulo": "La demanda y la razon generacion/demanda entran en el mart",
       "tipo": "decision",
       "detalle": "`mart_generacion_horaria` gana `demanda_mw` -del indicador 1293- y `razon_generacion_demanda`. La razon lleva un test de rango entre 0,5 y 2,5.",
-      "porque": "El informe necesitaba graficar generacion contra demanda, y la alternativa era combinar dos fuentes dentro de Looker Studio. Eso dejaria la logica en el informe: sin versionar, sin test y sin que nadie mas pueda reproducirla. Una linea de SQL lo resuelve en el sitio correcto.",
+      "porque": "El informe necesitaba graficar generacion contra demanda, y la alternativa era combinar dos fuentes dentro de Data Studio. Eso dejaria la logica en el informe: sin versionar, sin test y sin que nadie mas pueda reproducirla. Una linea de SQL lo resuelve en el sitio correcto.",
       "consecuencia": "La razon queda a la vista en el cuadro de mando, y eso no es adorno: es el indicador que detecto el doble conteo del solar cuando llego a 1,79. Se usa el 1293 y no el 10004 porque el primero cuadra con la realidad del sistema y el segundo sigue sin explicar (r037). El `join` es `left` a proposito: si falta la demanda de una hora, la generacion de esa hora sigue siendo correcta.",
       "estado": "vigente",
       "impacto": "menor",
@@ -1936,7 +1936,7 @@ window.FLOWCRACK = {
           "motivo": "La logica queda versionada y con test"
         },
         {
-          "opcion": "Combinar fuentes en Looker Studio",
+          "opcion": "Combinar fuentes en Data Studio",
           "elegida": false,
           "motivo": "Deja la logica en el informe, fuera del control de versiones"
         }
@@ -2050,7 +2050,7 @@ window.FLOWCRACK = {
       "fecha": "2026-09-27",
       "orden": 49,
       "carril": "difusion",
-      "titulo": "El control de periodo de Looker Studio ignora las horas",
+      "titulo": "El control de periodo de Data Studio ignora las horas",
       "tipo": "hallazgo",
       "detalle": "La documentacion es explicita: se puede usar una dimension de fecha y hora, pero las unidades de tiempo las ignora el filtro de periodo. No existe \"ultimas 2 horas\", que es lo que decia la guia del cuadro de mando.",
       "porque": "Guillermo se topo con ello montando la pagina 1: la opcion de horas no aparecia y lo tomaba como fecha. Se verifico en la documentacion antes de proponer nada.",
@@ -2143,6 +2143,79 @@ window.FLOWCRACK = {
       ],
       "causada_por": [
         "r042"
+      ],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r052",
+      "fecha": "2026-09-28",
+      "orden": 52,
+      "carril": "difusion",
+      "titulo": "Looker Studio volvio a llamarse Data Studio en abril de 2026",
+      "tipo": "hito-externo",
+      "detalle": "Google deshizo el cambio de nombre de 2022. La URL del producto es ahora datastudio.google.com y lookerstudio.google.com redirige. Las URL de la documentacion SIGUEN bajo /looker/docs/studio/, asi que los enlaces no cambian aunque el producto si.",
+      "porque": "Lo aviso Guillermo. Se verifico antes de cambiar nada: en los titulos de las paginas de documentacion ya aparecian las dos formas mezcladas, que es la senal de un renombrado en curso.",
+      "consecuencia": "Renombrado en 16 sitios del repositorio. Los enlaces se dejan como estan.",
+      "estado": "vigente",
+      "impacto": "parche",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r053",
+      "fecha": "2026-09-28",
+      "orden": 53,
+      "carril": "difusion",
+      "titulo": "Los colores de las tecnologias van en el mapa de valores de dimension, no en la paleta del grafico",
+      "tipo": "decision",
+      "detalle": "Data Studio colorea de tres maneras, y se elige en \"Color por\" de la pestana ESTILO. \"Orden de serie\" -que es lo que viene por defecto- hace que el color siga la POSICION en el ranking, asi que se mueve solo cuando cambia que tecnologia produce mas. \"Valores de dimension\" hace que siga la identidad.\nEl mapa es de ambito INFORME y no por grafico: se define una vez -en Recurso o en Tema y diseno- y lo heredan todos los graficos que coloreen asi. Admite 1.000 entradas.",
+      "porque": "Guillermo configuro la paleta del grafico y los colores no se quedaban. La guia decia el metodo equivocado: \"Estilo, Colores de serie\". Verificado en la documentacion antes de reescribirlo.",
+      "consecuencia": "Corregidos los tres graficos que colorean por tecnologia -el anillo, el apilado y el ranking-, que necesitan ademas el paso de cambiar \"Color por\" a valores de dimension: sin el, el mapa existe y el grafico lo ignora.\nY un aviso que cuesta un rato descubrir solo: el texto del valor tiene que coincidir caracter a caracter con el dato, y los datos van SIN ACENTOS -`Eolica`, no `Eólica`-, porque asi esta el seed. La guia lleva ahora los once valores exactos para copiar.",
+      "estado": "vigente",
+      "impacto": "menor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "El mapa de colores de valores de dimension, de ambito informe",
+          "elegida": true,
+          "motivo": "El color sigue a la tecnologia, y se define una sola vez"
+        },
+        {
+          "opcion": "Colores de serie por grafico",
+          "elegida": false,
+          "motivo": "Siguen el ranking, no la identidad, y hay que repetirlo en cada grafico"
+        }
+      ],
+      "causada_por": [
+        "r045"
       ],
       "abre": [],
       "cierra": [],

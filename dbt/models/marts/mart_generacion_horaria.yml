@@ -62,7 +62,7 @@ models:
       - name: es_ultima_hora
         description: >
           La hora mas reciente que hay en la tabla. Existe porque el control de
-          periodo de Looker Studio ignora las unidades de tiempo y no puede filtrar
+          periodo de Data Studio ignora las unidades de tiempo y no puede filtrar
           "la ultima hora". Se calcula respecto al maximo de la tabla y no respecto a
           la hora actual: si la ingesta se para, esto sigue ensenando el ultimo dato
           bueno en lugar de dejar la pagina vacia, y la tarjeta de frescura avisa.

@@ -109,7 +109,7 @@ select
 
 
     -- Filtrar "las ultimas N horas" en el informe es imposible: el control de periodo
-    -- de Looker Studio IGNORA las unidades de tiempo, solo trabaja con fechas. Asi
+    -- de Data Studio IGNORA las unidades de tiempo, solo trabaja con fechas. Asi
     -- que la ventana reciente se resuelve aqui, con dos campos que el informe puede
     -- filtrar como numeros.
     --

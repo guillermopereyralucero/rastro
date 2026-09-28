@@ -60,7 +60,7 @@ cambios pendientes.
 - [x] `dbt docs generate`: el manifiesto ya tiene el grafo que leerá F5
 - [ ] Medir la consulta típica con y sin partición, y poner la cifra en el
       README. Sin cifra, la decisión de particionar es una opinión
-- [ ] Dashboard público en Looker Studio ← **te toca a ti**, es producto de UI
+- [ ] Dashboard público en Data Studio ← **te toca a ti**, es producto de UI
 - [ ] Resolver qué mide el indicador 10004: dice ser demanda y marca 46.976 MW
       donde el 1293 marca 28.167 (`r037`)
 - [ ] Confirmar contra la documentación de ESIOS que la hidráulica es neta de

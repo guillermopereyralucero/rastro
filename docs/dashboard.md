@@ -1,15 +1,19 @@
 # El cuadro de mando, paso a paso
 
-Guía para montar el informe en **Looker Studio** (el producto que antes se llamaba
-Data Studio; se renombró en 2022 y la documentación vive ahora en
-`cloud.google.com/looker/docs/studio`).
+Guía para montar el informe en **Data Studio**.
+
+> **Sobre el nombre.** El producto se llamó Data Studio hasta 2022, pasó a Looker
+> Studio, y en **abril de 2026 volvió a llamarse Data Studio**. La URL es
+> <https://datastudio.google.com>; `lookerstudio.google.com` redirige sola. Las URL de
+> la documentación **siguen** bajo `/looker/docs/studio/`, así que los enlaces de esta
+> guía apuntan ahí aunque el producto ya no se llame así.
 
 Todos los nombres de campo son los reales de las tablas, copiados del esquema. Cada
 paso de interfaz está comprobado contra la documentación oficial, y al final de cada
 bloque hay enlace a la página que lo respalda.
 
-> **Dos correcciones que afectan a lo que puedes hacer.** Las dos salieron de
-> comprobar la documentación y de que Guillermo se topara con la segunda montándolo.
+> **Tres correcciones que afectan a lo que puedes hacer.** Salieron de comprobar la
+> documentación y de que Guillermo se topara con dos de ellas montándolo.
 >
 > 1. **El orden de las series de un apilado no se puede colocar a mano.** El apilado
 >    sigue la clasificación de la dimensión de desglose, y no hay forma de arrastrar
@@ -18,6 +22,9 @@ bloque hay enlace a la página que lo respalda.
 >    puede usar una dimensión de fecha y hora, pero **las unidades de tiempo las
 >    ignora** el filtro de periodo»*. No existe «últimas 2 horas». Resuelto con los
 >    campos `es_ultima_hora` y `horas_de_antiguedad` (paso 1.1).
+> 3. **Los colores de serie no fijan el color de una tecnología.** Siguen la posición
+>    en el ranking, no la identidad. Lo que hace falta es el **mapa de colores de
+>    valores de dimensión**, que es de ámbito informe (paso 0.5).
 >
 > Las dos se arreglan igual: en SQL, no en el informe. Lo que vive en el informe no
 > está versionado, no tiene test y nadie más puede reproducirlo.
@@ -94,7 +101,7 @@ Mismo sitio (**Editar** la fuente), en la lista de campos, columna *Tipo*:
 | `orden_apilado`, `tecnologias`, `lecturas` | Número | 0 decimales |
 
 > **No pongas tipo Porcentaje en los campos `porcentaje_*`.** Vienen ya en escala
-> 0-100 desde SQL, y el tipo Porcentaje de Looker Studio los multiplicaría otra vez
+> 0-100 desde SQL, y el tipo Porcentaje de Data Studio los multiplicaría otra vez
 > por 100. Saldría 6.783 % donde hay 67,83 %.
 
 ### 0.4 · Filtro de todo el informe
@@ -119,23 +126,79 @@ la sección *Filtro* de su panel de configuración.
 
 ### 0.5 · La paleta de tecnologías
 
-Se define una vez por gráfico, en **Estilo → Colores de serie** (al desplegar cada
-serie). Regla: **renovables en colores saturados, fósiles en grises.** Así el
+> **Corrección.** Una versión anterior de esta guía decía que la paleta se define por
+> gráfico en *Estilo → Colores de serie*. **Eso no hace lo que hace falta aquí**, y es
+> justo el motivo de que los colores no se queden donde los pones.
+
+#### Por qué los colores de serie no sirven
+
+Data Studio colorea de tres maneras, y se elige en el desplegable **Color por** de la
+pestaña **ESTILO** del gráfico:
+
+| Opción | Qué hace |
+|---|---|
+| **Color único** | Todo en tonos de un color |
+| **Orden de serie** | El color sigue la **posición en el ranking**: el valor más alto se lleva el primer color del tema, sea cual sea |
+| **Valores de dimensión** | El color sigue la **identidad**: la eólica es azul esté donde esté |
+
+La paleta de gráfico que configuraste afecta a la segunda. Con *Orden de serie*, el
+primer color va a la tecnología que más produzca **en ese momento**, así que los
+colores se mueven solos cuando cambia el ranking. Para un ranking de rendimiento tiene
+sentido; para identificar tecnologías es exactamente lo contrario de lo que quieres.
+
+#### El mapa de colores de valores de dimensión
+
+Es **de ámbito informe**, no por gráfico: se define **una vez** y lo heredan todos los
+gráficos que coloreen por valores de dimensión. Admite hasta **1.000 entradas**.
+
+**Abrirlo**, por cualquiera de los dos caminos:
+
+- **Recurso → Gestionar colores de valores de dimensión**, o
+- **Tema y diseño** → pestaña **TEMA** → sección **Estilos principales** →
+  **Gestionar colores de valores de dimensión**
+
+**Añadir cada tecnología:**
+
+1. **Añadir un valor**
+2. Clic en el círculo de color y pon el código hexadecimal
+3. Escribe el texto del valor
+4. **CREAR VALOR**
+
+**Luego, en cada gráfico que use `tecnologia`:** pestaña **ESTILO** → **Color por** →
+**Valores de dimensión**. Sin este paso, el mapa existe y el gráfico lo ignora.
+
+#### Los once valores, con el texto exacto
+
+> **El texto tiene que coincidir carácter a carácter con el dato, y los datos van SIN
+> ACENTOS.** Si escribes `Eólica` con tilde, no casa con `Eolica` y esa entrada no se
+> aplica a nada. Cópialos de aquí.
+
+| Valor (cópialo tal cual) | Color | Por qué |
+|---|---|---|
+| `Eolica` | `#4A90D9` | Renovable |
+| `Solar fotovoltaica` | `#F2B300` | Renovable |
+| `Solar termica` | `#E88B00` | Renovable |
+| `Termica renovable` | `#27AE60` | Renovable |
+| `Hidraulica` | `#00A9B7` | Renovable |
+| `Nuclear` | `#8E44AD` | Sin emisiones, no renovable |
+| `Ciclo combinado` | `#7F8C8D` | Fósil |
+| `Carbon` | `#34495E` | Fósil |
+| `Fuel-gas` | `#95A5A6` | Fósil |
+| `Cogeneracion y resto` | `#BDC3C7` | Fósil |
+| `Resto generacion` | `#D5DBDB` | Residual |
+
+Regla de la paleta: **renovables en colores saturados, fósiles en grises.** Así el
 apilado se lee de un golpe sin consultar la leyenda.
 
-| Tecnología | Color |
-|---|---|
-| Eolica | `#4A90D9` |
-| Solar fotovoltaica | `#F2B300` |
-| Solar termica | `#E88B00` |
-| Termica renovable | `#27AE60` |
-| Hidraulica | `#00A9B7` |
-| Nuclear | `#8E44AD` |
-| Ciclo combinado | `#7F8C8D` |
-| Carbon | `#34495E` |
-| Fuel-gas | `#95A5A6` |
-| Cogeneracion y resto | `#BDC3C7` |
-| Resto generacion | `#D5DBDB` |
+#### Un atajo que quizá te ahorre trabajo
+
+Los valores **se añaden solos al mapa** cuando un gráfico los usa, tomando el color del
+tema que esté activo. Así que si ya has creado los gráficos, puede que las once
+tecnologías estén ya en la lista y solo tengas que **cambiarles el color**, sin crear
+ninguna entrada a mano. Abre el mapa primero y mira.
+
+📄 [El mapa de colores de valores de dimensión](https://cloud.google.com/looker/docs/studio/the-dimension-value-color-map) ·
+📄 [Colorear los datos](https://cloud.google.com/looker/docs/studio/color-your-data)
 
 ---
 
@@ -143,7 +206,7 @@ apilado se lee de un golpe sin consultar la leyenda.
 
 ### 1.1 · Filtro de la página, no control de periodo
 
-**Aquí no va un control de periodo.** El de Looker Studio ignora las horas, así que
+**Aquí no va un control de periodo.** El de Data Studio ignora las horas, así que
 «últimas 2 horas» no se puede pedir. La página 1 muestra *la última hora que hay*, y
 eso se filtra con un campo.
 
@@ -218,7 +281,8 @@ página no es de fiar, y eso tiene que verse sin leer un número.
 3. *Dimensión*: `tecnologia`.
 4. *Métrica*: `potencia_media_mw`, agregación **Media**.
 5. *Ordenar*: `potencia_media_mw`, descendente.
-6. *Estilo*: activa **Mostrar etiquetas de datos** con porcentaje.
+6. *Estilo*: activa **Mostrar etiquetas de datos** con porcentaje, y
+   **Color por → Valores de dimensión**.
 
 **Filtro propio, obligatorio.** En *Configuración* de este gráfico → sección
 *Filtro* → **Añadir filtro** → **Crear un filtro**:
@@ -277,8 +341,10 @@ Es el gráfico principal del informe.
 6. **Esto es lo importante** — *Orden de la dimensión de desglose*:
    selecciona **`orden_apilado`**, **ascendente**.
 7. *Mostrar* → **N valores superiores**, y en *Número de series* pon **11**.
+8. **ESTILO → Color por → Valores de dimensión**, para que cada tecnología conserve su
+   color del mapa del paso 0.5.
 
-**Por qué el paso 6 y no arrastrar las series.** Looker Studio apila según el orden
+**Por qué el paso 6 y no arrastrar las series.** Data Studio apila según el orden
 de clasificación del desglose y **no permite reordenar series a mano**. Lo único por
 lo que se puede clasificar es un campo, así que el orden es un campo:
 `orden_apilado` va de 1 (nuclear) a 11 (eólica), y vive en el seed de dbt,
@@ -374,7 +440,9 @@ extremo parece plano.
 2. Fuente: `Generación por tecnología`.
 3. *Dimensión*: `tecnologia`. *Métrica*: `energia_mwh`, **Suma**.
 4. *Ordenar*: `energia_mwh` descendente.
-5. Colores por serie según la paleta del paso 0.5.
+5. **ESTILO → Color por → Valores de dimensión.** Los colores salen entonces del mapa
+   del paso 0.5. Si lo dejas en *Orden de serie* —que es lo que viene por defecto— el
+   color seguirá al ranking y cambiará solo cuando cambie qué tecnología produce más.
 
 ### 3.2 · Columnas apiladas al 100 % · `Renovable contra fósil`
 
@@ -409,7 +477,7 @@ Fórmula: HOUR(hora)
 Tipo:    Número
 ```
 
-`HOUR()` existe en Looker Studio y funciona con campos de tipo Fecha y hora.
+`HOUR()` existe en Data Studio y funciona con campos de tipo Fecha y hora.
 
 Luego el gráfico:
 
@@ -494,7 +562,7 @@ Ver [coste.md](coste.md) para el desglose y las dos alertas de presupuesto.
 3. Pon el enlace en el README. Un cuadro de mando que no se puede abrir sin permisos
    no sirve como escaparate.
 
-**Nada de esto llama a ESIOS.** Looker Studio lee BigQuery, y BigQuery es el
+**Nada de esto llama a ESIOS.** Data Studio lee BigQuery, y BigQuery es el
 servidor propio que exigen las condiciones del token. Es la regla de la que depende
 que el proyecto pueda ser público.
 

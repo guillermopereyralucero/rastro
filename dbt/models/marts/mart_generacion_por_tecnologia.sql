@@ -45,7 +45,7 @@ select
     horaria.tecnologia,
     horaria.renovable,
 
-    -- Orden del apilado, de abajo arriba. Existe porque Looker Studio NO permite
+    -- Orden del apilado, de abajo arriba. Existe porque Data Studio NO permite
     -- reordenar las series a mano: el apilado sigue el orden de clasificacion, y
     -- lo unico por lo que se puede clasificar es un campo. Asi que el orden es un
     -- dato del dominio -abajo lo estable, arriba lo variable- y vive en el seed,
@@ -68,7 +68,7 @@ select
 
 
     -- Filtrar "las ultimas N horas" en el informe es imposible: el control de periodo
-    -- de Looker Studio IGNORA las unidades de tiempo, solo trabaja con fechas. Asi
+    -- de Data Studio IGNORA las unidades de tiempo, solo trabaja con fechas. Asi
     -- que la ventana reciente se resuelve aqui, con dos campos que el informe puede
     -- filtrar como numeros.
     --
