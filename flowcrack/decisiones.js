@@ -2,7 +2,7 @@
 // Fuente: decisiones.yaml
 window.FLOWCRACK = {
   "formato": 2,
-  "generado": "2026-09-28 19:54",
+  "generado": "2026-09-28 20:03",
   "proyecto": {
     "nombre": "Rastro",
     "perfil": "investigacion",
@@ -2216,6 +2216,38 @@ window.FLOWCRACK = {
       ],
       "causada_por": [
         "r045"
+      ],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r054",
+      "fecha": "2026-09-28",
+      "orden": 54,
+      "carril": "difusion",
+      "titulo": "En un grafico de barras, 'Color por' solo existe si hay dimension de desglose",
+      "tipo": "hallazgo",
+      "detalle": "La documentacion lo dice sin rodeos: cuando no hay valor en Dimension de desglose, se usa el ajuste Color de barra y las demas opciones de Color por NO aparecen. Con una dimension y una metrica, la serie es la METRICA -la leyenda dice el nombre de la metrica, no los valores de la dimension- y solo hay un color que tocar.\nDonde si aparece: en el circular, porque las porciones son los valores de dimension; y en cualquier grafico con desglose.",
+      "porque": "Guillermo mando una captura: en el ranking de tecnologias no salia el desplegable, solo una rejilla de colores. Y la propia captura contenia la prueba del porque: el apilado de renovable contra fosil que tiene debajo si mostraba verde y gris, y la unica diferencia entre los dos graficos es el desglose.",
+      "consecuencia": "La guia gana una tabla de que graficos tienen la opcion y cuales no, y el paso 3.1 pasa de una instruccion a tres salidas.\nLa recomendada es dejar el ranking de un color: en un grafico ordenado por valor y con cada barra etiquetada, el color no anade informacion, la repite. La alternativa buena, si el grafico no esta filtrado a renovables, es desglosar por `renovable` para que el color signifique algo -verde y gris- en lugar de duplicar la etiqueta. Comprobado que cada tecnologia tiene un unico valor de `renovable`, asi que cada barra sale de un color limpio.\nQueda sin verificar si vale poner el mismo campo como dimension y como desglose, que seria la tercera salida. Esta escrito en la guia como no verificado.",
+      "estado": "vigente",
+      "impacto": "menor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [],
+      "causada_por": [
+        "r053"
       ],
       "abre": [],
       "cierra": [],

@@ -167,6 +167,28 @@ gráficos que coloreen por valores de dimensión. Admite hasta **1.000 entradas*
 **Luego, en cada gráfico que use `tecnologia`:** pestaña **ESTILO** → **Color por** →
 **Valores de dimensión**. Sin este paso, el mapa existe y el gráfico lo ignora.
 
+#### Pero «Color por» NO aparece en todos los gráficos
+
+Y esto es lo que hace que la instrucción de arriba no sirva en uno de ellos. La
+documentación es tajante:
+
+> *Cuando no tienes un valor en **Dimensión de desglose**, se usa el ajuste **Color de
+> barra** y las demás opciones de **Color por** no aparecen.*
+
+O sea: **en un gráfico de barras, la opción solo existe si hay dimensión de desglose.**
+Con una dimensión y una métrica, la *serie* es la métrica —la leyenda dirá «Energía
+Generada», no las tecnologías— y solo hay un color que tocar.
+
+| Gráfico | ¿Aparece «Color por»? | Por qué |
+|---|---|---|
+| **1.4** Anillo | **Sí** | En un circular las porciones **son** los valores de dimensión |
+| **2.2** Áreas apiladas | **Sí** | Tiene desglose: `tecnologia` |
+| **3.1** Ranking de barras | **No** | Sin desglose → solo *Color de barra* |
+| **3.2** Apilado al 100 % | **Sí** | Tiene desglose: `renovable` |
+
+Si quieres comprobarlo sin fiarte de esta tabla: el 3.2 ya te sale verde y gris
+correctamente, y el 3.1 no. La diferencia entre los dos es el desglose.
+
 #### Los once valores, con el texto exacto
 
 > **El texto tiene que coincidir carácter a carácter con el dato, y los datos van SIN
@@ -440,9 +462,26 @@ extremo parece plano.
 2. Fuente: `Generación por tecnología`.
 3. *Dimensión*: `tecnologia`. *Métrica*: `energia_mwh`, **Suma**.
 4. *Ordenar*: `energia_mwh` descendente.
-5. **ESTILO → Color por → Valores de dimensión.** Los colores salen entonces del mapa
-   del paso 0.5. Si lo dejas en *Orden de serie* —que es lo que viene por defecto— el
-   color seguirá al ranking y cambiará solo cuando cambie qué tecnología produce más.
+5. **El color: aquí «Color por» no aparece**, porque este gráfico no tiene dimensión
+   de desglose (ver el paso 0.5). Tres salidas, y la que conviene depende de si has
+   filtrado la página a renovables:
+
+   **A · Dejarlo de un color.** Es lo que recomiendo si el gráfico está filtrado a
+   renovables. En un ranking ordenado por valor y con cada barra etiquetada, el color
+   no añade información: la longitud ya la lleva. Pintar once colores donde no hacen
+   falta es ruido con aspecto de diseño.
+
+   **B · Poner `tecnologia` también como *Dimensión de desglose*.** Al haber desglose
+   aparece **Color por → Valores de dimensión** y cada barra coge su color del mapa.
+   Son 30 segundos de probar. **No lo he podido verificar yo**: la documentación dice
+   que el desglose activa la opción, pero no encuentro confirmación de que valga usar
+   el mismo campo en los dos sitios. Si funciona, dímelo y lo dejo escrito.
+
+   **C · Desglosar por `renovable`.** Si el gráfico **no** está filtrado a renovables,
+   esta es la mejor: *Dimensión de desglose* = `renovable`, y los colores salen verde
+   y gris. Comprobado que cada tecnología tiene un solo valor de `renovable`, así que
+   cada barra sale de un color limpio. Y aquí el color **añade** información en vez de
+   repetir la que ya está en la etiqueta, que es la única razón buena para usarlo.
 
 ### 3.2 · Columnas apiladas al 100 % · `Renovable contra fósil`
 
