@@ -120,9 +120,14 @@ cambios pendientes.
 - [x] **La tabla del flujo es append-only y la vista responde qué vale ahora.** Con
       disparos tardíos la misma hora se emite varias veces, y eso no son duplicados:
       es la historia de cómo se corrigió el dato.
-- [ ] Medir el pipeline con volumen real y publicar la cifra
-- [ ] Que la ingesta por lotes publique además en el tema, para que el flujo tenga
-      datos de verdad sin publicarlos a mano
+- [x] **Que la ingesta por lotes publique además en el tema**: `--publicar-en-tema`.
+      Apagado por defecto, porque el consumidor no está encendido siempre.
+- [x] **Medido con dato real, y las dos rutas cuadran.** 574 medidas de la eólica por
+      las dos vías: 46 horas completas comparadas, 0 medias y 0 conteos discrepantes,
+      peor diferencia 9·10⁻¹³ MW —ruido de coma flotante—. La comprobación es un
+      comando, `rastro cuadrar`, no un número en el README.
+- [ ] Publicar la cifra de latencia del pipeline (cuánto tarda una medida desde que se
+      publica hasta que está en la tabla)
 - [ ] **Composer queda fuera del proyecto.** No tiene capa gratuita **ni se puede
       apagar por horas**: la cuota de entorno pequeño son 0,35 USD/hora, es decir
       **~255 USD/mes de tarifa fija antes de ejecutar un solo DAG**. La misma

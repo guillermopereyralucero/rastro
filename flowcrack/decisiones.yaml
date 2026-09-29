@@ -2339,3 +2339,59 @@ decisiones:
       pidiera.
     estado: vigente
     impacto: mayor
+
+  - id: r076
+    fecha: 2026-09-29
+    orden: 76
+    carril: analisis
+    tipo: hito-externo
+    titulo: "Lote y flujo dan el mismo numero: 46 horas, 0 discrepancias"
+    detalle: >
+      574 medidas reales de la eolica recorrieron las dos rutas. Comparadas las 46
+      horas completas: 0 medias discrepantes, 0 conteos discrepantes, y una peor
+      diferencia de 9e-13 MW, que es ruido de coma flotante porque BigQuery y Python
+      suman en distinto orden. Cero exacto seria sospechoso.
+    porque: >
+      Es la comprobacion que justifica que existan las dos rutas. Si dieran numeros
+      distintos habria que explicar cual es el bueno, y no habria respuesta: son el
+      mismo dato agregado igual por dos caminos.
+    consecuencia: >
+      Queda como comando, `rastro cuadrar`, y no como un numero en el README: un numero
+      escrito hay que creerselo, un comando se vuelve a ejecutar. Es el mismo criterio
+      que hizo versionar el grafo de ejecucion en vez de una captura.
+
+      Y solo compara las horas COMPLETAS. Una hora a medias en el flujo daria una
+      diferencia que no dice nada sobre si los dos caminos coinciden. Al escribirlo, el
+      primer intento comparo contra `raw.medidas` sin deduplicar y dio 48 conteos
+      discrepantes de 48: quien deduplica en la ruta normal es el modelo de staging.
+    estado: vigente
+    impacto: mayor
+    hito: evaluacion
+    causada_por: [r075]
+
+  - id: r077
+    fecha: 2026-09-29
+    orden: 77
+    carril: metodo
+    tipo: hallazgo
+    titulo: "Dos metodos de Beam que no hacen lo que prometen, y el sondeo de Prism"
+    detalle: >
+      `wait_until_finish(duration=...)` existe en la interfaz pero el DirectRunner lanza
+      NotImplementedError. Y `cancel()` dice en su propia documentacion "For testing use
+      only. Does not properly wait for pipeline workers to shut down": para el trabajo,
+      pero la espera se queda colgada igual. Ademas, el registro se llena de errores de
+      PrismRunner aunque se pida DirectRunner.
+    porque: >
+      El DirectRunner de Beam prueba Prism primero; Prism rechaza la lectura de Pub/Sub
+      y entonces cae al runner de siempre. Los errores son ruido de ese sondeo, no un
+      fallo, pero parecen exactamente lo contrario.
+    consecuencia: >
+      La espera se hace en un hilo demonio y el principal se rinde pasado un margen de
+      5 segundos. Lo escrito en BigQuery ya esta confirmado -cada peticion espera su
+      respuesta-, asi que esperar mas solo retrasa la vuelta al terminal.
+
+      Y queda un comentario avisando de los errores de Prism, porque sin el se van
+      veinte minutos detras de un fallo que no existe.
+    estado: vigente
+    impacto: menor
+    causada_por: [r070]

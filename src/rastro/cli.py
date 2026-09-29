@@ -76,6 +76,16 @@ def _analizador() -> argparse.ArgumentParser:
 
     ingesta = subs.add_parser("ingesta", help="descarga las ventanas pendientes")
     _opciones_ingesta(ingesta)
+    ingesta.add_argument(
+        "--publicar-en-tema",
+        metavar="TEMA",
+        default=None,
+        help=(
+            "ademas de guardar, publica cada medida en este tema de Pub/Sub, para "
+            "alimentar el pipeline de flujo con datos de verdad. Apagado por defecto: "
+            "publicar a un tema que nadie esta leyendo solo acumula retencion"
+        ),
+    )
     ingesta.set_defaults(funcion=_ingesta)
 
     diag = subs.add_parser(
@@ -190,7 +200,110 @@ def _analizador() -> argparse.ArgumentParser:
     )
     publicar.set_defaults(funcion=_publicar)
 
+    cuadrar = subs.add_parser(
+        "cuadrar",
+        help="comprueba que la ruta de lote y la de flujo dan el mismo numero",
+    )
+    cuadrar.add_argument("--proyecto", default="rastro-509715")
+    cuadrar.add_argument(
+        "--indicador",
+        type=int,
+        default=551,
+        help="indicador a comparar. 551 es la eolica",
+    )
+    cuadrar.add_argument(
+        "--tolerancia",
+        type=float,
+        default=0.001,
+        help=(
+            "diferencia en MW que se acepta. No es cero porque BigQuery y Python suman "
+            "en distinto orden, y eso deja ruido en el ultimo bit"
+        ),
+    )
+    cuadrar.set_defaults(funcion=_cuadrar)
+
     return raiz
+
+
+#: La comparacion entre las dos rutas. Se deduplica el lado del lote porque
+#: `raw.medidas` es append-only -una revision de REE llega como una fila mas- y quien
+#: deduplica en la ruta normal es el modelo de staging de dbt. Compararlo sin
+#: deduplicar da diferencias que no existen, y es el primer error que se comete aqui.
+SQL_CUADRAR = """
+WITH sin_repetir AS (
+  SELECT * EXCEPT (orden) FROM (
+    SELECT *, ROW_NUMBER() OVER (
+      PARTITION BY indicador_id, instante, geo_id ORDER BY ingerido_en DESC) AS orden
+    FROM `{proyecto}.raw.medidas` WHERE indicador_id = @indicador)
+  WHERE orden = 1
+),
+lote AS (
+  SELECT TIMESTAMP_TRUNC(instante, HOUR) AS hora,
+         AVG(valor) AS media, COUNT(*) AS lecturas
+  FROM sin_repetir GROUP BY 1
+),
+flujo AS (
+  SELECT hora, potencia_media_mw AS media, lecturas, hora_completa
+  FROM `{proyecto}.stream.potencia_horaria_actual` WHERE indicador_id = @indicador
+)
+SELECT
+  COUNT(*) AS horas,
+  COUNTIF(ABS(l.media - f.media) > @tolerancia) AS medias_mal,
+  COUNTIF(l.lecturas != f.lecturas) AS conteos_mal,
+  MAX(ABS(l.media - f.media)) AS peor
+FROM lote l JOIN flujo f USING (hora)
+WHERE f.hora_completa
+"""
+
+
+def _cuadrar(args) -> int:
+    """Compara la media horaria de la ruta de lote con la de la ruta de flujo.
+
+    **Esta es la comprobacion que justifica que existan las dos.** Si el lote y el
+    flujo dieran numeros distintos, habria que explicar cual es el bueno, y no habria
+    respuesta: son el mismo dato agregado igual por dos caminos.
+
+    Solo se comparan las horas COMPLETAS. Una hora a medias en el flujo -porque el
+    pipeline se paro antes de que llegaran las doce lecturas- daria una diferencia que
+    no dice nada sobre si los dos caminos coinciden.
+    """
+    from google.cloud import bigquery
+
+    cliente = bigquery.Client(project=args.proyecto)
+    trabajo = cliente.query(
+        SQL_CUADRAR.format(proyecto=args.proyecto),
+        job_config=bigquery.QueryJobConfig(
+            query_parameters=[
+                bigquery.ScalarQueryParameter("indicador", "INT64", args.indicador),
+                bigquery.ScalarQueryParameter("tolerancia", "FLOAT64", args.tolerancia),
+            ]
+        ),
+    )
+    fila = next(iter(trabajo.result()), None)
+
+    if fila is None or fila["horas"] == 0:
+        print("no hay horas completas que comparar en las dos rutas.")
+        print("Publica medidas en el tema y corre `rastro flujo` antes.")
+        return 1
+
+    print(f"indicador {args.indicador}, {fila['horas']} horas completas en las dos rutas")
+    print(f"  medias que no cuadran : {fila['medias_mal']}")
+    print(f"  conteos que no cuadran: {fila['conteos_mal']}")
+    print(f"  peor diferencia       : {fila['peor']:.3g} MW")
+
+    if fila["medias_mal"] or fila["conteos_mal"]:
+        print("\nLAS DOS RUTAS NO CUADRAN. Eso es un fallo, no un matiz:")
+        print("son el mismo dato agregado igual por dos caminos.")
+        return 1
+
+    print("\ncuadran.")
+    return 0
+
+
+#: Cuanto se le da al runner para cerrar despues de pedirselo. Cinco segundos: lo
+#: escrito en BigQuery ya esta confirmado -`escribir` espera la respuesta de cada
+#: peticion-, asi que esperar mas solo retrasa la vuelta al terminal.
+MARGEN_DE_PARADA = 5
 
 
 def _flujo(args) -> int:
@@ -227,6 +340,10 @@ def _flujo(args) -> int:
     # llegan a ocurrir: el pipeline funcionaria y no haria lo que dice hacer.
     opciones.view_as(StandardOptions).streaming = True
 
+    # En el registro apareceran errores de PrismRunner aunque se haya pedido
+    # DirectRunner: el DirectRunner de Beam prueba Prism primero, Prism rechaza la
+    # lectura de Pub/Sub, y entonces cae al runner de siempre. Son ruido de ese sondeo,
+    # no un fallo, y sin este aviso se van veinte minutos detras de ellos.
     print(f"leyendo de {suscripcion}")
     print(f"escribiendo en {args.proyecto}:stream")
     if args.segundos:
@@ -238,23 +355,43 @@ def _flujo(args) -> int:
 
     resultado = pipeline.run()
 
-    # `wait_until_finish(duration=...)` existe en la interfaz pero **el DirectRunner no
-    # lo implementa**: lanza NotImplementedError. Asi que el temporizador se pone
-    # aqui, que ademas hace lo mismo en cualquier runner.
-    temporizador = None
-    if args.segundos:
-        temporizador = threading.Timer(args.segundos, resultado.cancel)
-        temporizador.daemon = True
-        temporizador.start()
+    if not args.segundos:
+        try:
+            resultado.wait_until_finish()
+        except KeyboardInterrupt:
+            print("\nparando")
+            resultado.cancel()
+        return 0
+
+    # --- la parada por tiempo, que cuesta mas de lo que parece ---------------
+    #
+    # Dos cosas de la interfaz de Beam no hacen lo que su nombre promete:
+    #
+    #   * `wait_until_finish(duration=...)` existe, pero **el DirectRunner lanza
+    #     NotImplementedError**. De ahi el temporizador.
+    #
+    #   * `cancel()` dice en su propia documentacion "For testing use only. Does not
+    #     properly wait for pipeline workers to shut down". Es decir: para el trabajo,
+    #     pero `wait_until_finish` puede quedarse colgado igualmente.
+    #
+    # Asi que la espera se hace en un hilo de fondo y el principal se rinde pasado un
+    # margen. Al ser un hilo demonio, el proceso termina de todas formas.
+    espera = threading.Thread(target=resultado.wait_until_finish, daemon=True)
+    espera.start()
 
     try:
-        resultado.wait_until_finish()
+        espera.join(timeout=args.segundos)
     except KeyboardInterrupt:
         print("\nparando")
-        resultado.cancel()
-    finally:
-        if temporizador is not None:
-            temporizador.cancel()
+
+    resultado.cancel()
+    espera.join(timeout=MARGEN_DE_PARADA)
+    if espera.is_alive():
+        print(
+            "el runner no cerro solo; se sale igualmente "
+            "(lo escrito en BigQuery ya esta confirmado)",
+            file=sys.stderr,
+        )
     return 0
 
 
@@ -776,10 +913,17 @@ def _ingesta(args) -> int:
     )
     guardar, donde = _almacen(args)
 
+    publicar = _publicador(args)
+
     total = 0
+    publicadas = 0
     for peticion in plan.peticiones:
         medidas = api.valores(peticion.indicador_id, peticion.ventana)
         guardar(medidas)
+        # Primero se guarda y despues se publica. Si se publicara antes, un fallo al
+        # guardar dejaria el flujo con medidas que no estan en la tabla, y las dos
+        # rutas -que existen justo para dar el mismo numero- empezarian a discrepar.
+        publicadas += publicar(medidas)
         total += len(medidas)
         # La marca solo avanza cuando la ventana esta escrita: si el proceso
         # muere a mitad, la proxima ejecucion la repite entera en lugar de
@@ -788,6 +932,8 @@ def _ingesta(args) -> int:
         print(f"  {peticion.indicador_id:>7}  {peticion.ventana}  {len(medidas)} puntos")
 
     print(f"\n{total} puntos en {donde}\n")
+    if args.publicar_en_tema:
+        print(f"publicadas        : {publicadas} en el tema {args.publicar_en_tema}\n")
     print(api.registro.resumen())
 
     if args.destino == "bigquery":
@@ -797,6 +943,49 @@ def _ingesta(args) -> int:
         print(f"\nauditoria         : {escritas} filas en control.peticiones")
 
     return 0
+
+
+def _publicador(args):
+    """Devuelve la funcion que publica medidas en el tema. Sin tema, no hace nada.
+
+    **Apagado por defecto, y no por prudencia generica.** El consumidor del flujo corre
+    en un portatil con DirectRunner, no esta encendido siempre, y lo publicado se queda
+    en la suscripcion hasta que alguien lo lea. Publicar cada hora desde la nube a un
+    tema que nadie escucha es acumular retencion por nada.
+
+    Con el tema puesto, el mismo dato sale por las dos rutas -la de lote y la de
+    flujo-, que es justo lo que hace falta para comprobar que dan el mismo numero.
+    """
+    if not args.publicar_en_tema:
+        return lambda medidas: 0
+
+    from google.cloud import pubsub_v1
+
+    cliente = pubsub_v1.PublisherClient()
+    tema = cliente.topic_path(args.proyecto, args.publicar_en_tema)
+
+    def publicar(medidas) -> int:
+        futuros = [
+            cliente.publish(
+                tema,
+                json.dumps(
+                    {
+                        "indicador_id": m.indicador_id,
+                        "instante": m.instante.isoformat(),
+                        "valor": m.valor,
+                    },
+                    ensure_ascii=False,
+                ).encode("utf-8"),
+            )
+            for m in medidas
+        ]
+        # Se espera a que todas salgan. Sin esperar, el proceso podria terminar con
+        # mensajes a medio enviar y no habria forma de saber cuantos llegaron.
+        for futuro in futuros:
+            futuro.result()
+        return len(futuros)
+
+    return publicar
 
 
 def _almacen(args):

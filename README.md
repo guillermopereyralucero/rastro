@@ -335,9 +335,20 @@ cero.
 ### Y el circuito entero, contra la nube de verdad
 
 ```bash
-rastro publicar --fichero medidas.jsonl   # al tema de Pub/Sub
-rastro flujo --segundos 150               # DirectRunner, en local
+# con datos de verdad: la ingesta por lotes publica además en el tema
+rastro ingesta --destino bigquery --publicar-en-tema rastro-medidas
+rastro flujo --segundos 200                # DirectRunner, en local
+
+# o con basura a propósito, para probar la cola de rechazos
+rastro publicar --fichero medidas.jsonl
 ```
+
+Publicar desde la ingesta está **apagado por defecto**, y no por prudencia genérica: el
+consumidor corre en un portátil y no está encendido siempre. Publicar cada hora desde
+la nube a un tema que nadie escucha es acumular retención por nada.
+
+Con el tema puesto, el mismo dato sale por las dos rutas —la de lote y la de flujo—,
+que es justo lo que hace falta para comprobar que dan el mismo número.
 
 Quince mensajes: doce medidas y **tres basuras a propósito, una de cada clase**. Las
 medidas se agregaron y acabaron en `stream.potencia_horaria`; las tres basuras llegaron
@@ -357,6 +368,39 @@ no solo para contar.
 Un detalle de esa prueba que merece quedar: los instantes publicados eran de dos horas
 antes, y el pipeline marcó esas filas como **tardías e incompletas**. Correctamente
 —**un flujo remarcado al pasado es todo dato tardío**—, y sin que nadie se lo pidiera.
+
+### La comprobación que justifica que existan las dos rutas
+
+```bash
+rastro cuadrar                 # lote contra flujo, sobre el mismo dato
+```
+
+```
+indicador 551, 46 horas completas en las dos rutas
+  medias que no cuadran : 0
+  conteos que no cuadran: 0
+  peor diferencia       : 9.09e-13 MW
+
+cuadran.
+```
+
+Esa diferencia de 9·10⁻¹³ MW **no es una discrepancia**: es que BigQuery y Python suman
+en distinto orden y eso deja ruido en el último bit de un número de coma flotante. Cero
+exacto sería sospechoso.
+
+**Si el lote y el flujo dieran números distintos, habría que explicar cuál es el bueno,
+y no habría respuesta**: son el mismo dato agregado igual por dos caminos. Por eso la
+ventana del pipeline es de una hora, la misma que el modelo de dbt, y por eso la
+tolerancia al retraso son las mismas 48 horas que la ventana revisable de la ingesta.
+Que coincidan no es casualidad: las gobierna el mismo hecho del mundo.
+
+El comando existe en vez de un número en este README por la misma razón que el grafo de
+ejecución se versiona en vez de una captura: **un número escrito hay que creérselo; un
+comando se vuelve a ejecutar.**
+
+Sólo compara las horas **completas**. Una hora a medias en el flujo —porque el pipeline
+se paró antes de que llegaran las doce lecturas— daría una diferencia que no dice nada
+sobre si los dos caminos coinciden.
 
 ### La tabla guarda lo que pasó; la vista, lo que vale ahora
 
