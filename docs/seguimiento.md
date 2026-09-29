@@ -154,12 +154,21 @@ previo de Firebase, aunque sea de Crashlytics en otro proyecto, la invalida.
 
 ## F6 · Lenguaje natural
 
-**Estado: sin empezar.** Es la única pregunta del registro que sigue abierta:
-*¿cómo se sabe que Rastro responde bien?*
+**Estado: funciona con intérprete determinista.** 31/31 en el banco, ejecutándose en
+CI. La pregunta abierta del registro queda respondida: **precisión y exhaustividad por
+separado, y F2 en lugar de F1**, porque faltar una tabla cuesta más que sobrar.
 
-- [ ] Traducción de preguntas a consultas sobre el grafo
-- [ ] ~30 preguntas con respuesta esperada, ejecutadas en CI
-- [ ] Porcentaje de acierto y coste por consulta, publicados
+- [x] Traducción de preguntas a llamadas sobre el grafo, sin que el modelo toque los
+      datos ni pueda inventar un nombre de tabla
+- [x] 31 preguntas con respuesta esperada, incluidas las que **no se pueden
+      responder**: saber cuándo no se sabe es parte de responder bien
+- [x] Precisión, exhaustividad y F2 publicadas; `--minimo-f2` corta el CI si bajan
+- [x] El banco corre contra una **instantánea congelada** del grafo, no contra
+      producción: así un cambio en la métrica solo puede venir del código
+- [x] `rastro pregunta` y `rastro evaluar` en el CLI
+- [ ] Intérprete con modelo (Gemini o local), para medir si mejora el suelo del
+      determinista y **cuánto cuesta el punto de mejora**
+- [ ] Coste por consulta medido, cuando exista el intérprete con modelo
 
 ---
 

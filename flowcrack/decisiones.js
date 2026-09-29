@@ -2,7 +2,7 @@
 // Fuente: decisiones.yaml
 window.FLOWCRACK = {
   "formato": 2,
-  "generado": "2026-09-28 20:07",
+  "generado": "2026-09-29 09:21",
   "proyecto": {
     "nombre": "Rastro",
     "perfil": "investigacion",
@@ -126,13 +126,7 @@ window.FLOWCRACK = {
       "descripcion": "Consentimientos, licencias, comites"
     }
   ],
-  "preguntas_abiertas": [
-    {
-      "id": "evaluacion",
-      "pregunta": "Como se sabe que Rastro responde bien?",
-      "irreversible": false
-    }
-  ],
+  "preguntas_abiertas": [],
   "decisiones": [
     {
       "id": "r001",
@@ -2249,6 +2243,205 @@ window.FLOWCRACK = {
       "causada_por": [
         "r053"
       ],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r055",
+      "fecha": "2026-09-29",
+      "orden": 55,
+      "carril": "metodo",
+      "titulo": "Precision y exhaustividad por separado, y F2 en vez de F1",
+      "tipo": "decision",
+      "detalle": "Es la respuesta a la unica pregunta que llevaba abierta desde el primer dia: como se sabe que Rastro responde bien. Elegida por Guillermo entre tres opciones el 28-sep.",
+      "porque": "En una herramienta de impacto los dos errores no cuestan lo mismo. Que FALTE una tabla hace que alguien toque algo creyendo que no rompe nada, y eso es un incidente. Que SOBRE hace que alguien revise de mas, y eso es tiempo. Un numero unico los promedia y esconde justo la diferencia que importa.",
+      "consecuencia": "Se publica F2 y no F1: F2 pondera la exhaustividad el doble que la precision, que es la asimetria del problema escrita en la metrica en lugar de en un comentario. Y hay un test que lo fija para que nadie lo cambie a F1 sin darse cuenta de lo que cambia.",
+      "estado": "vigente",
+      "impacto": "mayor",
+      "irreversible": false,
+      "hito": "evaluacion",
+      "publico": null,
+      "decidido_por": "guillermo",
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Precision y exhaustividad por separado, con F2",
+          "elegida": true,
+          "motivo": "Distingue los dos errores, que aqui no cuestan lo mismo"
+        },
+        {
+          "opcion": "Acierto exacto, binario",
+          "elegida": false,
+          "motivo": "Un falso positivo cuenta igual que perderse media respuesta"
+        },
+        {
+          "opcion": "Acierto sobre la decision, no sobre la lista",
+          "elegida": false,
+          "motivo": "Mas cercano al uso real pero muy dificil de automatizar"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r056",
+      "fecha": "2026-09-29",
+      "orden": 56,
+      "carril": "analisis",
+      "titulo": "El modelo traduce, el grafo responde: la salida es un conjunto, no un texto",
+      "tipo": "decision",
+      "detalle": "La capa de lenguaje solo decide QUE operacion y SOBRE QUE tabla. El nombre se valida contra el grafo antes de usarse, y la respuesta lleva siempre el conjunto de tablas ademas del texto.",
+      "porque": "La alternativa -darle el grafo al modelo y pedirle la respuesta- falla de tres formas. Se inventa tablas, y en una herramienta de impacto eso es peor que no responder. No se puede medir, porque comparar parrafos obliga a inventarse un juez y entonces hay que evaluar al juez. Y cuesta por pregunta, con un precio que crece con la plataforma, justo cuando mas falta hace la herramienta.",
+      "consecuencia": "Una tabla inventada no puede llegar a una respuesta: si no esta en el grafo, hay un error con sugerencias. Y como la salida es un conjunto, la evaluacion es exacta en lugar de ser un juicio sobre texto libre.",
+      "estado": "vigente",
+      "impacto": "mayor",
+      "irreversible": false,
+      "hito": "metodo",
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "El modelo traduce a una llamada; el grafo responde",
+          "elegida": true,
+          "motivo": "No puede inventar tablas, se mide exacto y el coste no crece"
+        },
+        {
+          "opcion": "Meter el grafo en el contexto y pedir la respuesta",
+          "elegida": false,
+          "motivo": "Las tres cosas al reves"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r057",
+      "fecha": "2026-09-29",
+      "orden": 57,
+      "carril": "metodo",
+      "titulo": "Primero el suelo determinista; el modelo tendra que superarlo",
+      "tipo": "decision",
+      "detalle": "Un interprete por reglas de unas cien lineas saca 31/31 en el banco: 100 % de precision y 100 % de exhaustividad. Sin clave de API, sin red y sin coste.",
+      "porque": "Sin un suelo medido, decir que un modelo acierta el 85 % no significa nada: puede que unas reglas acierten el 80 %, y entonces la pregunta ya no es si el modelo funciona sino si compensa. Ademas, la capa de lenguaje no deja de existir cuando alguien clona el proyecto sin credenciales.",
+      "consecuencia": "Cuando llegue el interprete con modelo, la pregunta sera cuanto mejora esto y cuanto cuesta el punto de mejora, no si funciona. Es mejor conversacion.\nY una advertencia que va escrita en el README y en el test: este 100 % NO significa que entienda castellano. El banco y las reglas los escribio la misma persona, asi que mide que el sistema hace lo que pretende, no que generalice. El valor llega cuando alguien anada preguntas que no escribio quien hizo las reglas.",
+      "estado": "vigente",
+      "impacto": "menor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Interprete determinista primero, con el modelo despues",
+          "elegida": true,
+          "motivo": "Da un suelo contra el que medir, y funciona sin credenciales"
+        },
+        {
+          "opcion": "Empezar por el modelo",
+          "elegida": false,
+          "motivo": "Sin suelo, su porcentaje de acierto no significa nada"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r058",
+      "fecha": "2026-09-29",
+      "orden": 58,
+      "carril": "metodo",
+      "titulo": "La evaluacion corre contra una instantanea congelada, no contra produccion",
+      "tipo": "decision",
+      "detalle": "",
+      "porque": "Evaluando contra la plataforma viva, un cambio en la metrica puede venir del codigo o de que se movieron los datos, y no hay forma de distinguirlo. Con una instantanea versionada, solo puede venir del codigo.",
+      "consecuencia": "El banco corre en CI sin nube, sin credenciales y sin haber ejecutado dbt, que es lo que hace que se ejecute de verdad: una evaluacion que necesita acceso a produccion acaba no ejecutandose. Actualizar la instantanea pasa a ser un acto deliberado, con su commit, en lugar de algo que ocurre solo.",
+      "estado": "vigente",
+      "impacto": "menor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Instantanea congelada del grafo, versionada",
+          "elegida": true,
+          "motivo": "Un cambio en la metrica solo puede venir del codigo"
+        },
+        {
+          "opcion": "Evaluar contra el grafo vivo",
+          "elegida": false,
+          "motivo": "Mezcla dos causas y deja la cifra sin significado"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r059",
+      "fecha": "2026-09-29",
+      "orden": 59,
+      "carril": "analisis",
+      "titulo": "Dos respuestas esperadas del banco estaban mal, y la evaluacion las cazo",
+      "tipo": "hallazgo",
+      "detalle": "El sistema daba `mart_calidad_datos` en dos preguntas de impacto donde el banco no la esperaba. Parecia un fallo de precision. Al comprobar el camino resulto que la tabla SI se ve afectada, por la cadena indirecta de dos saltos que pasa por `int_potencia_horaria`. El que estaba mal era el banco.",
+      "porque": "Se comprobo el camino en lugar de dar por bueno que el fallo era del sistema, que es lo que parecia por como estaba escrito el informe.",
+      "consecuencia": "Una evaluacion vale lo que valga su verdad de referencia. Queda escrito en la cabecera del banco: cuando un caso falla, lo primero es comprobar cual de los dos esta mal. Tras corregir el banco, el resultado paso de 29/31 a 31/31 sin tocar una linea del sistema.",
+      "estado": "vigente",
+      "impacto": "menor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [],
+      "causada_por": [],
       "abre": [],
       "cierra": [],
       "supera_a": [],

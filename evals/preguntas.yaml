@@ -1,0 +1,277 @@
+# Banco de preguntas para evaluar la capa de lenguaje.
+#
+# Las tablas se escriben con nombre corto -`raw.medidas`- y el evaluador les pone el
+# proyecto delante. Escribir el id completo aqui ataria el fichero a un proyecto
+# concreto y nadie podria ejecutarlo sobre el suyo.
+#
+# Las respuestas esperadas salen del grafo REAL de esta plataforma, comprobadas con
+# `rastro impacto` y `rastro linaje`. No estan escritas a mano: eso convertiria la
+# evaluacion en una comprobacion de que el banco coincide consigo mismo.
+#
+# AVISO QUE VALE MAS QUE EL BANCO: dos de estas esperadas estaban MAL y la propia
+# evaluacion las cazo. El sistema daba una tabla que el banco no esperaba, parecia un
+# fallo de precision, y al comprobar el camino resulto que la tabla SI se veia afectada
+# -por una cadena indirecta de dos saltos- y quien se habia equivocado era yo al
+# escribir la respuesta esperada.
+#
+# Una evaluacion solo vale lo que valga su verdad de referencia. Cuando un caso falla,
+# lo primero es comprobar si el que falla es el sistema o el banco.
+#
+# El banco incluye a proposito preguntas MAL FORMULADAS -sin tabla, ambiguas, sobre
+# tablas que no existen- porque saber cuando no se puede responder es parte de
+# responder bien. Un sistema que contesta siempre algo es peor que uno que dice que no
+# sabe: el primero se equivoca en silencio.
+
+casos:
+
+  # --- impacto: lo que se rompe (aguas abajo) ------------------------
+
+  - pregunta: "¿Qué se rompe si toco raw.medidas?"
+    operacion: impacto
+    tabla: raw.medidas
+    esperadas:
+      - marts.mart_calidad_datos
+      - staging.stg_esios__medidas
+      - staging.int_potencia_horaria
+      - marts.mart_generacion_horaria
+      - marts.mart_generacion_por_tecnologia
+
+  - pregunta: "que pasa si borro raw.medidas"
+    operacion: impacto
+    tabla: raw.medidas
+    nota: sin tildes ni signos, como escribe la gente con prisa
+    esperadas:
+      - marts.mart_calidad_datos
+      - staging.stg_esios__medidas
+      - staging.int_potencia_horaria
+      - marts.mart_generacion_horaria
+      - marts.mart_generacion_por_tecnologia
+
+  - pregunta: "¿A qué afecta stg_esios__medidas?"
+    operacion: impacto
+    tabla: stg_esios__medidas
+    nota: >
+      `mart_calidad_datos` entra por la cadena indirecta
+      stg_esios__medidas -> int_potencia_horaria -> mart_calidad_datos. Esta esperada
+      estaba MAL escrita y la evaluacion lo detecto: el sistema la daba y parecia que
+      sobraba. Era el banco el que fallaba, no el sistema.
+    esperadas:
+      - staging.int_potencia_horaria
+      - marts.mart_generacion_horaria
+      - marts.mart_generacion_por_tecnologia
+      - marts.mart_calidad_datos
+
+  - pregunta: "¿Quién consume int_potencia_horaria?"
+    operacion: impacto
+    tabla: int_potencia_horaria
+    esperadas:
+      - marts.mart_calidad_datos
+      - marts.mart_generacion_horaria
+      - marts.mart_generacion_por_tecnologia
+
+  - pregunta: "Si cambio una columna de tecnologias, ¿qué deja de funcionar?"
+    operacion: impacto
+    tabla: tecnologias
+    nota: mismo caso que el anterior; `mart_calidad_datos` entra via int_potencia_horaria
+    esperadas:
+      - staging.int_potencia_horaria
+      - marts.mart_generacion_horaria
+      - marts.mart_generacion_por_tecnologia
+      - marts.mart_calidad_datos
+
+  - pregunta: "¿Qué depende de control.peticiones?"
+    operacion: impacto
+    tabla: control.peticiones
+    esperadas:
+      - staging.stg_control__peticiones
+      - marts.mart_calidad_datos
+
+  - pregunta: "impacto de mart_generacion_horaria"
+    operacion: impacto
+    tabla: mart_generacion_horaria
+    esperadas:
+      - marts.mart_generacion_por_tecnologia
+
+  - pregunta: "¿Qué rompo si toco mart_calidad_datos?"
+    operacion: impacto
+    tabla: mart_calidad_datos
+    nota: es una hoja; la respuesta correcta es el conjunto vacio
+    esperadas: []
+
+  - pregunta: "¿Qué se rompe si toco marca_de_agua?"
+    operacion: impacto
+    tabla: marca_de_agua
+    nota: nadie la consume por SQL; la lee el codigo de ingesta, que no esta en el grafo
+    esperadas: []
+
+  - pregunta: "¿qué se rompe si toco raw.medidas a un salto?"
+    operacion: impacto
+    tabla: raw.medidas
+    saltos: 1
+    nota: la profundidad limita la respuesta a los consumidores directos
+    esperadas:
+      - marts.mart_calidad_datos
+      - staging.stg_esios__medidas
+
+  - pregunta: "aguas abajo de stg_control__peticiones"
+    operacion: impacto
+    tabla: stg_control__peticiones
+    esperadas:
+      - marts.mart_calidad_datos
+
+  # --- linaje: de donde sale (aguas arriba) -------------------------
+
+  - pregunta: "¿De dónde sale mart_generacion_horaria?"
+    operacion: linaje
+    tabla: mart_generacion_horaria
+    esperadas:
+      - staging.int_potencia_horaria
+      - staging.tecnologias
+      - staging.stg_esios__medidas
+      - raw.medidas
+
+  - pregunta: "de donde vienen los datos de mart_calidad_datos"
+    operacion: linaje
+    tabla: mart_calidad_datos
+    esperadas:
+      - raw.medidas
+      - staging.int_potencia_horaria
+      - staging.stg_control__peticiones
+      - staging.stg_esios__medidas
+      - staging.tecnologias
+      - control.peticiones
+
+  - pregunta: "¿De qué depende int_potencia_horaria?"
+    operacion: linaje
+    tabla: int_potencia_horaria
+    esperadas:
+      - staging.stg_esios__medidas
+      - staging.tecnologias
+      - raw.medidas
+
+  - pregunta: "¿Cuál es el linaje de mart_generacion_por_tecnologia?"
+    operacion: linaje
+    tabla: mart_generacion_por_tecnologia
+    esperadas:
+      - staging.int_potencia_horaria
+      - marts.mart_generacion_horaria
+      - staging.stg_esios__medidas
+      - staging.tecnologias
+      - raw.medidas
+
+  - pregunta: "¿Qué alimenta a stg_esios__medidas?"
+    operacion: linaje
+    tabla: stg_esios__medidas
+    esperadas:
+      - raw.medidas
+
+  - pregunta: "origen de stg_control__peticiones"
+    operacion: linaje
+    tabla: stg_control__peticiones
+    esperadas:
+      - control.peticiones
+
+  - pregunta: "¿De dónde sale raw.medidas?"
+    operacion: linaje
+    tabla: raw.medidas
+    nota: es una raiz; los datos entran ahi desde fuera del grafo
+    esperadas: []
+
+  - pregunta: "aguas arriba de mart_generacion_horaria hasta dos saltos"
+    operacion: linaje
+    tabla: mart_generacion_horaria
+    saltos: 2
+    esperadas:
+      - staging.int_potencia_horaria
+      - staging.tecnologias
+      - staging.stg_esios__medidas
+
+  - pregunta: "¿con qué se construye tecnologias?"
+    operacion: linaje
+    tabla: tecnologias
+    nota: es un seed, entra desde un CSV
+    esperadas: []
+
+  # --- huerfanas -----------------------------------------------------
+
+  - pregunta: "¿Qué tablas no consulta nadie?"
+    operacion: huerfanas
+    esperadas:
+      - control.marca_de_agua
+      - marts.mart_calidad_datos
+      - marts.mart_generacion_por_tecnologia
+
+  - pregunta: "¿qué puedo borrar?"
+    operacion: huerfanas
+    esperadas:
+      - control.marca_de_agua
+      - marts.mart_calidad_datos
+      - marts.mart_generacion_por_tecnologia
+
+  - pregunta: "dime las tablas sin consumidores"
+    operacion: huerfanas
+    esperadas:
+      - control.marca_de_agua
+      - marts.mart_calidad_datos
+      - marts.mart_generacion_por_tecnologia
+
+  - pregunta: "¿hay algo que no se use?"
+    operacion: huerfanas
+    esperadas:
+      - control.marca_de_agua
+      - marts.mart_calidad_datos
+      - marts.mart_generacion_por_tecnologia
+
+  # --- ciclos --------------------------------------------------------
+
+  - pregunta: "¿Hay dependencias circulares?"
+    operacion: ciclos
+    nota: no hay; la respuesta correcta es el conjunto vacio
+    esperadas: []
+
+  - pregunta: "¿hay algún ciclo en el grafo?"
+    operacion: ciclos
+    esperadas: []
+
+  - pregunta: "¿alguna tabla se muerde la cola?"
+    operacion: ciclos
+    esperadas: []
+
+  # --- resumen -------------------------------------------------------
+
+  - pregunta: "¿cuántas tablas hay?"
+    operacion: resumen
+    esperadas:
+      - raw.medidas
+      - control.marca_de_agua
+      - control.peticiones
+      - staging.tecnologias
+      - staging.stg_esios__medidas
+      - staging.stg_control__peticiones
+      - staging.int_potencia_horaria
+      - marts.mart_generacion_horaria
+      - marts.mart_generacion_por_tecnologia
+      - marts.mart_calidad_datos
+
+  # --- preguntas que NO se pueden responder --------------------------
+  #
+  # Saber cuando no se sabe es parte de responder bien. Un sistema que contesta
+  # siempre algo se equivoca en silencio, que es la peor forma de equivocarse en una
+  # herramienta donde alguien va a borrar una tabla.
+
+  - pregunta: "¿qué se rompe si toco la tabla de pedidos?"
+    operacion: impacto
+    tabla: null
+    nota: no hay ninguna tabla de pedidos; no debe inventarse una respuesta
+    esperadas: []
+
+  - pregunta: "¿de dónde sale?"
+    operacion: linaje
+    tabla: null
+    nota: pregunta incompleta; falta la tabla
+    esperadas: []
+
+  - pregunta: "¿cuánto ha llovido hoy en Madrid?"
+    operacion: desconocida
+    nota: fuera del dominio; tiene que decir que no sabe, no responder otra cosa
+    esperadas: []

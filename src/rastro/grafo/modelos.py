@@ -17,6 +17,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from pathlib import Path
 
 
 class Tipo(StrEnum):
@@ -190,6 +191,37 @@ class Grafo:
         return (
             f"{len(self.nodos)} nodos, {len(self.aristas)} aristas{respaldo} ({detalle})"
         )
+
+    @classmethod
+    def desde_json(cls, ruta: str | Path) -> Grafo:
+        """Carga un grafo guardado con `a_json`.
+
+        Sirve para congelar una instantanea y evaluar contra ella. Una evaluacion que
+        corre contra la plataforma viva cambia de resultado cuando cambia la
+        plataforma, y entonces no se sabe si lo que se rompio fue el codigo o si se
+        movieron los datos. Con una instantanea, un cambio en la metrica solo puede
+        venir del codigo.
+        """
+        import json
+        from pathlib import Path
+
+        datos = json.loads(Path(ruta).read_text(encoding="utf-8"))
+        grafo = cls()
+
+        for bruto in datos.get("nodos") or []:
+            grafo.anadir_nodo(
+                Nodo(
+                    id=bruto["id"],
+                    tipo=Tipo(bruto.get("tipo", "desconocido")),
+                    capa=bruto.get("capa"),
+                    detalle=bruto.get("detalle", ""),
+                )
+            )
+
+        for bruto in datos.get("aristas") or []:
+            grafo.anadir_arista(bruto["origen"], bruto["destino"], bruto.get("motivo", ""))
+
+        return grafo
 
     def a_json(self) -> dict:
         """Forma serializable, que es lo que lee el visor HTML."""

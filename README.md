@@ -42,7 +42,8 @@ QUE SE ROMPE SI TOCAS rastro-509715.raw.medidas
 | ¿Hay dependencias circulares? | `rastro ciclos` | ✔ |
 | ¿Qué no consume nadie? | `rastro huerfanas` | ✔ |
 | El grafo, navegable | `rastro visor` | ✔ |
-| ¿Qué tablas no consulta nadie desde hace 90 días? | — | pendiente |
+| ¿Qué tablas no consulta nadie desde hace 90 días? | `rastro huerfanas` | ✔ |
+| Lo mismo, preguntado en castellano | `rastro pregunta "..."` | ✔ |
 
 **El visor es un HTML de 17 KiB que se abre con doble clic.** Sin servidor, sin CDN y
 sin dependencias: los datos van embebidos, así que se puede mandar por correo o
@@ -86,7 +87,7 @@ source .venv/Scripts/activate      # Windows con Git Bash
 # source .venv/bin/activate        # Linux y macOS
 pip install -e ".[dev]"
 
-pytest                             # 102 tests, ninguno toca la red
+pytest                             # 149 tests, ninguno toca la red
 rastro buscar eolica               # busca en el catálogo local
 ```
 
@@ -249,6 +250,79 @@ consumiendo el recurso limitado de un tercero acaba sin probarse.
 
 ---
 
+## Preguntar en castellano, y medir si acierta
+
+```
+$ rastro pregunta "que se rompe si toco raw.medidas"
+Tocar rastro-509715.raw.medidas afecta a 5 objeto(s):
+  marts.mart_calidad_datos (salto 1), staging.stg_esios__medidas (salto 1),
+  staging.int_potencia_horaria (salto 2), marts.mart_generacion_horaria (salto 3),
+  marts.mart_generacion_por_tecnologia (salto 3)
+```
+
+**El modelo traduce; el grafo responde.** Esa separación es la decisión que sostiene
+la capa, y evita las tres formas en que falla lo contrario —darle el grafo al modelo
+y pedirle la respuesta—:
+
+1. **Se inventa tablas.** Aquí el nombre se valida contra el grafo antes de usarse, así
+   que una tabla inventada no llega a una respuesta: se convierte en un error con
+   sugerencias.
+2. **No se puede medir.** Comparar párrafos obliga a inventarse un juez, y entonces hay
+   que evaluar al juez. Aquí la salida es un conjunto de tablas, y un conjunto se
+   compara exactamente.
+3. **Cuesta por pregunta y el precio crece con la plataforma.** Aquí el mensaje es la
+   pregunta y la lista de operaciones, nunca el grafo.
+
+### Lo que mide la evaluación
+
+```
+$ rastro evaluar
+casos                 : 31
+operación acertada    : 31/31  (100.0 %)
+respuesta exacta      : 31/31  (100.0 %)
+
+precisión             : 100.0 %   (de lo que dice, cuánto es cierto)
+exhaustividad         : 100.0 %   (de lo que hay, cuánto encuentra)
+F2                    : 100.0 %   (exhaustividad pesa el doble)
+```
+
+**Precisión y exhaustividad por separado, y F2 en vez de F1**, porque en una
+herramienta de impacto los dos errores no cuestan lo mismo: **faltar** una tabla hace
+que alguien toque algo creyendo que no rompe nada, y **sobrar** hace que revise de más.
+Un número único los promedia y esconde justo la diferencia que importa. F2 pondera la
+exhaustividad el doble, que es esa asimetría escrita en la métrica en lugar de en un
+comentario.
+
+El banco corre **en CI contra una instantánea congelada del grafo**
+([`evals/grafo.json`](evals/grafo.json)), no contra la plataforma viva. Si evaluaras
+contra producción, un cambio en la métrica podría ser el código o podrían ser los
+datos, y no sabrías cuál.
+
+### Lo que este 100 % NO significa
+
+Que Rastro entienda castellano. El banco de preguntas y las reglas los escribió la
+misma persona, así que la cifra mide que el sistema hace lo que pretende, no que
+generalice. El valor real de la evaluación aparece cuando alguien añade preguntas que
+no escribió quien hizo las reglas.
+
+Lo que sí significa, y no es poco: **hay un suelo medido**. Un intérprete determinista
+de unas cien líneas resuelve este vocabulario sin clave de API y sin coste. Cuando
+llegue un modelo, la pregunta no será «¿acierta?» sino «¿acierta más que esto, y
+cuánto cuesta el punto de mejora?». Sin ese suelo, decir que un modelo acierta el 85 %
+no significa nada.
+
+### Un hallazgo del propio banco
+
+Dos respuestas esperadas estaban **mal escritas**, y la evaluación las cazó: el
+sistema daba una tabla que el banco no esperaba, parecía un fallo de precisión, y al
+comprobar el camino resultó que la tabla **sí** se veía afectada por una cadena
+indirecta de dos saltos. Quien se había equivocado era el banco.
+
+Una evaluación vale lo que valga su verdad de referencia. Cuando un caso falla, lo
+primero es comprobar cuál de los dos está mal.
+
+---
+
 ## La infraestructura
 
 Todo en Terraform: datasets, tablas, IAM, cuenta de servicio, secreto y
@@ -297,12 +371,17 @@ src/rastro/
 │   ├── consultas.py     # linaje, impacto, ciclos, huérfanas
 │   ├── disposicion.py   # por capas, calculada en Python para poder probarla
 │   └── visor.py         # el HTML de un solo fichero
+├── lenguaje/            # preguntar en castellano, y medir si acierta
+│   ├── intencion.py     # de la pregunta a una llamada; sin tocar los datos
+│   ├── respuesta.py     # ejecuta contra el grafo, y valida el nombre de tabla
+│   └── evaluacion.py    # precisión y exhaustividad, por separado
 ├── recursos/            # el catálogo de indicadores, cacheado
 └── cli.py
 infra/                   # Terraform: datasets, IAM, presupuesto
+evals/                   # el banco de 31 preguntas y la instantánea del grafo
 docs/                    # la anomalía, la puesta en marcha y el seguimiento
 flowcrack/               # el registro de decisiones
-tests/                   # 102, ninguno con red
+tests/                   # 149, ninguno con red
 ```
 
 El planificador no hace red: entra estado y sale un plan. Por eso se puede

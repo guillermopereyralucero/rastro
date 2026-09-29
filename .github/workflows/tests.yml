@@ -65,3 +65,26 @@ jobs:
 
       - name: Validar
         run: terraform -chdir=infra validate
+
+  evaluacion:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar
+        run: pip install -e ".[dev,grafo]" pyyaml
+
+      # El banco se pasa contra el manifiesto de dbt que esta en el repositorio, sin
+      # nube y sin credenciales. Una evaluacion que solo se puede ejecutar con acceso a
+      # produccion acaba no ejecutandose.
+      - name: Pasar el banco de preguntas
+        run: |
+          python -m rastro.cli evaluar \
+            --grafo evals/grafo.json \
+            --minimo-f2 0.95 \
+            --detalle

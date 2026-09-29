@@ -1,8 +1,9 @@
 """Linea de ordenes de Rastro.
 
-Dos familias de ordenes. La ingesta -`buscar`, `plan`, `ingesta`, `diagnostico`-
-alimenta la plataforma. El grafo -`linaje`, `impacto`, `huerfanas`, `ciclos`,
-`grafo`- la analiza, y es la parte que da nombre al proyecto.
+Tres familias de ordenes. La ingesta -`buscar`, `plan`, `ingesta`, `diagnostico`-
+alimenta la plataforma. El grafo -`linaje`, `impacto`, `huerfanas`, `ciclos`, `grafo`,
+`visor`- la analiza, y es la parte que da nombre al proyecto. Y el lenguaje
+-`pregunta`, `evaluar`- deja preguntar en castellano y mide si acierta.
 
 Las del grafo leen `INFORMATION_SCHEMA` y el manifiesto de dbt. Ojo con la creencia
 habitual: las consultas a `INFORMATION_SCHEMA` SI se facturan, con un minimo de 10 MB
@@ -115,6 +116,35 @@ def _analizador() -> argparse.ArgumentParser:
     vis.add_argument("--salida", default="grafo.html")
     _opciones_grafo(vis)
     vis.set_defaults(funcion=_visor)
+
+    preg = subs.add_parser(
+        "pregunta",
+        help="pregunta en castellano; contesta el grafo",
+    )
+    preg.add_argument("texto", help='p. ej. "que se rompe si toco raw.medidas"')
+    preg.add_argument("--explicar", action="store_true", help="ensena la intencion leida")
+    _opciones_grafo(preg)
+    preg.set_defaults(funcion=_pregunta)
+
+    ev = subs.add_parser("evaluar", help="pasa el banco de preguntas y mide")
+    ev.add_argument("--banco", default="evals/preguntas.yaml")
+    ev.add_argument(
+        "--grafo",
+        default="evals/grafo.json",
+        help=(
+            "instantanea del grafo contra la que evaluar. Vacio para usar el grafo "
+            "vivo, aunque entonces la metrica cambia cuando cambia la plataforma"
+        ),
+    )
+    ev.add_argument(
+        "--minimo-f2",
+        type=float,
+        default=None,
+        help="devuelve error si F2 baja de este valor. Para el CI",
+    )
+    ev.add_argument("--detalle", action="store_true", help="lista caso por caso")
+    _opciones_grafo(ev)
+    ev.set_defaults(funcion=_evaluar)
 
     return raiz
 
@@ -351,6 +381,88 @@ def _ciclos(args) -> int:
             print("  " + " -> ".join(camino))
     _avisar(avisos)
     return 0 if not encontrados else 1
+
+
+def _pregunta(args) -> int:
+    """Traduce la pregunta a una llamada y deja que conteste el grafo.
+
+    El interprete nunca toca los datos: solo elige operacion y tabla, y el nombre se
+    valida contra el grafo. Una tabla inventada no puede llegar a una respuesta.
+    """
+    from .lenguaje import Reglas, responder
+
+    grafo, avisos = _construir_grafo(args)
+    intencion = Reglas().interpretar(args.texto)
+
+    if args.explicar:
+        print(f"intencion : {intencion}")
+        print(f"confianza : {intencion.confianza:.0%}")
+        if intencion.motivo:
+            print(f"motivo    : {intencion.motivo}")
+        if intencion.candidatos:
+            print(f"candidatos: {', '.join(intencion.candidatos)}")
+        print()
+
+    respuesta = responder(grafo, intencion)
+    print(respuesta)
+    _avisar(avisos)
+    return 0 if respuesta.ok else 1
+
+
+def _evaluar(args) -> int:
+    """Pasa el banco de preguntas y publica precision y exhaustividad.
+
+    Con `--minimo-f2` devuelve error si baja del umbral, que es lo que lo hace util en
+    integracion continua: una metrica que nadie mira no protege de nada.
+    """
+    from pathlib import Path as _Path
+
+    from .grafo import Grafo
+    from .lenguaje import Reglas, cargar_casos, evaluar
+
+    avisos: list[str] = []
+    if args.grafo and _Path(args.grafo).exists():
+        # Contra una instantanea: asi un cambio en la metrica solo puede venir del
+        # codigo. Evaluar contra la plataforma viva mezcla las dos causas y deja la
+        # cifra sin significado.
+        grafo = Grafo.desde_json(args.grafo)
+        print(f"instantanea: {args.grafo}")
+    else:
+        grafo, avisos = _construir_grafo(args)
+        print("AVISO: evaluando contra el grafo vivo, no contra una instantanea.")
+        print("       Si la metrica cambia, puede ser el codigo o pueden ser los datos.")
+    print()
+
+    casos = cargar_casos(args.banco, proyecto=args.proyecto)
+    informe = evaluar(grafo, casos, Reglas())
+
+    print(informe.resumen())
+
+    if args.detalle:
+        print()
+        for r in informe.resultados:
+            marca = "OK " if r.perfecto else "MAL"
+            print(f"  {marca}  {r.caso.pregunta}")
+            if not r.perfecto:
+                if r.faltan:
+                    print(f"        faltan: {', '.join(sorted(r.faltan))}")
+                if r.sobran:
+                    print(f"        sobran: {', '.join(sorted(r.sobran))}")
+                if not r.operacion_acertada:
+                    print(
+                        f"        operacion: esperaba {r.caso.operacion.value},"
+                        f" leyo {r.intencion.operacion.value}"
+                    )
+
+    _avisar(avisos)
+
+    if args.minimo_f2 is not None and informe.f2 < args.minimo_f2:
+        print(
+            chr(10) + f"F2 {informe.f2:.1%} por debajo del minimo {args.minimo_f2:.0%}",
+            file=sys.stderr,
+        )
+        return 1
+    return 0
 
 
 def _visor(args) -> int:

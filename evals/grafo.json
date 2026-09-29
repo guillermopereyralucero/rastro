@@ -1,0 +1,152 @@
+{
+ "nodos": [
+  {
+   "id": "rastro-509715.control.marca_de_agua",
+   "nombre": "marca_de_agua",
+   "tipo": "fuente",
+   "capa": "models",
+   "dataset": "control",
+   "detalle": "Hasta donde hay datos de cada indicador. Limite superior exclusivo, en UTC. Nunca retrocede, y eso se garantiza en el MERGE que la escribe."
+  },
+  {
+   "id": "rastro-509715.control.peticiones",
+   "nombre": "peticiones",
+   "tipo": "fuente",
+   "capa": "models",
+   "dataset": "control",
+   "detalle": "Una fila por ventana pedida a ESIOS, con su desenlace. Es la respuesta exacta a \"cuantas peticiones habeis hecho\", que ante un proveedor que pide uso responsable no se contesta con una estimacion."
+  },
+  {
+   "id": "rastro-509715.marts.mart_calidad_datos",
+   "nombre": "mart_calidad_datos",
+   "tipo": "modelo",
+   "capa": "marts",
+   "dataset": "marts",
+   "detalle": "Salud de la plataforma por dia: cobertura, revisiones de REE, frescura y peticiones. Es la parte del cuadro de mando que responde si los datos que se estan graficando son fiables, que es la pregunta d"
+  },
+  {
+   "id": "rastro-509715.marts.mart_generacion_horaria",
+   "nombre": "mart_generacion_horaria",
+   "tipo": "modelo",
+   "capa": "marts",
+   "dataset": "marts",
+   "detalle": "Generacion electrica peninsular por hora, con el porcentaje renovable. Es lo que consume el dashboard publico. Solo horas completas."
+  },
+  {
+   "id": "rastro-509715.marts.mart_generacion_por_tecnologia",
+   "nombre": "mart_generacion_por_tecnologia",
+   "tipo": "modelo",
+   "capa": "marts",
+   "dataset": "marts",
+   "detalle": "Una fila por hora y tecnologia, con su peso en el mix. Es lo que alimenta el grafico de areas apiladas. Solo tecnologias sumables: apilar el indicador 552 junto a la fotovoltaica y la termica dibujari"
+  },
+  {
+   "id": "rastro-509715.raw.medidas",
+   "nombre": "medidas",
+   "tipo": "fuente",
+   "capa": "models",
+   "dataset": "raw",
+   "detalle": "Una fila por indicador, instante y zona geografica, con el valor tal y como lo publica ESIOS cada 5 minutos. Puede haber varias filas para el mismo punto si REE lo reviso: el modelo de staging se qued"
+  },
+  {
+   "id": "rastro-509715.staging.int_potencia_horaria",
+   "nombre": "int_potencia_horaria",
+   "tipo": "modelo",
+   "capa": "intermediate",
+   "dataset": "staging",
+   "detalle": "Una fila por hora, indicador y zona. La potencia horaria es la MEDIA de las lecturas de cinco minutos, no su suma: ahi estaba el error de 37.483 que arrastraba la API. Ver docs/anomalia-generacion.md."
+  },
+  {
+   "id": "rastro-509715.staging.stg_control__peticiones",
+   "nombre": "stg_control__peticiones",
+   "tipo": "modelo",
+   "capa": "staging",
+   "dataset": "staging",
+   "detalle": "Peticiones a ESIOS con el desenlace ya derivado."
+  },
+  {
+   "id": "rastro-509715.staging.stg_esios__medidas",
+   "nombre": "stg_esios__medidas",
+   "tipo": "modelo",
+   "capa": "staging",
+   "dataset": "staging",
+   "detalle": "Medidas de ESIOS deduplicadas: una fila por indicador, instante y zona, con la ultima version que publico REE. `raw` conserva las anteriores."
+  },
+  {
+   "id": "rastro-509715.staging.tecnologias",
+   "nombre": "tecnologias",
+   "tipo": "semilla",
+   "capa": null,
+   "dataset": "staging",
+   "detalle": "Los 16 indicadores que se ingieren, con su tecnologia y el rango fisicamente plausible de cada uno. Los rangos son el corazon del primer test del proyecto, y por eso viven en una tabla y no en un fich"
+  }
+ ],
+ "aristas": [
+  {
+   "origen": "rastro-509715.control.peticiones",
+   "destino": "rastro-509715.staging.stg_control__peticiones",
+   "motivo": "dbt",
+   "confirmada": false
+  },
+  {
+   "origen": "rastro-509715.marts.mart_generacion_horaria",
+   "destino": "rastro-509715.marts.mart_generacion_por_tecnologia",
+   "motivo": "dbt",
+   "confirmada": false
+  },
+  {
+   "origen": "rastro-509715.raw.medidas",
+   "destino": "rastro-509715.marts.mart_calidad_datos",
+   "motivo": "dbt",
+   "confirmada": false
+  },
+  {
+   "origen": "rastro-509715.raw.medidas",
+   "destino": "rastro-509715.staging.stg_esios__medidas",
+   "motivo": "dbt",
+   "confirmada": false
+  },
+  {
+   "origen": "rastro-509715.staging.int_potencia_horaria",
+   "destino": "rastro-509715.marts.mart_calidad_datos",
+   "motivo": "dbt",
+   "confirmada": false
+  },
+  {
+   "origen": "rastro-509715.staging.int_potencia_horaria",
+   "destino": "rastro-509715.marts.mart_generacion_horaria",
+   "motivo": "dbt",
+   "confirmada": false
+  },
+  {
+   "origen": "rastro-509715.staging.int_potencia_horaria",
+   "destino": "rastro-509715.marts.mart_generacion_por_tecnologia",
+   "motivo": "dbt",
+   "confirmada": false
+  },
+  {
+   "origen": "rastro-509715.staging.stg_control__peticiones",
+   "destino": "rastro-509715.marts.mart_calidad_datos",
+   "motivo": "dbt",
+   "confirmada": false
+  },
+  {
+   "origen": "rastro-509715.staging.stg_esios__medidas",
+   "destino": "rastro-509715.staging.int_potencia_horaria",
+   "motivo": "dbt",
+   "confirmada": false
+  },
+  {
+   "origen": "rastro-509715.staging.tecnologias",
+   "destino": "rastro-509715.marts.mart_generacion_horaria",
+   "motivo": "dbt",
+   "confirmada": false
+  },
+  {
+   "origen": "rastro-509715.staging.tecnologias",
+   "destino": "rastro-509715.staging.int_potencia_horaria",
+   "motivo": "dbt",
+   "confirmada": false
+  }
+ ]
+}
