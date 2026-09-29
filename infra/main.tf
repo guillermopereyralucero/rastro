@@ -1,3 +1,16 @@
+terraform {
+  # El estado vive en Cloud Storage y no en este directorio. El porque -y lo que
+  # costaba tenerlo en un solo portatil- esta en estado.tf.
+  #
+  # El bucket lo crea el propio Terraform, en estado.tf, asi que la primera vez el
+  # orden es: aplicar con estado local, y despues `terraform init -migrate-state`.
+  # Queda escrito porque es el paso que nadie recuerda al recrear el proyecto.
+  backend "gcs" {
+    bucket = "rastro-509715-estado"
+    prefix = "infra"
+  }
+}
+
 provider "google" {
   project = var.proyecto
   region  = var.region
@@ -41,6 +54,7 @@ locals {
     "pubsub.googleapis.com",
     "run.googleapis.com",
     "secretmanager.googleapis.com",
+    "storage.googleapis.com",
   ]
 }
 

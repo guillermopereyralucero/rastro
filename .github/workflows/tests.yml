@@ -83,6 +83,8 @@ jobs:
           workload_identity_provider: ${{ vars.WIF_PROVIDER }}
           service_account: ${{ vars.WIF_CUENTA }}
 
+      # Sin backend, para que `validate` funcione tambien en un fork, donde no hay
+      # credenciales con las que abrir el estado remoto.
       - name: Init sin backend
         run: terraform -chdir=infra init -backend=false
 
@@ -92,18 +94,27 @@ jobs:
       # `plan` solo si hubo credenciales. En un fork no las hay -y no debe haberlas-,
       # asi que ahi el trabajo se queda en formato y validacion en lugar de fallar por
       # algo que no es culpa de quien manda el cambio.
+      #
+      # `-reconfigure` porque el paso de arriba ya inicializo sin backend; sin el,
+      # Terraform se niega a cambiar de sitio el estado a mitad de trabajo.
+      #
+      # `-lock=false` porque bloquear escribe un objeto en el bucket, y la cuenta del
+      # CI es de solo lectura a proposito. Un `plan` no toca el estado, asi que dos a
+      # la vez no pueden estorbarse.
+      #
+      # `-refresh=false` por dos motivos: los presupuestos cuelgan de la CUENTA DE
+      # FACTURACION y no del proyecto, asi que una cuenta con `viewer` sobre el
+      # proyecto no puede leerlos; y refrescar son decenas de llamadas a la API en
+      # cada PR. Lo que este paso comprueba es que el cambio propuesto encaja con lo
+      # que hay desplegado -no si alguien ha tocado algo por consola-.
       - name: Plan
         if: steps.autenticar.outcome == 'success'
         run: |
-          terraform -chdir=infra init -input=false
+          terraform -chdir=infra init -input=false -reconfigure
           terraform -chdir=infra plan -input=false -no-color \
-            -var="billing_account_id=000000-000000-000000" \
+            -var="billing_account_id=${{ secrets.GCP_FACTURACION }}" \
             -var="proyecto=${{ vars.GCP_PROYECTO }}" \
-            -refresh=false
-        # El id de facturacion es falso a proposito: `plan` con `-refresh=false` no
-        # consulta el presupuesto, y meter el real en un repositorio publico no aporta
-        # nada. Lo que interesa comprobar es que la configuracion sigue siendo
-        # coherente, no cuanto se gasta.
+            -lock=false -refresh=false
 
       - name: Sin credenciales, se avisa
         if: steps.autenticar.outcome != 'success'
