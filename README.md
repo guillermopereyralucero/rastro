@@ -191,6 +191,32 @@ obliga a resolver a mano lo que la ruta corta esconde: **idempotencia**,
 **esquemas que cambian** y **cola de mensajes muertos**. Eso es exactamente lo
 que un proyecto que existe para enseñarse tiene que enseñar.
 
+**Corrección posterior, y esta cambia el sentido de la decisión.** Al ejecutarlo
+resultó que la elección no era entre ruta corta y ruta larga: era **ruta larga o
+no hay ruta**. Los dos runners locales gratuitos no pueden con este circuito, y
+cada uno falla por un sitio distinto:
+
+| Runner | Lee de Pub/Sub | Transformaciones entre lenguajes |
+|---|---|---|
+| **DirectRunner** en modo flujo | Sí | **No** |
+| **PrismRunner** | **No** | Sí |
+| Dataflow | Sí | Sí — y ~185 USD/mes por estar encendido |
+
+`WriteToBigQuery` con `STORAGE_WRITE_API` **es** una transformación entre
+lenguajes: por dentro arranca un servicio en Java. Así que con DirectRunner no
+corre, y con Prism no hay por dónde leer.
+
+Ninguna de esas tres cosas aparece al leer la documentación de
+`WriteToBigQuery`. Salieron en tres intentos seguidos: primero *«Java must be
+installed»*, después —ya con una JVM— *«Streaming Python direct runner does not
+support cross-language pipelines»*, y con Prism *«unsupported feature
+beam:transform:pubsub_read:v1»*.
+
+La salida está en [`src/rastro/streaming/escritura.py`](src/rastro/streaming/escritura.py):
+**el protocolo, escrito a mano**, en unas 200 líneas. Y al escribirlo desaparece
+la transformación entre lenguajes, así que el DirectRunner vuelve a servir: el
+problema se disolvió al resolverlo.
+
 Un detalle de Pub/Sub que conviene saber: el throughput facturable cuenta
 **publicación más suscripción**, así que los 10 GiB gratis del SKU normal son
 unos 5 GiB de carga real, alrededor de 170 MB al día.
@@ -277,7 +303,7 @@ otra sería un error silencioso.
 ### Lo que sustituye al panel de Dataflow
 
 ```bash
-pytest tests/test_streaming.py     # 16 tests, ninguno enciende nada
+pytest tests/test_streaming.py     # 19 tests, ninguno enciende nada
 python -m rastro.streaming.dibujar docs/pipeline.svg
 ```
 
@@ -305,6 +331,71 @@ Piensa en qué pesa más en una entrevista: un panel en verde demuestra que algu
 lanzar un trabajo; un test que fija qué ocurre con un dato que llega diez minutos tarde
 demuestra que se entiende lo que pasa dentro. El primero cuesta 0,76 USD; el segundo,
 cero.
+
+### Y el circuito entero, contra la nube de verdad
+
+```bash
+rastro publicar --fichero medidas.jsonl   # al tema de Pub/Sub
+rastro flujo --segundos 150               # DirectRunner, en local
+```
+
+Quince mensajes: doce medidas y **tres basuras a propósito, una de cada clase**. Las
+medidas se agregaron y acabaron en `stream.potencia_horaria`; las tres basuras llegaron
+a `stream.rechazos`, cada una con su motivo y el original intacto:
+
+| Lo que se publicó | Lo que dice la tabla de rechazos |
+|---|---|
+| `esto no es json ni de lejos` | `JSONDecodeError: Expecting value...` |
+| `[1, 2, 3]` | `TypeError: se esperaba un objeto y llego list` |
+| `{"indicador_id": 551}` | `ValueError: faltan campos: instante, valor` |
+
+**Dos puertas y no una**, porque los tres fallos se arreglan de forma distinta: «esto
+no es JSON» no se corrige igual que «a este JSON le falta el instante». Distinguirlos
+en la tabla es lo que convierte la cola de rechazos en algo que sirve para arreglar y
+no solo para contar.
+
+Un detalle de esa prueba que merece quedar: los instantes publicados eran de dos horas
+antes, y el pipeline marcó esas filas como **tardías e incompletas**. Correctamente
+—**un flujo remarcado al pasado es todo dato tardío**—, y sin que nadie se lo pidiera.
+
+### La tabla guarda lo que pasó; la vista, lo que vale ahora
+
+Con acumulación y disparos tardíos la misma hora se emite varias veces, y cada emisión
+trae la media corregida de la hora entera. **Eso no son duplicados que haya que
+evitar: son la historia de cómo se fue corrigiendo el dato**, que es justo lo que
+distingue un flujo de un lote.
+
+Así que `stream.potencia_horaria` es append-only —una fila por panel, con su número y
+su momento de emisión— y `stream.potencia_horaria_actual` se queda con el último de
+cada hora. Es el mismo patrón que `stg_esios__medidas` usa sobre `raw.medidas`.
+
+El desempate es por `emitido_en` y no por `panel`, aunque en el caso normal ordenen
+igual: el número de panel cuenta por ventana, así que dos reprocesos podrían escribir
+el mismo para la misma hora. El momento de emisión no se repite.
+
+### El esquema se escribe una vez
+
+Un esquema escrito dos veces —una en Terraform y otra en el pipeline— se separa. No de
+golpe: alguien añade una columna en un sitio, el otro sigue funcionando porque BigQuery
+acepta filas sin los campos nuevos, y la diferencia se descubre semanas después
+buscando por qué una columna está siempre vacía.
+
+Así que se declara en [`esquema.py`](src/rastro/streaming/esquema.py) y de ahí salen
+los tres consumidores: el JSON que lee Terraform, el descriptor de protobuf que viaja
+por el cable y la comprobación de columnas del pipeline. **Hay un test que regenera y
+compara**: si alguien cambia el esquema y no regenera, el CI se pone rojo. No es una
+convención que haya que recordar.
+
+Y un error que costó un `apply`, del que la API solo dice *«Field value of panel cannot
+be empty»*: en **proto3 un campo escalar con su valor por defecto no se serializa**, así
+que es indistinguible de uno sin poner. Aquí los valores por defecto son datos —el
+panel 0 es el primero de cada hora, `es_tardio` False es el caso normal—, así que
+BigQuery recibía filas sin columnas obligatorias y rechazaba el lote entero. El
+descriptor va en **proto2**, y hay un test que se pone rojo al volver atrás.
+
+Es la cuarta vez en este proyecto que un número correcto en sus piezas resulta falso en
+el conjunto: la suma de potencias, el doble conteo solar, el porcentaje renovable con
+cobertura parcial, y ahora un cero que no viaja.
 
 ---
 
@@ -496,6 +587,9 @@ src/rastro/
 │   └── visor.py         # el HTML de un solo fichero
 ├── streaming/           # el pipeline en Beam, con su semántica probada
 │   ├── pipeline.py      # ventanas, retraso tolerado y cola de rechazos
+│   ├── esquema.py       # el esquema, escrito una vez y generado para los demás
+│   ├── escritura.py     # la Storage Write API a mano: ningún runner local podía
+│   ├── nube.py          # el cableado a Pub/Sub y a BigQuery
 │   └── dibujar.py       # el grafo de ejecución, sin encender nada
 ├── lenguaje/            # preguntar en castellano, y medir si acierta
 │   ├── intencion.py     # de la pregunta a una llamada; sin tocar los datos
@@ -509,13 +603,16 @@ infra/
 ├── iam.tf               # cuentas de servicio y el secreto del token
 ├── presupuesto.tf       # el techo de 1 €, y otro sobre la cuenta entera
 ├── ejecucion.tf         # registro, trabajo y calendario: la ingesta sola
-└── ci.tf                # federación de identidades: `plan` sin claves
+├── streaming.tf         # tema, suscripción, tablas del flujo y la vista
+├── estado.tf            # dónde vive el estado, y por qué no en el portátil
+├── ci.tf                # federación de identidades: `plan` sin claves
+└── esquemas/            # generados desde Python; Terraform los lee, no los escribe
 Dockerfile               # dos etapas, usuario sin privilegios
 cloudbuild.yaml          # compila en la nube; sin Docker local
 evals/                   # el banco de 31 preguntas y la instantánea del grafo
 docs/                    # la anomalía, la puesta en marcha y el seguimiento
 flowcrack/               # el registro de decisiones
-tests/                   # 165, ninguno con red
+tests/                   # 190, ninguno con red
 ```
 
 El planificador no hace red: entra estado y sale un plan. Por eso se puede

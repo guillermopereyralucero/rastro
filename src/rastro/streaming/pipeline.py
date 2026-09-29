@@ -38,6 +38,7 @@ from typing import Any
 import apache_beam as beam
 from apache_beam.transforms import trigger, window
 from apache_beam.utils.timestamp import Duration
+from apache_beam.utils.windowed_value import PaneInfoTiming
 
 #: Una hora, como en dbt.
 VENTANA = 3600
@@ -119,28 +120,52 @@ def PotenciaHoraria(pcoll, tolerancia: Duration = TOLERANCIA_RETRASO):
             allowed_lateness=tolerancia,
         )
         | "Juntar por indicador" >> beam.GroupByKey()
-        | "Potencia media" >> beam.MapTuple(_resumir)
+        | "Potencia media" >> beam.ParDo(Resumir())
     )
 
 
-def _resumir(indicador: int, valores: list[float]) -> dict:
-    """La media de la hora, con las lecturas que la respaldan.
+class Resumir(beam.DoFn):
+    """La media de la hora, con todo lo que hace falta para entenderla despues.
 
-    `lecturas` y `hora_completa` viajan en el resultado por la misma razon que en el
-    modelo de dbt: un dato incompleto que no se sabe incompleto es peor que no tenerlo.
+    Es un `DoFn` y no un `Map` por una razon concreta: **el resultado tiene que saber a
+    que hora pertenece y que numero de emision es**, y esas dos cosas solo se pueden
+    pedir desde un `DoFn`.
+
+    Sin la hora, la fila no se puede escribir en ningun sitio util: el valor agregado
+    existe, pero no se sabe de cuando. Y sin el numero de panel, dos emisiones de la
+    misma hora -la normal y la corregida por una lectura tardia- son indistinguibles al
+    llegar a la tabla, y entonces no hay forma de saber cual vale.
     """
-    lista = list(valores)
-    return {
-        "indicador_id": indicador,
-        "potencia_media_mw": sum(lista) / len(lista),
-        "potencia_min_mw": min(lista),
-        "potencia_max_mw": max(lista),
-        "lecturas": len(lista),
-        "hora_completa": len(lista) == LECTURAS_POR_HORA,
-    }
+
+    def process(
+        self,
+        elemento: tuple[int, list[float]],
+        ventana=beam.DoFn.WindowParam,
+        panel=beam.DoFn.PaneInfoParam,
+    ):
+        indicador, valores = elemento
+        lista = list(valores)
+
+        yield {
+            # El inicio de la ventana, que es la hora a la que pertenece el dato.
+            "hora": ventana.start.to_utc_datetime().replace(tzinfo=UTC),
+            "indicador_id": indicador,
+            # Media y no suma. Sumar potencias instantaneas da un numero sin
+            # significado fisico: es el error que produjo los 37.483 MW de
+            # docs/anomalia-generacion.md.
+            "potencia_media_mw": sum(lista) / len(lista),
+            "potencia_min_mw": min(lista),
+            "potencia_max_mw": max(lista),
+            "lecturas": len(lista),
+            # Un dato incompleto que no se sabe incompleto es peor que no tenerlo.
+            "hora_completa": len(lista) == LECTURAS_POR_HORA,
+            "panel": panel.index,
+            "es_tardio": panel.timing == PaneInfoTiming.LATE,
+            "emitido_en": datetime.now(UTC),
+        }
 
 
-def construir(pipeline, entrada, tolerancia: Duration = TOLERANCIA_RETRASO):
+def construir(entrada, tolerancia: Duration = TOLERANCIA_RETRASO):
     """Monta el pipeline completo y devuelve (resultados, rechazos).
 
     Se devuelven los dos. Un pipeline que solo devuelve lo que salio bien deja la cola

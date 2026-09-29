@@ -21,6 +21,8 @@ from pathlib import Path
 import apache_beam as beam
 from apache_beam.options.pipeline_options import PipelineOptions, StandardOptions
 
+from . import esquema
+from .nube import Escribir, a_fila_de_rechazo
 from .pipeline import construir
 
 
@@ -59,10 +61,21 @@ def dibujar(destino: str | Path) -> Path:
         # La entrada se simula. El grafo no depende de que haya datos, y pedir una
         # suscripcion de Pub/Sub de verdad para dibujar un diagrama seria encender algo
         # por una imagen.
-        entrada = p | "Leer del flujo" >> beam.Create([{}])
-        resultados, rechazos = construir(p, entrada)
-        resultados | "A BigQuery" >> beam.Map(lambda x: x)
-        rechazos | "A la cola de rechazos" >> beam.Map(lambda x: x)
+        entrada = p | "Leer del tema" >> beam.Create([{}])
+        resultados, rechazos = construir(entrada)
+
+        # Las escrituras son las de verdad, no dos cajas con su nombre puesto a mano.
+        # Construirlas no abre ninguna conexion -eso pasa en `setup`, cuando el
+        # pipeline arranca-, asi que el diagrama ensena las etapas reales sin encender
+        # nada. Un diagrama dibujado aparte se separa de lo que corre; este no puede.
+        resultados | "Escribir potencia" >> Escribir(
+            esquema.POTENCIA_HORARIA, proyecto="rastro-509715"
+        )
+        (
+            rechazos
+            | "Rechazo a fila" >> beam.Map(a_fila_de_rechazo)
+            | "Escribir rechazos" >> Escribir(esquema.RECHAZOS, proyecto="rastro-509715")
+        )
 
     return destino
 

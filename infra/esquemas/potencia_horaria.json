@@ -1,0 +1,62 @@
+[
+  {
+    "name": "hora",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "Inicio de la ventana de una hora, en UTC."
+  },
+  {
+    "name": "indicador_id",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Id del indicador en ESIOS."
+  },
+  {
+    "name": "potencia_media_mw",
+    "type": "FLOAT",
+    "mode": "REQUIRED",
+    "description": "Media de las lecturas de la hora. Media y no suma: sumar potencias instantaneas da un numero sin significado fisico. Ver docs/anomalia-generacion.md."
+  },
+  {
+    "name": "potencia_min_mw",
+    "type": "FLOAT",
+    "mode": "REQUIRED",
+    "description": "Minimo de la hora."
+  },
+  {
+    "name": "potencia_max_mw",
+    "type": "FLOAT",
+    "mode": "REQUIRED",
+    "description": "Maximo de la hora."
+  },
+  {
+    "name": "lecturas",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Cuantas lecturas respaldan la media."
+  },
+  {
+    "name": "hora_completa",
+    "type": "BOOLEAN",
+    "mode": "REQUIRED",
+    "description": "Si llegaron las 12 lecturas esperadas. Un dato incompleto que no se sabe incompleto es peor que no tenerlo."
+  },
+  {
+    "name": "panel",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Numero de emision de esta hora. 0 es la primera; los siguientes son correcciones por lecturas que llegaron tarde."
+  },
+  {
+    "name": "es_tardio",
+    "type": "BOOLEAN",
+    "mode": "REQUIRED",
+    "description": "Si este panel se emitio despues de que el watermark pasara la hora."
+  },
+  {
+    "name": "emitido_en",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "Momento de proceso en que se escribio. Es lo que ordena los paneles de una misma hora."
+  }
+]

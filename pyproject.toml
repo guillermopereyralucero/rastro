@@ -35,7 +35,20 @@ dbt = ["dbt-bigquery>=1.9"]
 grafo = ["sqlglot>=25.0"]
 # El pipeline de streaming. Va aparte porque Beam pesa, y quien solo quiera el linaje
 # no tiene por que traerselo.
-streaming = ["apache-beam>=2.60"]
+#
+# Sin `apache-beam[gcp]`, que son mas de cien paquetes -Bigtable, Dataflow, AI
+# Platform, Spanner- para leer de un tema de Pub/Sub. Aqui solo entran los dos clientes
+# que se usan de verdad: uno para leer del tema y otro para la Storage Write API.
+#
+# La escritura es propia y no `WriteToBigQuery`: esa transformacion arranca un servicio
+# en Java y ningun runner local gratuito puede con la combinacion. El detalle esta en
+# src/rastro/streaming/escritura.py.
+streaming = [
+    "apache-beam>=2.60",
+    "google-cloud-pubsub>=2.20",
+    "google-cloud-bigquery-storage>=2.25",
+    "protobuf>=4.25",
+]
 dev = ["pytest>=8.0", "ruff>=0.6", "pyyaml>=6.0"]
 
 [project.scripts]

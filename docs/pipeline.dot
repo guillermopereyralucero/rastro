@@ -1,10 +1,10 @@
 digraph G {
-subgraph "cluster_ref_AppliedPTransform_Leer-del-flujo_2" {
-label="Leer del flujo" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Leer-del-flujo_2')" 
-"ref_AppliedPTransform_Leer-del-flujo-Impulse_3" [label="Impulse" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Leer-del-flujo-Impulse_3')" ]
-"ref_AppliedPTransform_Leer-del-flujo-FlatMap-lambda-at-core-py-4094-_4" [label="FlatMap(<lambda at core.py:4094>)" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Leer-del-flujo-FlatMap-lambda-at-core-py-4094-_4')" ]
-"ref_AppliedPTransform_Leer-del-flujo-MaybeReshuffle_5" [label="MaybeReshuffle" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Leer-del-flujo-MaybeReshuffle_5')" ]
-"ref_AppliedPTransform_Leer-del-flujo-Map-decode-_6" [label="Map(decode)" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Leer-del-flujo-Map-decode-_6')" ]
+subgraph "cluster_ref_AppliedPTransform_Leer-del-tema_2" {
+label="Leer del tema" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Leer-del-tema_2')" 
+"ref_AppliedPTransform_Leer-del-tema-Impulse_3" [label="Impulse" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Leer-del-tema-Impulse_3')" ]
+"ref_AppliedPTransform_Leer-del-tema-FlatMap-lambda-at-core-py-4094-_4" [label="FlatMap(<lambda at core.py:4094>)" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Leer-del-tema-FlatMap-lambda-at-core-py-4094-_4')" ]
+"ref_AppliedPTransform_Leer-del-tema-MaybeReshuffle_5" [label="MaybeReshuffle" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Leer-del-tema-MaybeReshuffle_5')" ]
+"ref_AppliedPTransform_Leer-del-tema-Map-decode-_6" [label="Map(decode)" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Leer-del-tema-Map-decode-_6')" ]
 }
 subgraph "cluster_ref_AppliedPTransform_Interpretar_7" {
 label="Interpretar" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Interpretar_7')" 
@@ -16,15 +16,33 @@ label="Potencia horaria" shape=rect style="rounded, filled" color="#ff570b" fill
 "ref_AppliedPTransform_Potencia-horaria-Juntar-por-indicador_11" [label="Juntar por indicador" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Potencia-horaria-Juntar-por-indicador_11')" ]
 "ref_AppliedPTransform_Potencia-horaria-Potencia-media_12" [label="Potencia media" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Potencia-horaria-Potencia-media_12')" ]
 }
-"ref_AppliedPTransform_A-BigQuery_13" [label="A BigQuery" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_A-BigQuery_13')" ]
-"ref_AppliedPTransform_A-la-cola-de-rechazos_14" [label="A la cola de rechazos" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_A-la-cola-de-rechazos_14')" ]
-"ref_AppliedPTransform_Leer-del-flujo-Impulse_3" -> "ref_AppliedPTransform_Leer-del-flujo-FlatMap-lambda-at-core-py-4094-_4" [label="" style=solid color="#ff570b" ]
-"ref_AppliedPTransform_Leer-del-flujo-FlatMap-lambda-at-core-py-4094-_4" -> "ref_AppliedPTransform_Leer-del-flujo-MaybeReshuffle_5" [label="" style=solid color="#ff570b" ]
-"ref_AppliedPTransform_Leer-del-flujo-FlatMap-lambda-at-core-py-4094-_4" -> "ref_AppliedPTransform_Leer-del-flujo-Map-decode-_6" [label="" style=solid color="#ff570b" ]
-"ref_AppliedPTransform_Leer-del-flujo-Map-decode-_6" -> "ref_AppliedPTransform_Interpretar-ParDo-Interpretar-_8" [label="" style=solid color="#ff570b" ]
+subgraph "cluster_ref_AppliedPTransform_Escribir-potencia_13" {
+label="Escribir potencia" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Escribir-potencia_13')" 
+subgraph "cluster_ref_AppliedPTransform_Escribir-potencia-Agrupar-filas_14" {
+label="Agrupar filas" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Escribir-potencia-Agrupar-filas_14')" 
+"ref_AppliedPTransform_Escribir-potencia-Agrupar-filas-ParDo-_WindowAwareBatchingDoFn-_15" [label="ParDo(_WindowAwareBatchingDoFn)" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Escribir-potencia-Agrupar-filas-ParDo-_WindowAwareBatchingDoFn-_15')" ]
+}
+"ref_AppliedPTransform_Escribir-potencia-Enviar_16" [label="Enviar" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Escribir-potencia-Enviar_16')" ]
+}
+"ref_AppliedPTransform_Rechazo-a-fila_17" [label="Rechazo a fila" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Rechazo-a-fila_17')" ]
+subgraph "cluster_ref_AppliedPTransform_Escribir-rechazos_18" {
+label="Escribir rechazos" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Escribir-rechazos_18')" 
+subgraph "cluster_ref_AppliedPTransform_Escribir-rechazos-Agrupar-filas_19" {
+label="Agrupar filas" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Escribir-rechazos-Agrupar-filas_19')" 
+"ref_AppliedPTransform_Escribir-rechazos-Agrupar-filas-ParDo-_GlobalWindowsBatchingDoFn-_20" [label="ParDo(_GlobalWindowsBatchingDoFn)" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Escribir-rechazos-Agrupar-filas-ParDo-_GlobalWindowsBatchingDoFn-_20')" ]
+}
+"ref_AppliedPTransform_Escribir-rechazos-Enviar_21" [label="Enviar" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Escribir-rechazos-Enviar_21')" ]
+}
+"ref_AppliedPTransform_Leer-del-tema-Impulse_3" -> "ref_AppliedPTransform_Leer-del-tema-FlatMap-lambda-at-core-py-4094-_4" [label="" style=solid color="#ff570b" ]
+"ref_AppliedPTransform_Leer-del-tema-FlatMap-lambda-at-core-py-4094-_4" -> "ref_AppliedPTransform_Leer-del-tema-MaybeReshuffle_5" [label="" style=solid color="#ff570b" ]
+"ref_AppliedPTransform_Leer-del-tema-FlatMap-lambda-at-core-py-4094-_4" -> "ref_AppliedPTransform_Leer-del-tema-Map-decode-_6" [label="" style=solid color="#ff570b" ]
+"ref_AppliedPTransform_Leer-del-tema-Map-decode-_6" -> "ref_AppliedPTransform_Interpretar-ParDo-Interpretar-_8" [label="" style=solid color="#ff570b" ]
 "ref_AppliedPTransform_Interpretar-ParDo-Interpretar-_8" -> "ref_AppliedPTransform_Potencia-horaria-Ventana-de-una-hora_10" [label="None" style=solid color="#ff570b" ]
-"ref_AppliedPTransform_Interpretar-ParDo-Interpretar-_8" -> "ref_AppliedPTransform_A-la-cola-de-rechazos_14" [label="rechazos" style=solid color="#ff570b" ]
+"ref_AppliedPTransform_Interpretar-ParDo-Interpretar-_8" -> "ref_AppliedPTransform_Rechazo-a-fila_17" [label="rechazos" style=solid color="#ff570b" ]
 "ref_AppliedPTransform_Potencia-horaria-Ventana-de-una-hora_10" -> "ref_AppliedPTransform_Potencia-horaria-Juntar-por-indicador_11" [label="" style=solid color="#ff570b" ]
 "ref_AppliedPTransform_Potencia-horaria-Juntar-por-indicador_11" -> "ref_AppliedPTransform_Potencia-horaria-Potencia-media_12" [label="" style=solid color="#ff570b" ]
-"ref_AppliedPTransform_Potencia-horaria-Potencia-media_12" -> "ref_AppliedPTransform_A-BigQuery_13" [label="" style=solid color="#ff570b" ]
+"ref_AppliedPTransform_Potencia-horaria-Potencia-media_12" -> "ref_AppliedPTransform_Escribir-potencia-Agrupar-filas-ParDo-_WindowAwareBatchingDoFn-_15" [label="" style=solid color="#ff570b" ]
+"ref_AppliedPTransform_Escribir-potencia-Agrupar-filas-ParDo-_WindowAwareBatchingDoFn-_15" -> "ref_AppliedPTransform_Escribir-potencia-Enviar_16" [label="" style=solid color="#ff570b" ]
+"ref_AppliedPTransform_Rechazo-a-fila_17" -> "ref_AppliedPTransform_Escribir-rechazos-Agrupar-filas-ParDo-_GlobalWindowsBatchingDoFn-_20" [label="" style=solid color="#ff570b" ]
+"ref_AppliedPTransform_Escribir-rechazos-Agrupar-filas-ParDo-_GlobalWindowsBatchingDoFn-_20" -> "ref_AppliedPTransform_Escribir-rechazos-Enviar_21" [label="" style=solid color="#ff570b" ]
 }

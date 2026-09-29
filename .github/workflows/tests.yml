@@ -113,8 +113,14 @@ jobs:
           terraform -chdir=infra init -input=false -reconfigure
           terraform -chdir=infra plan -input=false -no-color \
             -var="billing_account_id=${{ secrets.GCP_FACTURACION }}" \
+            -var="correo_avisos=${{ secrets.GCP_CORREO_AVISOS }}" \
             -var="proyecto=${{ vars.GCP_PROYECTO }}" \
             -lock=false -refresh=false
+        # **Las variables se pasan TODAS.** La primera version dejaba fuera
+        # `correo_avisos`, y el plan anunciaba que destruiria el canal de avisos: una
+        # destruccion que ningun `apply` real haria, porque ese valor vive en el
+        # `terraform.tfvars` del portatil. Un plan que avisa de algo que no va a pasar
+        # ensena a no leer los planes, que es peor que no tenerlo.
 
       - name: Sin credenciales, se avisa
         if: steps.autenticar.outcome != 'success'

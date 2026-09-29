@@ -2103,3 +2103,239 @@ decisiones:
       - opcion: Limpiar a mano de vez en cuando
         elegida: false
         motivo: Nadie se acuerda, y el aviso llega cuando ya se paso del tramo
+
+  # === 29-sep · el estado sale del portatil y el flujo se cierra =====
+
+  - id: r068
+    fecha: 2026-09-29
+    orden: 68
+    carril: metodo
+    tipo: hallazgo
+    titulo: "El `plan` del CI pasaba en verde sin comparar contra nada"
+    detalle: >
+      Al leer el log del CI que acababa de poner verde, el paso `plan` decia
+      "Plan: 37 to add, 0 to change, 0 to destroy". Sin estado compartido, cada
+      ejecucion arrancaba en blanco: iba a decir "37 a crear" pasara lo que pasara.
+      Pasaba, y no comprobaba lo que parecia comprobar.
+    porque: >
+      Solo se vio al MIRAR el log. El trabajo estaba verde y el paso existia; la unica
+      forma de descubrirlo era leer lo que decia. Es la segunda vez en dos dias que una
+      verificacion tranquiliza sin verificar -la primera fue el CI que instalaba solo
+      `[dev]`- y las dos veces el sintoma fue el mismo: verde.
+    consecuencia: >
+      Debajo habia un problema mayor que el del CI: **el estado de Terraform vivia en un
+      solo portatil**. Si ese fichero se pierde, Terraform olvida todo lo que creo -los
+      datasets, los presupuestos, el grupo de identidades federadas- y recuperarlo son
+      decenas de `terraform import` a mano.
+    estado: vigente
+    impacto: mayor
+    hito: metodo
+    causada_por: [r065]
+
+  - id: r069
+    fecha: 2026-09-29
+    orden: 69
+    carril: metodo
+    titulo: "El estado de Terraform vive en Cloud Storage, versionado y con limpieza"
+    detalle: >
+      Bucket `rastro-509715-estado`: versionado, acceso solo por IAM, acceso publico
+      impedido, `prevent_destroy` y dos reglas de ciclo de vida -como mucho 10
+      versiones y nada mas viejo de 90 dias-.
+    porque: >
+      Es el unico fichero del proyecto cuya version anterior vale mas que un respaldo:
+      un `apply` mal hecho se deshace volviendo a la de antes. Y borrar el bucket es
+      borrar la memoria de Terraform sobre si mismo, de ahi `prevent_destroy`.
+    consecuencia: >
+      El `plan` del CI pasa a decir "No changes" cuando no los hay. Va con `-lock=false`
+      porque bloquear escribe un objeto y la cuenta del CI es de solo lectura a
+      proposito, y con `-refresh=false` porque los presupuestos cuelgan de la CUENTA DE
+      FACTURACION y no del proyecto: una cuenta con `viewer` sobre el proyecto no puede
+      leerlos.
+
+      Y el plan recibe TODAS las variables. La primera version dejaba fuera
+      `correo_avisos` y anunciaba que destruiria el canal de avisos: una destruccion que
+      ningun `apply` real haria. **Un plan que avisa de algo que no va a pasar ensena a
+      no leer los planes**, que es peor que no tenerlo.
+
+      Coste: 72 KB en almacenamiento de Madrid, unos 0,000002 EUR al mes. No es
+      "gratis" -no hay capa gratuita de Storage en Europa-, es que redondea a cero.
+    estado: vigente
+    impacto: mayor
+    causada_por: [r068]
+    alternativas:
+      - opcion: Un bucket de Cloud Storage en el mismo proyecto
+        elegida: true
+        motivo: Redondea a cero, vive donde los datos y lo gestiona el propio Terraform
+      - opcion: Terraform Cloud, que da estado remoto gratis
+        elegida: false
+        motivo: Mete un tercero en la cadena para guardar 72 KB, y ademas fuera de la UE
+      - opcion: Dejarlo en el portatil y subirlo al repositorio
+        elegida: false
+        motivo: El estado lleva dentro la configuracion entera del proyecto; no va a un repositorio publico
+
+  - id: r070
+    fecha: 2026-09-29
+    orden: 70
+    carril: metodo
+    tipo: hallazgo
+    titulo: "Los dos runners locales gratuitos no pueden con el circuito, cada uno por un lado"
+    detalle: >
+      DirectRunner en modo flujo lee de Pub/Sub pero NO admite transformaciones entre
+      lenguajes, y `WriteToBigQuery` con `STORAGE_WRITE_API` lo es: por dentro arranca
+      un servicio en Java. PrismRunner si las admite, pero no implementa la lectura
+      nativa de Pub/Sub (`beam:transform:pubsub_read:v1`). Juntar las dos mitades solo
+      lo hace Dataflow.
+    porque: >
+      Salio al ejecutarlo, en tres intentos: primero "Java must be installed", despues
+      -ya con una JVM- "Streaming Python direct runner does not support cross-language
+      pipelines", y con Prism "unsupported feature beam:transform:pubsub_read:v1".
+      Ninguna de las tres cosas aparece al leer la documentacion de `WriteToBigQuery`.
+    consecuencia: >
+      Cambia el sentido de la decision anterior sobre el camino largo (r021): no era
+      "ruta corta o ruta larga", era **ruta larga o no hay ruta**. Lo que era una
+      eleccion pedagogica resulto ser la unica opcion compatible con el presupuesto.
+    estado: vigente
+    impacto: mayor
+    hito: metodo
+
+  - id: r071
+    fecha: 2026-09-29
+    orden: 71
+    carril: metodo
+    titulo: "La Storage Write API, escrita a mano"
+    detalle: >
+      `rastro.streaming.escritura` habla el protocolo directamente: descriptor de
+      protobuf construido en tiempo de ejecucion desde el mismo esquema que lee
+      Terraform, flujo por defecto (`_default`) y marcas de tiempo en microsegundos.
+      Unas 200 lineas.
+    porque: >
+      Es lo que queda cuando ningun runner local puede con `WriteToBigQuery`. Y al
+      escribirlo desaparece la transformacion entre lenguajes, asi que el DirectRunner
+      vuelve a servir: el problema se disolvio al resolverlo.
+    consecuencia: >
+      El descriptor se genera en ejecucion y no desde un `.proto` guardado, porque un
+      `.proto` seria la TERCERA copia del esquema -ya hay una en Python y otra en el
+      JSON que lee Terraform- y la tercera copia es la que nadie actualiza.
+
+      Cada tabla tiene su propio grupo de descriptores: uno global haria que dos tablas
+      con un campo del mismo nombre y distinto tipo se pisaran, y el error saldria lejos
+      de la causa.
+    estado: vigente
+    impacto: mayor
+    hito: metodo
+    causada_por: [r070]
+    alternativas:
+      - opcion: Escribir el protocolo a mano
+        elegida: true
+        motivo: Es lo unico que corre en local, y ademas quita la transformacion entre lenguajes
+      - opcion: STREAMING_INSERTS, que es Python puro
+        elegida: false
+        motivo: API heredada y sin tramo gratuito; funcionaria, pero es el camino de atras
+      - opcion: Dataflow, que si puede con las dos mitades
+        elegida: false
+        motivo: ~185 USD al mes por estar encendido, para mover 13 MB
+
+  - id: r072
+    fecha: 2026-09-29
+    orden: 72
+    carril: analisis
+    tipo: hallazgo
+    titulo: "En proto3 un cero legitimo no se manda, y BigQuery ve la columna vacia"
+    detalle: >
+      La API devolvia 400 con un unico detalle util: "Field value of panel cannot be
+      empty". El panel valia 0. En proto3 un campo escalar con su valor por defecto no
+      se serializa, asi que es indistinguible de uno sin poner.
+    porque: >
+      Aqui los valores por defecto SON datos: el panel 0 es el primero de cada hora y
+      `es_tardio` False es el caso normal. BigQuery recibia filas sin esas columnas
+      obligatorias y rechazaba el lote entero.
+    consecuencia: >
+      El descriptor se declara en **proto2**, donde un campo puesto se manda aunque
+      valga cero. Y hay un test que lo fija: al volver a proto3 a proposito, se pone
+      rojo con "el panel 0 no viajo".
+
+      Es la cuarta vez en este proyecto que un valor correcto en su pieza resulta falso
+      en el conjunto -la suma de potencias, el doble conteo solar, el porcentaje
+      renovable con cobertura parcial, y ahora un cero que no viaja-.
+    estado: vigente
+    impacto: mayor
+    hito: metodo
+
+  - id: r073
+    fecha: 2026-09-29
+    orden: 73
+    carril: analisis
+    titulo: "La tabla del flujo es append-only y la vista responde que vale ahora"
+    detalle: >
+      `stream.potencia_horaria` guarda una fila por cada panel emitido, con su numero y
+      el momento de emision; `stream.potencia_horaria_actual` se queda con el ultimo de
+      cada hora e indicador.
+    porque: >
+      Con acumulacion y disparos tardios la misma hora se emite varias veces, y cada
+      emision trae la media CORREGIDA de la hora entera. **Eso no son duplicados que
+      haya que evitar: son la historia de como se fue corrigiendo el dato**, que es
+      justo lo que distingue un flujo de un lote.
+    consecuencia: >
+      Es el mismo patron que `stg_esios__medidas` sobre `raw.medidas`, y por la misma
+      razon: la tabla guarda lo que paso, la vista responde que vale ahora.
+
+      El desempate es por `emitido_en` y no por `panel`: el numero de panel cuenta por
+      ventana, asi que dos reprocesos podrian escribir el mismo para la misma hora. El
+      momento de emision no se repite.
+    estado: vigente
+    impacto: mayor
+    alternativas:
+      - opcion: Append-only con una vista que se queda el ultimo panel
+        elegida: true
+        motivo: Guarda la historia de correcciones, y es lo unico que la Storage Write API sabe hacer
+      - opcion: MERGE por hora e indicador, sobreescribiendo
+        elegida: false
+        motivo: "Borraria la historia, y la API de escritura solo anade: exigiria un segundo paso"
+      - opcion: Escribir solo cuando la hora este completa
+        elegida: false
+        motivo: El dato de la ultima hora no saldria nunca, que es justo el que se mira
+
+  - id: r074
+    fecha: 2026-09-29
+    orden: 74
+    carril: metodo
+    tipo: hallazgo
+    titulo: "Una barra en el nombre de una etapa de Beam crea un ambito anidado"
+    detalle: >
+      La etapa se llamaba "Leer de Pub/Sub" y en el diagrama salia una caja que ponia
+      "Sub": Beam lee la barra como separador de ambitos y convertia el nombre en un
+      grupo "Leer de Pub" con una etapa "Sub" dentro.
+    porque: >
+      Lo delato un test que comprueba que las etapas del circuito estan en el SVG. Sin
+      ese test, el diagrama habria quedado con una caja llamada "Sub" y nadie lo habria
+      mirado dos veces.
+    consecuencia: >
+      La etapa se llama "Leer del tema". Y el diagrama pasa a dibujar las escrituras de
+      verdad en vez de dos cajas con su nombre puesto a mano: un diagrama dibujado
+      aparte se separa de lo que corre, este no puede.
+    estado: vigente
+    impacto: menor
+
+  - id: r075
+    fecha: 2026-09-29
+    orden: 75
+    carril: metodo
+    tipo: hito-externo
+    titulo: "El circuito del flujo funciona entero contra la nube"
+    detalle: >
+      15 mensajes publicados en Pub/Sub -12 medidas y 3 basuras, una de cada clase-. El
+      pipeline agrego la hora y escribio en `stream.potencia_horaria`, y los tres
+      rechazos llegaron a `stream.rechazos` cada uno con su motivo y el original
+      intacto: "no es JSON", "es JSON pero no un objeto" y "es un objeto pero le faltan
+      campos".
+    porque: >
+      Son dos puertas y no una porque los tres fallos se arreglan de forma distinta.
+      Distinguirlos en la tabla es lo que convierte la cola de rechazos en algo que
+      sirve para arreglar y no solo para contar.
+    consecuencia: >
+      El pipeline etiqueto esas filas como tardias e incompletas, correctamente: los
+      instantes publicados eran de dos horas antes, y **un flujo remarcado al pasado es
+      todo dato tardio**. La guarda de cobertura hizo su trabajo sin que nadie se lo
+      pidiera.
+    estado: vigente
+    impacto: mayor

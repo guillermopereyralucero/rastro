@@ -61,7 +61,7 @@ def test_las_lecturas_de_una_hora_dan_una_media():
     )
 
     with TestPipeline(options=opciones()) as p:
-        resultados, _ = construir(p, p | flujo)
+        resultados, _ = construir(p | flujo)
         medias = resultados | beam.Map(lambda r: round(r["potencia_media_mw"], 1))
         assert_that(medias, equal_to([3000.0]))
 
@@ -76,7 +76,7 @@ def test_se_cuentan_las_lecturas_y_se_marca_si_la_hora_esta_completa():
     )
 
     with TestPipeline(options=opciones()) as p:
-        resultados, _ = construir(p, p | flujo)
+        resultados, _ = construir(p | flujo)
         completas = resultados | beam.Map(lambda r: (r["lecturas"], r["hora_completa"]))
         assert_that(completas, equal_to([(12, True)]))
 
@@ -90,7 +90,7 @@ def test_dos_indicadores_no_se_mezclan():
     )
 
     with TestPipeline(options=opciones()) as p:
-        resultados, _ = construir(p, p | flujo)
+        resultados, _ = construir(p | flujo)
         pares = resultados | beam.Map(
             lambda r: (r["indicador_id"], r["potencia_media_mw"])
         )
@@ -119,7 +119,7 @@ def test_una_lectura_tardia_produce_un_panel_corregido():
     )
 
     with TestPipeline(options=opciones()) as p:
-        resultados, _ = construir(p, p | flujo)
+        resultados, _ = construir(p | flujo)
         medias = resultados | beam.Map(lambda r: round(r["potencia_media_mw"], 1))
         # Dos paneles: el de a tiempo (3000) y el corregido con las tres lecturas
         # ((3000+3000+1500)/3 = 2500). El segundo trae la hora ENTERA recalculada.
@@ -149,7 +149,7 @@ def test_lo_que_llega_mas_tarde_que_la_tolerancia_se_descarta():
 
     with TestPipeline(options=opciones()) as p:
         # Tolerancia de un segundo: 30 segundos de retraso quedan fuera de plazo.
-        resultados, _ = construir(p, p | flujo, tolerancia=Duration(seconds=1))
+        resultados, _ = construir(p | flujo, tolerancia=Duration(seconds=1))
         medias = resultados | beam.Map(lambda r: round(r["potencia_media_mw"], 1))
         assert_that(medias, equal_to([3000.0]), label="solo el panel a tiempo")
 
@@ -169,7 +169,7 @@ def test_una_lectura_cae_en_su_hora_y_no_en_la_que_este_abierta():
     )
 
     with TestPipeline(options=opciones()) as p:
-        resultados, _ = construir(p, p | flujo)
+        resultados, _ = construir(p | flujo)
         medias = resultados | beam.Map(lambda r: r["potencia_media_mw"])
         assert_that(medias, equal_to([3000.0, 9000.0]))
 
@@ -244,7 +244,15 @@ def test_el_grafo_de_ejecucion_se_dibuja_sin_encender_nada(tmp_path):
     contenido = escrito.read_text(encoding="utf-8")
     assert contenido.startswith("digraph")
     # Las etapas que cuentan la historia tienen que estar en el dibujo.
-    for etapa in ("Interpretar", "Ventana de una hora", "A la cola de rechazos"):
+    # Las etapas del circuito de verdad, no cajas de adorno: desde la lectura hasta las
+    # dos escrituras. Si el dibujo dejara de tener una, es que ya no ensena lo que corre.
+    for etapa in (
+        "Leer del tema",
+        "Interpretar",
+        "Ventana de una hora",
+        "Escribir potencia",
+        "Escribir rechazos",
+    ):
         assert etapa in contenido, f"falta la etapa «{etapa}» en el grafo"
 
 
@@ -261,3 +269,69 @@ def test_si_falta_graphviz_se_escribe_el_dot_en_vez_de_fallar(tmp_path, monkeypa
 
     assert escrito.suffix == ".dot", "se degrada a .dot en lugar de reventar"
     assert escrito.exists()
+
+
+# --- la fila sabe de cuando es y que numero de emision es -------------
+
+
+def test_el_resultado_lleva_la_hora_de_su_ventana():
+    """Sin esto, el valor agregado existe pero no se sabe de cuando.
+
+    Es la diferencia entre un numero y una fila que se puede escribir en algun sitio.
+    """
+    flujo = (
+        TestStream()
+        .advance_watermark_to(segundos(HORA))
+        .add_elements([mensaje(0, 3000), mensaje(5, 3000)])
+        .advance_watermark_to_infinity()
+    )
+
+    with TestPipeline(options=opciones()) as p:
+        resultados, _ = construir(p | flujo)
+        horas = resultados | beam.Map(lambda r: r["hora"])
+        assert_that(horas, equal_to([HORA]))
+
+
+def test_el_panel_corregido_se_distingue_del_primero():
+    """Dos emisiones de la MISMA hora tienen que ser distinguibles al llegar a la tabla.
+
+    Si no lo fueran, no habria forma de saber cual vale, y la tabla append-only pasaria
+    de guardar la historia de las correcciones a guardar un monton de filas iguales sin
+    orden. El numero de panel y la marca de tardio son lo que lo resuelve.
+    """
+    flujo = (
+        TestStream()
+        .advance_watermark_to(segundos(HORA))
+        .add_elements([mensaje(0, 3000)])
+        .advance_watermark_to(segundos(FIN_HORA))
+        .add_elements([mensaje(10, 1500)])
+        .advance_watermark_to_infinity()
+    )
+
+    with TestPipeline(options=opciones()) as p:
+        resultados, _ = construir(p | flujo)
+        senas = resultados | beam.Map(lambda r: (r["panel"], r["es_tardio"]))
+        # El primero es el panel 0 y no es tardio; el segundo es el 1 y si lo es.
+        assert_that(senas, equal_to([(0, False), (1, True)]))
+
+
+def test_las_columnas_del_resultado_son_exactamente_las_de_la_tabla():
+    """El pipeline y la tabla tienen que hablar de las mismas columnas.
+
+    Una columna de mas se pierde al escribir -y nadie se entera-; una de menos deja un
+    hueco permanente. Comprobarlo aqui, contra el esquema declarado, convierte las dos
+    cosas en un test rojo en vez de en un hallazgo de dentro de un mes.
+    """
+    from rastro.streaming.esquema import POTENCIA_HORARIA
+
+    flujo = (
+        TestStream()
+        .advance_watermark_to(segundos(HORA))
+        .add_elements([mensaje(0, 3000)])
+        .advance_watermark_to_infinity()
+    )
+
+    with TestPipeline(options=opciones()) as p:
+        resultados, _ = construir(p | flujo)
+        columnas = resultados | beam.Map(lambda r: tuple(sorted(r)))
+        assert_that(columnas, equal_to([tuple(sorted(POTENCIA_HORARIA.columnas))]))

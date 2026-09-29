@@ -84,11 +84,15 @@ cambios pendientes.
 
 **El camino gratuito es el largo**, y encima es el que hay que enseñar:
 
-- [ ] Suscripción **push normal** → consumidor propio → **Storage Write API por
-      gRPC** (primeros **2 TiB/mes gratis**).
-- [ ] La idempotencia, el manejo de esquemas que cambian y la cola de mensajes
-      muertos, **en código propio**. La ruta corta ahorra código y borra la
-      evidencia, que es justo lo que este proyecto tiene que demostrar.
+- [x] Suscripción **normal** → consumidor propio → **Storage Write API por gRPC**
+      (primeros **2 TiB/mes gratis**). Funcionando contra la nube.
+- [x] La idempotencia, el manejo de esquemas que cambian y la cola de mensajes
+      muertos, **en código propio**. Y resultó que no era una elección pedagógica:
+      **ningún runner local gratuito puede con `WriteToBigQuery`**. El DirectRunner en
+      modo flujo no admite transformaciones entre lenguajes —y esa lo es, arranca un
+      servicio en Java—; Prism sí las admite pero no lee de Pub/Sub. Escribir el
+      protocolo a mano quita la transformación entre lenguajes, así que el DirectRunner
+      vuelve a servir: el problema se disolvió al resolverlo (`r070`, `r071`).
 - [x] ~~Dataflow: ventana de 2-4 horas y fuera.~~ **Cancelado el 27-sep** (`r033`):
       el coste pasó a ser requisito y el grafo de ejecución se obtiene gratis.
       Medido: ~0,25 USD/hora con un trabajador y Streaming Engine, 0,76 USD una
@@ -96,16 +100,29 @@ cambios pendientes.
       encendido, no por trabajo hecho**: los 13,2 MB mensuales de Rastro saldrían
       a ~14 USD por megabyte.
 - [x] **El grafo de ejecución, gratis**: `python -m rastro.streaming.dibujar`. Se
-      versiona en `docs/pipeline.dot` y lo regenera quien clone. Si falta Graphviz,
-      escribe el `.dot` y dice cómo convertirlo en vez de fallar.
-- [x] **La semántica de streaming, gratis y determinista**: 16 tests con `TestStream`
+      versiona en `docs/pipeline.svg` y `docs/pipeline.dot`, y lo regenera quien clone.
+      Si falta Graphviz, escribe el `.dot` y dice cómo convertirlo en vez de fallar.
+      Dibuja las **escrituras de verdad**, no cajas con su nombre puesto a mano: un
+      diagrama dibujado aparte se separa de lo que corre, este no puede.
+- [x] **La semántica de streaming, gratis y determinista**: 19 tests con `TestStream`
       que fijan qué pasa con una lectura dentro de la tolerancia (panel corregido),
       fuera de ella (descartada) y con un mensaje ilegible (a la cola, sin tumbar el
       pipeline).
 - [x] Tolerancia al retraso de **48 h**, la misma ventana revisable que la ingesta por
       lotes, porque las gobierna el mismo hecho: REE revisa durante ~2 días.
-- [ ] Conectar la entrada a Pub/Sub de verdad y la salida a la Storage Write API
+- [x] **Conectada la entrada a Pub/Sub y la salida a la Storage Write API.** Probado
+      entero: 15 mensajes publicados —12 medidas y 3 basuras, una de cada clase—, las
+      medidas agregadas en `stream.potencia_horaria` y los tres rechazos en
+      `stream.rechazos`, cada uno con su motivo y el original intacto.
+- [x] **El esquema se escribe una vez**, en `esquema.py`, y de ahí salen el JSON que
+      lee Terraform y el descriptor de protobuf. Un test regenera y compara: cambiarlo
+      sin regenerar pone el CI en rojo.
+- [x] **La tabla del flujo es append-only y la vista responde qué vale ahora.** Con
+      disparos tardíos la misma hora se emite varias veces, y eso no son duplicados:
+      es la historia de cómo se corrigió el dato.
 - [ ] Medir el pipeline con volumen real y publicar la cifra
+- [ ] Que la ingesta por lotes publique además en el tema, para que el flujo tenga
+      datos de verdad sin publicarlos a mano
 - [ ] **Composer queda fuera del proyecto.** No tiene capa gratuita **ni se puede
       apagar por horas**: la cuota de entorno pequeño son 0,35 USD/hora, es decir
       **~255 USD/mes de tarifa fija antes de ejecutar un solo DAG**. La misma

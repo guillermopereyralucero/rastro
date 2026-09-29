@@ -17,7 +17,9 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import pathlib
 import sys
+import threading
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
@@ -146,7 +148,148 @@ def _analizador() -> argparse.ArgumentParser:
     _opciones_grafo(ev)
     ev.set_defaults(funcion=_evaluar)
 
+    flujo = subs.add_parser(
+        "flujo",
+        help="corre el pipeline de streaming contra Pub/Sub y BigQuery",
+    )
+    flujo.add_argument("--proyecto", default="rastro-509715")
+    flujo.add_argument(
+        "--suscripcion",
+        default="rastro-medidas-pipeline",
+        help="nombre de la suscripcion de Pub/Sub",
+    )
+    flujo.add_argument(
+        "--runner",
+        default="DirectRunner",
+        help=(
+            "DirectRunner, que es el unico local que lee de Pub/Sub. Prism no "
+            "implementa esa lectura; a cambio admite transformaciones entre "
+            "lenguajes, que aqui no hacen falta porque la escritura es propia"
+        ),
+    )
+    flujo.add_argument(
+        "--segundos",
+        type=int,
+        default=0,
+        help=(
+            "para solo despues de estos segundos. 0 significa hasta que se corte con "
+            "Ctrl-C. Existe para poder probar el circuito sin dejarlo encendido"
+        ),
+    )
+    flujo.set_defaults(funcion=_flujo)
+
+    publicar = subs.add_parser(
+        "publicar",
+        help="manda medidas al tema de Pub/Sub, para probar el flujo",
+    )
+    publicar.add_argument("--proyecto", default="rastro-509715")
+    publicar.add_argument("--tema", default="rastro-medidas")
+    publicar.add_argument(
+        "--fichero",
+        help="JSONL con una medida por linea. Sin el, lee de la entrada estandar",
+    )
+    publicar.set_defaults(funcion=_publicar)
+
     return raiz
+
+
+def _flujo(args) -> int:
+    """Corre el pipeline contra Pub/Sub, con DirectRunner.
+
+    **Con DirectRunner y no con Dataflow**, y eso no es una limitacion sino la
+    decision: Dataflow cobra por estar encendido y no por trabajo hecho, asi que un mes
+    con este caudal saldria a unos 14 USD por megabyte movido. El razonamiento con las
+    cifras esta en el README.
+    """
+    try:
+        import apache_beam as beam
+        from apache_beam.options.pipeline_options import (
+            PipelineOptions,
+            StandardOptions,
+        )
+
+        from rastro.streaming.nube import montar
+    except ImportError as err:  # pragma: no cover
+        print(f"falta una dependencia: {err}", file=sys.stderr)
+        print('instala: pip install "apache-beam[gcp]"', file=sys.stderr)
+        return 1
+
+    suscripcion = f"projects/{args.proyecto}/subscriptions/{args.suscripcion}"
+
+    opciones = PipelineOptions(
+        [
+            f"--project={args.proyecto}",
+            f"--runner={args.runner}",
+            f"--temp_location=gs://{args.proyecto}-estado/beam",
+        ]
+    )
+    # Sin esto el DirectRunner trata la entrada como un lote y los disparos tardios no
+    # llegan a ocurrir: el pipeline funcionaria y no haria lo que dice hacer.
+    opciones.view_as(StandardOptions).streaming = True
+
+    print(f"leyendo de {suscripcion}")
+    print(f"escribiendo en {args.proyecto}:stream")
+    if args.segundos:
+        print(f"parara solo en {args.segundos} s")
+    print("Ctrl-C para parar")
+
+    pipeline = beam.Pipeline(options=opciones)
+    montar(pipeline, suscripcion=suscripcion, proyecto=args.proyecto)
+
+    resultado = pipeline.run()
+
+    # `wait_until_finish(duration=...)` existe en la interfaz pero **el DirectRunner no
+    # lo implementa**: lanza NotImplementedError. Asi que el temporizador se pone
+    # aqui, que ademas hace lo mismo en cualquier runner.
+    temporizador = None
+    if args.segundos:
+        temporizador = threading.Timer(args.segundos, resultado.cancel)
+        temporizador.daemon = True
+        temporizador.start()
+
+    try:
+        resultado.wait_until_finish()
+    except KeyboardInterrupt:
+        print("\nparando")
+        resultado.cancel()
+    finally:
+        if temporizador is not None:
+            temporizador.cancel()
+    return 0
+
+
+def _publicar(args) -> int:
+    """Manda medidas al tema. Sirve para probar el circuito entero de verdad.
+
+    Lee JSON Lines, una medida por linea, y **manda las lineas malas tal cual**: probar
+    la cola de rechazos exige poder publicar basura a proposito.
+    """
+    try:
+        from google.cloud import pubsub_v1
+    except ImportError as err:  # pragma: no cover
+        print(f"falta una dependencia: {err}", file=sys.stderr)
+        print("instala: pip install google-cloud-pubsub", file=sys.stderr)
+        return 1
+
+    if args.fichero:
+        lineas = pathlib.Path(args.fichero).read_text(encoding="utf-8").splitlines()
+    else:
+        lineas = [linea for linea in sys.stdin.read().splitlines()]
+
+    lineas = [linea for linea in lineas if linea.strip()]
+    if not lineas:
+        print("nada que publicar", file=sys.stderr)
+        return 1
+
+    cliente = pubsub_v1.PublisherClient()
+    tema = cliente.topic_path(args.proyecto, args.tema)
+
+    futuros = [cliente.publish(tema, linea.encode("utf-8")) for linea in lineas]
+    for futuro in futuros:
+        futuro.result()
+
+    print(f"{len(lineas)} mensajes publicados en {args.tema}")
+    return 0
 
 
 def _opciones_grafo(p: argparse.ArgumentParser) -> None:

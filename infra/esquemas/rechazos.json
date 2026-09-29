@@ -1,0 +1,20 @@
+[
+  {
+    "name": "recibido_en",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "Cuando se aparto el mensaje."
+  },
+  {
+    "name": "motivo",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Tipo de error y mensaje, tal como lo dio Python."
+  },
+  {
+    "name": "original",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "El mensaje entero, serializado. Es lo que permite reprocesarlo."
+  }
+]

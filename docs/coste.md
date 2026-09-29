@@ -49,6 +49,21 @@ El almacenamiento no es el riesgo. Nunca lo fue.
 
 ## Los dos riesgos de verdad
 
+### 0 · El estado de Terraform, que ahora ocupa
+
+72 KB en un bucket de Madrid, con versionado. En almacenamiento estándar de
+`europe-southwest1` (~0,023 USD por GB y mes) eso son **0,000002 EUR al mes**, más unas
+decenas de operaciones por `plan`.
+
+No es «gratis»: **no hay capa gratuita de Cloud Storage en Europa** —los 5 GB del tramo
+Always Free son solo de regiones de Estados Unidos—. Es que redondea a cero. La
+distinción importa porque este documento existe para no repetir el error de llamar
+gratis a lo que solo es barato.
+
+Las dos reglas de ciclo de vida —como mucho 10 versiones, nada más viejo de 90 días—
+están por lo mismo que las del registro de imágenes: versionado sin limpieza es un
+depósito que solo crece.
+
 ### 1 · Artifact Registry: resuelto antes de la primera imagen
 
 Los 0,5 GB gratuitos se cuentan **sumando todos los proyectos de la cuenta de
