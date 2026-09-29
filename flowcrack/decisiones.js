@@ -2,7 +2,7 @@
 // Fuente: decisiones.yaml
 window.FLOWCRACK = {
   "formato": 2,
-  "generado": "2026-09-29 09:21",
+  "generado": "2026-09-29 09:29",
   "proyecto": {
     "nombre": "Rastro",
     "perfil": "investigacion",
@@ -2441,6 +2441,146 @@ window.FLOWCRACK = {
       "decidido_por": null,
       "ref": null,
       "alternativas": [],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r060",
+      "fecha": "2026-09-29",
+      "orden": 60,
+      "carril": "metodo",
+      "titulo": "La tolerancia al retraso del flujo es la misma ventana revisable del lote: 48 horas",
+      "tipo": "decision",
+      "detalle": "El pipeline de Beam usa `allowed_lateness` de 48 horas, que es exactamente el `horas_revisables` de la ingesta por lotes.",
+      "porque": "Las dos salen del mismo hecho del mundo: REE revisa sus datos durante un par de dias. No es un numero elegido por comodidad en cada sitio, es el mismo dato de la realidad gobernando las dos rutas.",
+      "consecuencia": "Cambiar una sin la otra seria un error silencioso: el lote y el flujo darian numeros distintos para la misma hora y habria que explicar cual es el bueno. Queda escrito en los dos modulos para que quien toque uno vea al otro.\nDel mismo modo, la ventana es de una hora en los dos y la acumulacion es ACCUMULATING: un panel tardio trae la media corregida de la hora entera, porque dos medias no se pueden sumar y un incremento no significaria nada.",
+      "estado": "vigente",
+      "impacto": "mayor",
+      "irreversible": false,
+      "hito": "metodo",
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "La misma tolerancia que la ventana revisable del lote",
+          "elegida": true,
+          "motivo": "El mismo hecho fisico gobierna las dos rutas"
+        },
+        {
+          "opcion": "Una tolerancia comoda, como una hora",
+          "elegida": false,
+          "motivo": "Perderia revisiones de REE en silencio, que es la peor forma de perderlas"
+        },
+        {
+          "opcion": "Sin limite de retraso",
+          "elegida": false,
+          "motivo": "La ventana no se cierra nunca y el estado crece sin parar"
+        }
+      ],
+      "causada_por": [],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r061",
+      "fecha": "2026-09-29",
+      "orden": 61,
+      "carril": "analisis",
+      "titulo": "16 tests con TestStream en lugar de una captura de Dataflow",
+      "tipo": "decision",
+      "detalle": "Se prueban los tres casos que un panel no contesta: una lectura dentro de la tolerancia produce un segundo panel con la media corregida; una fuera se descarta; un mensaje ilegible va a la cola de rechazos con su motivo y el original entero, y el pipeline sigue.",
+      "porque": "`TestStream` permite mover el watermark a voluntad, asi que la pregunta \"que pasa con un dato que llega diez minutos tarde\" deja de contestarse con una opinion y pasa a tener un test que da siempre lo mismo. Un panel en verde demuestra que alguien supo lanzar un trabajo; esto demuestra que se entiende lo que ocurre dentro.",
+      "consecuencia": "Cuesta cero frente a los 0,76 USD de la ventana de Dataflow que se cancelo en r033, y ademas lo puede reproducir cualquiera que clone. El grafo de ejecucion sale en SVG y se versiona: una captura de pantalla hay que creersela.\nUn detalle que costo un test: el DirectRunner trata la entrada como lote si no se pone `streaming = True`, y entonces los disparos tardios no ocurren. El test pasaria sin probar nada de lo que dice probar.\nEl grafo se versiona como `.dot` y no como SVG porque Graphviz necesita permisos de administrador para instalarse y el aviso de Windows se cancelo. No es un problema: el `.dot` YA es el grafo, y el comando dice como convertirlo en lugar de fallar.",
+      "estado": "vigente",
+      "impacto": "mayor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "TestStream en local, con el grafo en un fichero versionado",
+          "elegida": true,
+          "motivo": "Cuesta cero, se reproduce al clonar y prueba lo que un panel no dice"
+        },
+        {
+          "opcion": "Una ventana de Dataflow y capturas de pantalla",
+          "elegida": false,
+          "motivo": "0,76 USD por una imagen que hay que creerse y que nadie puede repetir"
+        },
+        {
+          "opcion": "Flink o Spark en local, con su interfaz web",
+          "elegida": false,
+          "motivo": "Daria metricas de un runner distribuido, pero exige Java o Docker y WSL"
+        }
+      ],
+      "causada_por": [
+        "r033"
+      ],
+      "abre": [],
+      "cierra": [],
+      "supera_a": [],
+      "superada_por": [],
+      "mata_riesgo": null,
+      "espera_hasta": null,
+      "commit": null,
+      "fecha_commit": null,
+      "version": null,
+      "desfase_fechas": null
+    },
+    {
+      "id": "r062",
+      "fecha": "2026-09-29",
+      "orden": 62,
+      "carril": "metodo",
+      "titulo": "El interprete de mensajes nunca lanza: aparta y sigue",
+      "tipo": "decision",
+      "detalle": "`Interpretar` tiene salida doble. Lo que no se puede leer va a la cola de rechazos con el motivo y el mensaje original completo.",
+      "porque": "En un flujo, un mensaje malo que revienta el trabajo lo revienta para todo lo demas: un solo registro corrupto deja de procesar el resto. Y el original se guarda entero porque un rechazo sin el no se puede reprocesar, y entonces la cola solo sirve para contar fallos en lugar de para arreglarlos.",
+      "consecuencia": null,
+      "estado": "vigente",
+      "impacto": "menor",
+      "irreversible": false,
+      "hito": null,
+      "publico": null,
+      "decidido_por": null,
+      "ref": null,
+      "alternativas": [
+        {
+          "opcion": "Salida doble, con el original en el rechazo",
+          "elegida": true,
+          "motivo": "Un registro malo no para el resto, y el rechazo se puede reprocesar"
+        },
+        {
+          "opcion": "Dejar que la excepcion suba",
+          "elegida": false,
+          "motivo": "Un registro corrupto para el pipeline entero"
+        },
+        {
+          "opcion": "Descartar en silencio lo que no se entienda",
+          "elegida": false,
+          "motivo": "Perder datos sin dejar rastro es peor que pararse"
+        }
+      ],
       "causada_por": [],
       "abre": [],
       "cierra": [],

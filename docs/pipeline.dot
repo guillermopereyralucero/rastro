@@ -1,0 +1,30 @@
+digraph G {
+subgraph "cluster_ref_AppliedPTransform_Leer-del-flujo_2" {
+label="Leer del flujo" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Leer-del-flujo_2')" 
+"ref_AppliedPTransform_Leer-del-flujo-Impulse_3" [label="Impulse" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Leer-del-flujo-Impulse_3')" ]
+"ref_AppliedPTransform_Leer-del-flujo-FlatMap-lambda-at-core-py-4094-_4" [label="FlatMap(<lambda at core.py:4094>)" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Leer-del-flujo-FlatMap-lambda-at-core-py-4094-_4')" ]
+"ref_AppliedPTransform_Leer-del-flujo-MaybeReshuffle_5" [label="MaybeReshuffle" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Leer-del-flujo-MaybeReshuffle_5')" ]
+"ref_AppliedPTransform_Leer-del-flujo-Map-decode-_6" [label="Map(decode)" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Leer-del-flujo-Map-decode-_6')" ]
+}
+subgraph "cluster_ref_AppliedPTransform_Interpretar_7" {
+label="Interpretar" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Interpretar_7')" 
+"ref_AppliedPTransform_Interpretar-ParDo-Interpretar-_8" [label="ParDo(Interpretar)" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Interpretar-ParDo-Interpretar-_8')" ]
+}
+subgraph "cluster_ref_AppliedPTransform_Potencia-horaria_9" {
+label="Potencia horaria" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Potencia-horaria_9')" 
+"ref_AppliedPTransform_Potencia-horaria-Ventana-de-una-hora_10" [label="Ventana de una hora" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Potencia-horaria-Ventana-de-una-hora_10')" ]
+"ref_AppliedPTransform_Potencia-horaria-Juntar-por-indicador_11" [label="Juntar por indicador" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Potencia-horaria-Juntar-por-indicador_11')" ]
+"ref_AppliedPTransform_Potencia-horaria-Potencia-media_12" [label="Potencia media" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_Potencia-horaria-Potencia-media_12')" ]
+}
+"ref_AppliedPTransform_A-BigQuery_13" [label="A BigQuery" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_A-BigQuery_13')" ]
+"ref_AppliedPTransform_A-la-cola-de-rechazos_14" [label="A la cola de rechazos" shape=rect style="rounded, filled" color="#ff570b" fillcolor="#fff6dd"  URL="javascript:click('ref_AppliedPTransform_A-la-cola-de-rechazos_14')" ]
+"ref_AppliedPTransform_Leer-del-flujo-Impulse_3" -> "ref_AppliedPTransform_Leer-del-flujo-FlatMap-lambda-at-core-py-4094-_4" [label="" style=solid color="#ff570b" ]
+"ref_AppliedPTransform_Leer-del-flujo-FlatMap-lambda-at-core-py-4094-_4" -> "ref_AppliedPTransform_Leer-del-flujo-MaybeReshuffle_5" [label="" style=solid color="#ff570b" ]
+"ref_AppliedPTransform_Leer-del-flujo-FlatMap-lambda-at-core-py-4094-_4" -> "ref_AppliedPTransform_Leer-del-flujo-Map-decode-_6" [label="" style=solid color="#ff570b" ]
+"ref_AppliedPTransform_Leer-del-flujo-Map-decode-_6" -> "ref_AppliedPTransform_Interpretar-ParDo-Interpretar-_8" [label="" style=solid color="#ff570b" ]
+"ref_AppliedPTransform_Interpretar-ParDo-Interpretar-_8" -> "ref_AppliedPTransform_Potencia-horaria-Ventana-de-una-hora_10" [label="None" style=solid color="#ff570b" ]
+"ref_AppliedPTransform_Interpretar-ParDo-Interpretar-_8" -> "ref_AppliedPTransform_A-la-cola-de-rechazos_14" [label="rechazos" style=solid color="#ff570b" ]
+"ref_AppliedPTransform_Potencia-horaria-Ventana-de-una-hora_10" -> "ref_AppliedPTransform_Potencia-horaria-Juntar-por-indicador_11" [label="" style=solid color="#ff570b" ]
+"ref_AppliedPTransform_Potencia-horaria-Juntar-por-indicador_11" -> "ref_AppliedPTransform_Potencia-horaria-Potencia-media_12" [label="" style=solid color="#ff570b" ]
+"ref_AppliedPTransform_Potencia-horaria-Potencia-media_12" -> "ref_AppliedPTransform_A-BigQuery_13" [label="" style=solid color="#ff570b" ]
+}

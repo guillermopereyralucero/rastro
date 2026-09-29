@@ -87,7 +87,7 @@ source .venv/Scripts/activate      # Windows con Git Bash
 # source .venv/bin/activate        # Linux y macOS
 pip install -e ".[dev]"
 
-pytest                             # 149 tests, ninguno toca la red
+pytest                             # 165 tests, ninguno toca la red
 rastro buscar eolica               # busca en el catálogo local
 ```
 
@@ -250,6 +250,65 @@ consumiendo el recurso limitado de un tercero acaba sin probarse.
 
 ---
 
+## El streaming, sin encender nada
+
+El pipeline está en **Apache Beam** y corre con `DirectRunner`, en local. Hace lo mismo
+que el modelo horario de dbt —agrupar las lecturas de cinco minutos y sacar la potencia
+media— pero sobre un flujo, donde aparecen los tres problemas que el lote no tiene:
+**cuándo cerrar una ventana**, **qué hacer con lo que llega tarde** y **dónde va lo que
+no se entiende**.
+
+Resolverlos a mano es el motivo de que exista. La ruta corta —una suscripción
+gestionada que escribe sola en BigQuery— hace el mismo trabajo y **borra la evidencia
+de haberlo pensado**.
+
+### Las tres decisiones salen de un hecho físico
+
+| Decisión | Valor | De dónde sale |
+|---|---|---|
+| Ventana | 1 hora | La misma que el modelo de dbt: si lote y flujo agregaran distinto, habría que explicar cuál es el bueno |
+| Tolerancia al retraso | **48 h** | La misma ventana revisable que usa la ingesta por lotes, porque REE revisa sus datos durante ~2 días |
+| Acumulación | `ACCUMULATING` | Un panel tardío trae la media **corregida** de la hora entera. Dos medias no se suman |
+
+Que la tolerancia del flujo y la ventana revisable del lote sean **el mismo número** no
+es una coincidencia: las gobierna el mismo hecho del mundo, así que cambiar una sin la
+otra sería un error silencioso.
+
+### Lo que sustituye al panel de Dataflow
+
+```bash
+pytest tests/test_streaming.py     # 16 tests, ninguno enciende nada
+python -m rastro.streaming.dibujar docs/pipeline.svg
+```
+
+**`TestStream` permite mover el watermark a voluntad**, así que preguntas como «¿qué
+pasa con una lectura que llega tarde?» dejan de contestarse con una opinión:
+
+- Una lectura que llega **dentro** de la tolerancia produce un **segundo panel con la
+  media corregida** de la hora entera.
+- Una que llega **fuera** se descarta, y hay un test que lo fija — porque sin un límite
+  la ventana no se cierra nunca y el estado crece sin parar.
+- Un mensaje que **no se entiende** va a la cola de rechazos con el motivo **y el
+  original entero**, y el pipeline sigue. Un rechazo sin el original solo sirve para
+  contar fallos, no para arreglarlos.
+
+Y el **grafo de ejecución** se versiona en [`docs/pipeline.dot`](docs/pipeline.dot),
+que lo regenera cualquiera que clone el proyecto. Una captura de pantalla hay que
+creérsela; un `.dot` se vuelve a generar y se compara.
+
+Para verlo como imagen hace falta el ejecutable `dot` de Graphviz
+(`winget install Graphviz.Graphviz`, o `apt install graphviz`), y entonces
+`python -m rastro.streaming.dibujar docs/pipeline.svg` escribe el SVG directamente. Si
+no está, el comando escribe el `.dot` y dice cómo convertirlo, en lugar de fallar: el
+`.dot` ya es el grafo, y que falte un conversor no es motivo para no dar nada.
+
+Piensa en qué pesa más en una entrevista: un panel en verde demuestra que alguien supo
+lanzar un trabajo; un test que fija qué ocurre con un dato que llega diez minutos tarde
+demuestra que se entiende lo que pasa dentro. El primero cuesta 0,76 USD; el segundo,
+cero.
+
+---
+
 ## Preguntar en castellano, y medir si acierta
 
 ```
@@ -371,6 +430,9 @@ src/rastro/
 │   ├── consultas.py     # linaje, impacto, ciclos, huérfanas
 │   ├── disposicion.py   # por capas, calculada en Python para poder probarla
 │   └── visor.py         # el HTML de un solo fichero
+├── streaming/           # el pipeline en Beam, con su semántica probada
+│   ├── pipeline.py      # ventanas, retraso tolerado y cola de rechazos
+│   └── dibujar.py       # el grafo de ejecución, sin encender nada
 ├── lenguaje/            # preguntar en castellano, y medir si acierta
 │   ├── intencion.py     # de la pregunta a una llamada; sin tocar los datos
 │   ├── respuesta.py     # ejecuta contra el grafo, y valida el nombre de tabla
@@ -381,7 +443,7 @@ infra/                   # Terraform: datasets, IAM, presupuesto
 evals/                   # el banco de 31 preguntas y la instantánea del grafo
 docs/                    # la anomalía, la puesta en marcha y el seguimiento
 flowcrack/               # el registro de decisiones
-tests/                   # 149, ninguno con red
+tests/                   # 165, ninguno con red
 ```
 
 El planificador no hace red: entra estado y sale un plan. Por eso se puede

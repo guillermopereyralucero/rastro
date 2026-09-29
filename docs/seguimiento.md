@@ -90,13 +90,17 @@ cambios pendientes.
       ventana de 3 h, 185 USD un mes encendido. **Dataflow cobra por estar
       encendido, no por trabajo hecho**: los 13,2 MB mensuales de Rastro saldrían
       a ~14 USD por megabyte.
-- [ ] **El grafo de ejecución, gratis**: `apache_beam.runners.render.RenderRunner`
-      escribe la pipeline en SVG, que se versiona en el repo y lo regenera quien
-      clone. Mejor que una captura de pantalla.
-- [ ] **La semántica de streaming, gratis y determinista**: `TestStream` con
-      DirectRunner permite dirigir el watermark y los eventos tardíos. Unos tests
-      que fijan qué pasa con un dato que llega 10 minutos tarde demuestran más que
-      un panel en verde.
+- [x] **El grafo de ejecución, gratis**: `python -m rastro.streaming.dibujar`. Se
+      versiona en `docs/pipeline.dot` y lo regenera quien clone. Si falta Graphviz,
+      escribe el `.dot` y dice cómo convertirlo en vez de fallar.
+- [x] **La semántica de streaming, gratis y determinista**: 16 tests con `TestStream`
+      que fijan qué pasa con una lectura dentro de la tolerancia (panel corregido),
+      fuera de ella (descartada) y con un mensaje ilegible (a la cola, sin tumbar el
+      pipeline).
+- [x] Tolerancia al retraso de **48 h**, la misma ventana revisable que la ingesta por
+      lotes, porque las gobierna el mismo hecho: REE revisa durante ~2 días.
+- [ ] Conectar la entrada a Pub/Sub de verdad y la salida a la Storage Write API
+- [ ] Medir el pipeline con volumen real y publicar la cifra
 - [ ] **Composer queda fuera del proyecto.** No tiene capa gratuita **ni se puede
       apagar por horas**: la cuota de entorno pequeño son 0,35 USD/hora, es decir
       **~255 USD/mes de tarifa fija antes de ejecutar un solo DAG**. La misma

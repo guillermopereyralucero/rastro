@@ -33,6 +33,9 @@ dbt = ["dbt-bigquery>=1.9"]
 # resultado. Una herramienta de diagnostico que no arranca por una dependencia que
 # falta no diagnostica nada.
 grafo = ["sqlglot>=25.0"]
+# El pipeline de streaming. Va aparte porque Beam pesa, y quien solo quiera el linaje
+# no tiene por que traerselo.
+streaming = ["apache-beam>=2.60"]
 dev = ["pytest>=8.0", "ruff>=0.6"]
 
 [project.scripts]
