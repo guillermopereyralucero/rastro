@@ -36,7 +36,7 @@ grafo = ["sqlglot>=25.0"]
 # El pipeline de streaming. Va aparte porque Beam pesa, y quien solo quiera el linaje
 # no tiene por que traerselo.
 streaming = ["apache-beam>=2.60"]
-dev = ["pytest>=8.0", "ruff>=0.6"]
+dev = ["pytest>=8.0", "ruff>=0.6", "pyyaml>=6.0"]
 
 [project.scripts]
 rastro = "rastro.cli:main"
