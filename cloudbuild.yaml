@@ -1,0 +1,42 @@
+# Compila la imagen del job y la sube al registro.
+#
+#   gcloud builds submit --config=cloudbuild.yaml \
+#     --substitutions=_VERSION=$(git rev-parse --short HEAD)
+#
+# La compila Cloud Build y no un Docker local a proposito: son 120 minutos de
+# compilacion al dia gratis, y ahorra instalar Docker Desktop -que pide permisos de
+# administrador, WSL2 y un reinicio- para construir una imagen de Python.
+#
+# **Sin `--region`.** El endpoint regional de europe-southwest1 devuelve
+# PERMISSION_DENIED incluso siendo propietario del proyecto: no todas las regiones
+# tienen Cloud Build regional. El global compila igual y deja la imagen en el registro
+# de Madrid, que es donde tiene que estar.
+
+substitutions:
+  _REGION: europe-southwest1
+  _REPO: rastro
+  _IMAGEN: ingesta
+  # `$SHORT_SHA` viene VACIO en una compilacion lanzada a mano -solo lo rellena un
+  # disparador de git- y una etiqueta vacia da "invalid image name". Con un valor por
+  # defecto, compilar a mano funciona y compilar desde el CI sigue etiquetando con el
+  # commit.
+  _VERSION: manual
+
+steps:
+  - name: gcr.io/cloud-builders/docker
+    id: construir
+    args:
+      - build
+      # Dos etiquetas: una para desplegar -`latest`- y otra para saber de que version
+      # salio. Sin la segunda, un despliegue roto no se puede atar a un cambio.
+      - --tag=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGEN}:latest
+      - --tag=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGEN}:${_VERSION}
+      - .
+
+images:
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGEN}:latest
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGEN}:${_VERSION}
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: E2_HIGHCPU_8

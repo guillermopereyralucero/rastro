@@ -17,11 +17,11 @@ abriendo `flowcrack/index.html`.
 - [x] Registro de auditoría con reconciliación
 - [x] 47 tests, todos sin red
 - [x] Arranque sin carga histórica por omisión (`--desde` para pedirla)
-- [ ] Marca de agua sobre `control.marca_de_agua` en BigQuery — la tabla ya
-      existe, y la interfaz `MarcaDeAgua` está preparada: es otra
-      implementación, sin tocar el planificador
-- [ ] Escritura de medidas en `raw.medidas` en vez de JSONL local
-- [ ] Volcado del registro de peticiones a `control.peticiones`
+- [x] Marca de agua sobre `control.marca_de_agua`, escritura en `raw.medidas` y
+      volcado de la auditoría a `control.peticiones`
+- [x] **Corriendo en la nube**: el job en Cloud Run cargó 9.200 medidas en una
+      ejecución, 16 peticiones todas con código 200 y la marca de agua avanzada en
+      los 16 indicadores
 
 ## F2 · Infraestructura
 
@@ -38,8 +38,13 @@ cambios pendientes.
 - [x] `terraform apply` — 25 recursos, sin cambios pendientes
 - [x] Token en Secret Manager, verificado por hash contra el local
 - [x] Presupuesto de 1 € vivo, con cuatro umbrales, acotado al proyecto
-- [ ] `terraform plan` en cada PR, en CI — necesita federación de identidades
-      (Workload Identity Federation), que es lo siguiente de infraestructura
+- [x] `terraform plan` en cada PR, con **federación de identidades**: sin ninguna
+      clave en el repositorio. En un fork no hay credenciales y el trabajo se queda en
+      formato y validación en lugar de fallar
+- [x] **Artifact Registry con política de limpieza** declarada junto al repositorio,
+      que era el mayor riesgo de coste
+- [x] **Cloud Run Job + Cloud Scheduler**: la ingesta corre sola cada hora
+- [x] `Dockerfile` en dos etapas, compilado por **Cloud Build** — sin Docker local
 
 ## F3 · Modelado con dbt
 
@@ -105,10 +110,9 @@ cambios pendientes.
       apagar por horas**: la cuota de entorno pequeño son 0,35 USD/hora, es decir
       **~255 USD/mes de tarifa fija antes de ejecutar un solo DAG**. La misma
       competencia se demuestra con **Argo** más **Airflow 3 en local con `docker compose`**, sin coste.
-- [ ] **Política de limpieza en Artifact Registry, antes de la primera imagen.**
-      Los 0,5 GB gratis se cuentan por cuenta de facturación y cada compilación
-      deja la imagen anterior sin etiqueta pero ocupando. Es el riesgo de coste
-      más alto que queda: ver [coste](coste.md).
+- [x] **Política de limpieza en Artifact Registry**, declarada antes de la primera
+      imagen: borra lo que pierde la etiqueta a los 7 días y guarda como mucho 3
+      versiones. Era el riesgo de coste más alto que quedaba.
 
 **Si F4 necesita volumen de streaming real que ESIOS no da** (`r025`): el stream
 `recentchange` de **Wikimedia EventStreams filtrado a `wikidatawiki`**. Es SSE de

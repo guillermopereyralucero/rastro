@@ -52,6 +52,12 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
 
+    # Hace falta para que GitHub emita el token que se cambia por credenciales de
+    # Google. Sin `id-token: write`, la federacion no tiene con que autenticarse.
+    permissions:
+      contents: read
+      id-token: write
+
     steps:
       - uses: actions/checkout@v4
 
@@ -62,15 +68,49 @@ jobs:
       - name: Formato
         run: terraform -chdir=infra fmt -check -recursive
 
-      # `validate` no necesita credenciales de Google: comprueba la sintaxis, los
-      # tipos y las referencias entre recursos. `plan` si las necesita, y llega
-      # cuando este montada la federacion de identidades. Mejor esto ahora que
-      # nada hasta entonces.
+      # **Sin ninguna clave.** GitHub presenta el token de esta ejecucion y Google
+      # devuelve credenciales temporales, validas solo para este repositorio y solo
+      # para la cuenta de solo lectura `rastro-ci`.
+      #
+      # La alternativa -una clave de cuenta de servicio en los secretos- es un JSON
+      # con acceso permanente que no caduca, funciona desde cualquier sitio y del que
+      # nadie se acuerda hasta que aparece en un volcado.
+      - name: Credenciales sin clave
+        id: autenticar
+        continue-on-error: true
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.WIF_PROVIDER }}
+          service_account: ${{ vars.WIF_CUENTA }}
+
       - name: Init sin backend
         run: terraform -chdir=infra init -backend=false
 
       - name: Validar
         run: terraform -chdir=infra validate
+
+      # `plan` solo si hubo credenciales. En un fork no las hay -y no debe haberlas-,
+      # asi que ahi el trabajo se queda en formato y validacion en lugar de fallar por
+      # algo que no es culpa de quien manda el cambio.
+      - name: Plan
+        if: steps.autenticar.outcome == 'success'
+        run: |
+          terraform -chdir=infra init -input=false
+          terraform -chdir=infra plan -input=false -no-color \
+            -var="billing_account_id=000000-000000-000000" \
+            -var="proyecto=${{ vars.GCP_PROYECTO }}" \
+            -refresh=false
+        # El id de facturacion es falso a proposito: `plan` con `-refresh=false` no
+        # consulta el presupuesto, y meter el real en un repositorio publico no aporta
+        # nada. Lo que interesa comprobar es que la configuracion sigue siendo
+        # coherente, no cuanto se gasta.
+
+      - name: Sin credenciales, se avisa
+        if: steps.autenticar.outcome != 'success'
+        run: |
+          echo "Sin credenciales federadas: solo se comprobo formato y validacion."
+          echo "Es lo normal en un fork. En el repositorio original, revisar las"
+          echo "variables WIF_PROVIDER, WIF_CUENTA y GCP_PROYECTO." 
 
   evaluacion:
     runs-on: ubuntu-latest

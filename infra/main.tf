@@ -51,3 +51,21 @@ resource "google_project_service" "apis" {
   service            = each.value
   disable_on_destroy = false
 }
+
+# APIs que hacen falta para que la ingesta corra sola. Se anaden aparte del bloque
+# de arriba para que se vea que llegaron con la ejecucion programada y no con la
+# plataforma de datos.
+locals {
+  apis_ejecucion = [
+    "artifactregistry.googleapis.com",
+    "cloudbuild.googleapis.com",
+  ]
+}
+
+resource "google_project_service" "apis_ejecucion" {
+  for_each = toset(local.apis_ejecucion)
+
+  project            = var.proyecto
+  service            = each.value
+  disable_on_destroy = false
+}

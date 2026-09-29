@@ -292,15 +292,14 @@ pasa con una lectura que llega tarde?» dejan de contestarse con una opinión:
   original entero**, y el pipeline sigue. Un rechazo sin el original solo sirve para
   contar fallos, no para arreglarlos.
 
-Y el **grafo de ejecución** se versiona en [`docs/pipeline.dot`](docs/pipeline.dot),
-que lo regenera cualquiera que clone el proyecto. Una captura de pantalla hay que
-creérsela; un `.dot` se vuelve a generar y se compara.
+Y el **grafo de ejecución** se versiona: [`docs/pipeline.svg`](docs/pipeline.svg) para
+mirarlo y [`docs/pipeline.dot`](docs/pipeline.dot) para regenerarlo. Una captura de
+pantalla hay que creérsela; un `.dot` se vuelve a generar y se compara.
 
-Para verlo como imagen hace falta el ejecutable `dot` de Graphviz
-(`winget install Graphviz.Graphviz`, o `apt install graphviz`), y entonces
-`python -m rastro.streaming.dibujar docs/pipeline.svg` escribe el SVG directamente. Si
-no está, el comando escribe el `.dot` y dice cómo convertirlo, en lugar de fallar: el
-`.dot` ya es el grafo, y que falte un conversor no es motivo para no dar nada.
+Para el SVG hace falta el ejecutable `dot` de Graphviz
+(`winget install Graphviz.Graphviz`, o `apt install graphviz`). Si no está, el comando
+escribe el `.dot` y dice cómo convertirlo, en lugar de fallar: el `.dot` ya es el grafo,
+y que falte un conversor no es motivo para no dar nada.
 
 Piensa en qué pesa más en una entrevista: un panel en verde demuestra que alguien supo
 lanzar un trabajo; un test que fija qué ocurre con un dato que llega diez minutos tarde
@@ -384,8 +383,9 @@ primero es comprobar cuál de los dos está mal.
 
 ## La infraestructura
 
-Todo en Terraform: datasets, tablas, IAM, cuenta de servicio, secreto y
-presupuesto. Nada creado a mano por consola. Los pasos completos están en
+Todo en Terraform: datasets, tablas, IAM, cuentas de servicio, secreto,
+presupuesto, registro de imágenes, el trabajo programado y la federación del CI.
+Nada creado a mano por consola. Los pasos completos están en
 [docs/puesta-en-marcha.md](docs/puesta-en-marcha.md); solo dos exigen un
 navegador, y son los de meter una tarjeta.
 
@@ -395,7 +395,71 @@ cp terraform.tfvars.ejemplo terraform.tfvars
 terraform init && terraform plan
 ```
 
-Dos cosas de ahí merecen una línea:
+### La ingesta corre sola
+
+```
+Cloud Scheduler ──POST──▶ Cloud Run Job ──▶ ESIOS ──▶ BigQuery
+   (cada hora, min 7)        rastro-ingesta
+```
+
+Sin nadie delante. La primera ejecución real en la nube cargó **9.200 medidas**, con
+las 16 peticiones a ESIOS en código 200 y la marca de agua avanzada en los 16
+indicadores. La imagen la compila Cloud Build, así que el despliegue no depende de que
+haya un Docker instalado en ningún portátil.
+
+Cuatro decisiones de ahí merecen quedar escritas:
+
+**Al minuto 7 y no en punto.** A en punto es cuando todo el mundo programa sus tareas,
+y REE también publica en esos momentos. Siete minutos después el dato ya está y la
+carga está más repartida.
+
+**Sin reintentos automáticos**, ni en el trabajo ni más de uno en el planificador. La
+marca de agua recuerda por dónde iba, así que si una ejecución falla la hora siguiente
+recoge lo que falte. Insistir en caliente solo gastaría cuota de un tercero dos veces.
+
+**Quien dispara no es quien ejecuta.** `rastro-planificador` solo sabe decir «ejecuta
+ese trabajo»; `rastro-ingesta` es la que lee el token y escribe en BigQuery. Con una
+sola cuenta, hacerse con ella daría las dos cosas. Y el token no viaja como variable de
+entorno en claro: se monta desde Secret Manager.
+
+**La política de limpieza del registro se declara junto al repositorio**, en el mismo
+recurso, para que no se pueda crear uno sin la otra. Era el mayor riesgo de coste del
+proyecto: los 0,5 GB gratuitos se cuentan sumando todos los proyectos de la cuenta, y
+cada compilación deja la imagen anterior sin etiqueta pero ocupando. Con imágenes de
+100-200 MB, tres o cuatro compilaciones agotan el tramo sin que nadie se entere.
+
+### Madrid todavía no tiene de todo
+
+Cloud Scheduler no existe en `europe-southwest1`, y el endpoint regional de Cloud Build
+devuelve un permiso denegado aunque seas propietario del proyecto —un mensaje que
+despista, porque suena a IAM y no a que el servicio no esté ahí—. El planificador vive
+en `europe-west1` y la compilación se hace en el ámbito global.
+
+**Eso no rompe la residencia del dato,** y la distinción merece una línea: lo que tiene
+que estar en Madrid son los **datos**, y siguen ahí —BigQuery, el registro de imágenes
+y el propio trabajo—. El planificador solo manda un POST que dice «ejecuta eso» y no ve
+ni un dato.
+
+### El CI se autentica sin ninguna clave
+
+`terraform plan` corre en cada PR con **federación de identidades**: GitHub presenta el
+token que emite para cada ejecución y Google devuelve credenciales temporales. No hay
+ningún JSON que guardar, que rotar ni que filtrar.
+
+El detalle que decide si esto es una buena idea o un agujero es una sola línea del
+proveedor: **sin una condición que exija que el token venga de este repositorio,
+cualquier repositorio de GitHub podría pedir credenciales del proyecto.** Es el fallo
+clásico al montar esto, y queda escrito junto al recurso.
+
+La cuenta del CI es de **solo lectura**: `plan` necesita consultar el estado, no
+cambiarlo. Aplicar sigue siendo una acción deliberada desde un portátil, no algo que
+ocurra al fusionar una rama. Y en un fork no hay credenciales —ni debe haberlas—, así
+que ahí el trabajo se queda en formato y validación en lugar de fallar por algo que no
+es culpa de quien manda el cambio.
+
+### Y dos cosas más
+
+Dos cosas de la plataforma de datos merecen una línea:
 
 **La alerta de presupuesto también es Terraform.** Una alerta creada a mano en
 la consola no está en ningún sitio: nadie sabe que existe, nadie la revisa, y
@@ -439,7 +503,15 @@ src/rastro/
 │   └── evaluacion.py    # precisión y exhaustividad, por separado
 ├── recursos/            # el catálogo de indicadores, cacheado
 └── cli.py
-infra/                   # Terraform: datasets, IAM, presupuesto
+infra/
+├── main.tf              # proveedor y APIs
+├── bigquery.tf          # datasets y tablas, particionadas desde el día uno
+├── iam.tf               # cuentas de servicio y el secreto del token
+├── presupuesto.tf       # el techo de 1 €, y otro sobre la cuenta entera
+├── ejecucion.tf         # registro, trabajo y calendario: la ingesta sola
+└── ci.tf                # federación de identidades: `plan` sin claves
+Dockerfile               # dos etapas, usuario sin privilegios
+cloudbuild.yaml          # compila en la nube; sin Docker local
 evals/                   # el banco de 31 preguntas y la instantánea del grafo
 docs/                    # la anomalía, la puesta en marcha y el seguimiento
 flowcrack/               # el registro de decisiones

@@ -36,8 +36,10 @@ El almacenamiento no es el riesgo. Nunca lo fue.
 | BigQuery · consultas | 1 TiB/mes ✔ | Kilobytes | Ninguno |
 | BigQuery · trabajos de carga | Gratis ✔ | 1 por ventana | Ninguno |
 | BigQuery · `INFORMATION_SCHEMA` | **10 MB mínimos por consulta, sin caché** ✔ | 12 consultas por ejecución de Rastro = 120 MB | Bajo: 8.738 ejecuciones al mes en el tramo gratuito |
-| Cloud Scheduler | **3 trabajos/mes, por cuenta de facturación** ✔ | 1 | Bajo, ver abajo |
-| Artifact Registry | **0,5 GB, por cuenta de facturación** ✔ | 1 imagen | **El más alto**, ver abajo |
+| Cloud Scheduler | **3 trabajos/mes, por cuenta de facturación** ✔ | 1 (de 3) | Bajo, ver abajo |
+| Artifact Registry | **0,5 GB, por cuenta de facturación** ✔ | 3 versiones como máximo | Controlado: hay política de limpieza |
+| Cloud Build | 120 min/día ✔ | ~45 s por compilación | Ninguno |
+| Cloud Run Jobs | ? | ~20 s al día (24 ejecuciones de <1 s) | Bajo |
 | Secret Manager | ? | 1 secreto, 1 versión | Bajo |
 | Cloud Run Jobs | ? | Unos minutos al día | Bajo |
 | Cloud Logging | ? | Poco | Bajo |
@@ -47,18 +49,24 @@ El almacenamiento no es el riesgo. Nunca lo fue.
 
 ## Los dos riesgos de verdad
 
-### 1 · Artifact Registry: el medio giga se comparte y las imágenes se acumulan
+### 1 · Artifact Registry: resuelto antes de la primera imagen
 
 Los 0,5 GB gratuitos se cuentan **sumando todos los proyectos de la cuenta de
-facturación**, no por proyecto. Y cada vez que se construye la imagen del job de
-ingesta se sube una nueva: la anterior se queda sin etiqueta, pero **sigue
-ocupando**. Una imagen de Python ronda los 100-200 MB, así que con tres o cuatro
-compilaciones se agota el tramo gratuito sin que nadie se dé cuenta.
+facturación**, no por proyecto. Y cada compilación sube una imagen nueva: la anterior
+pierde la etiqueta pero **sigue ocupando**. Una imagen de Python ronda los 100-200 MB,
+así que con tres o cuatro compilaciones se agota el tramo sin que nadie se entere.
 
-**Contramedida, obligatoria antes de la primera compilación:** una política de
-limpieza en el repositorio que borre automáticamente las imágenes sin etiqueta.
-Artifact Registry las soporta de forma nativa y se pueden declarar en Terraform.
-Sin ella, esto es lo que se lleva el presupuesto por delante.
+**Resuelto**, y declarado junto al repositorio en
+[`infra/ejecucion.tf`](../infra/ejecucion.tf) para que no se pueda crear uno sin la
+otra:
+
+| Política | Qué hace |
+|---|---|
+| `borrar-sin-etiqueta` | Borra lo que perdió la etiqueta hace más de 7 días |
+| `guardar-solo-las-ultimas` | Conserva como mucho 3 versiones etiquetadas |
+
+Tres versiones bastan para volver atrás si un despliegue sale mal, y son pocas para
+que el registro crezca.
 
 ### 2 · Los topes compartidos entre proyectos
 

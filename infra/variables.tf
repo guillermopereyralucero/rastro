@@ -67,3 +67,53 @@ variable "presupuesto_cuenta_euros" {
   type        = number
   default     = 2
 }
+
+variable "indicadores" {
+  description = <<-TXT
+    Los indicadores de ESIOS que ingiere el job. Son los mismos 16 que usa el
+    catalogo local, y estan aqui para que cambiar la lista no obligue a
+    reconstruir la imagen: el job los recibe como argumentos.
+  TXT
+  type        = list(number)
+  default = [
+    546, 547, 548, 549, 550, 551, 552, 553, 555,
+    1293, 1294, 1295, 1296, 1297, 2037, 10004,
+  ]
+}
+
+variable "max_peticiones_por_ejecucion" {
+  description = <<-TXT
+    Tope de peticiones a ESIOS por ejecucion. Con 16 indicadores y ejecucion horaria,
+    20 deja margen para algun reintento sin que una ejecucion se convierta nunca en
+    una descarga masiva. Es el freno de mano de la condicion de uso del token.
+  TXT
+  type        = number
+  default     = 20
+}
+
+variable "repositorio_github" {
+  description = <<-TXT
+    El repositorio que puede pedir credenciales al proyecto, en formato
+    `usuario/repo`. Va en la condicion del proveedor de identidades federadas: SIN
+    ella, cualquier repositorio de GitHub podria pedir credenciales de este proyecto.
+    Es el fallo clasico al montar esto.
+  TXT
+  type        = string
+  default     = "guillermopereyralucero/rastro"
+}
+
+variable "region_planificador" {
+  description = <<-TXT
+    Region del Cloud Scheduler. **No es la misma que la de los datos, y eso es
+    correcto.** Cloud Scheduler no existe en europe-southwest1 -Madrid es una region
+    nueva y no todos los servicios han llegado-, asi que el disparador vive en
+    europe-west1.
+
+    No rompe la residencia del dato: el planificador solo manda una peticion HTTP que
+    dice "ejecuta ese trabajo". No ve ni un dato de ESIOS. Lo que tiene que quedarse
+    en Madrid son los datos, y se quedan: BigQuery, el registro de imagenes y el
+    propio job siguen ahi.
+  TXT
+  type        = string
+  default     = "europe-west1"
+}

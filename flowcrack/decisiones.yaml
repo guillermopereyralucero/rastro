@@ -1959,3 +1959,147 @@ decisiones:
       - opcion: Descartar en silencio lo que no se entienda
         elegida: false
         motivo: Perder datos sin dejar rastro es peor que pararse
+
+  # === 29-sep · la plataforma corre sola =============================
+
+  - id: r063
+    fecha: 2026-09-29
+    orden: 63
+    carril: metodo
+    tipo: hito-externo
+    titulo: "La ingesta corre sola en la nube: 9.200 medidas en la primera ejecucion"
+    detalle: >
+      Cloud Scheduler dispara un Cloud Run Job cada hora al minuto 7. Primera ejecucion
+      real en la nube: 9.200 medidas cargadas, 16 peticiones a ESIOS todas con codigo
+      200, 0,33 segundos de media, y la marca de agua avanzada en los 16 indicadores.
+      La imagen la compila Cloud Build, sin Docker local.
+    porque: >
+      Hasta ahora la ingesta se lanzaba desde el portatil. Una plataforma que solo
+      funciona cuando alguien abre un terminal no es una plataforma.
+    consecuencia: >
+      Al minuto 7 y no en punto: a en punto es cuando todo el mundo programa sus
+      tareas, y REE tambien publica en esos momentos. Siete minutos despues el dato ya
+      esta y la carga esta mas repartida.
+
+      Sin reintentos automaticos, ni en el job ni mas de uno en el planificador: la
+      marca de agua recuerda por donde iba, asi que la hora siguiente recoge lo que
+      falte. Insistir en caliente solo gastaria cuota de un tercero dos veces.
+    estado: vigente
+    impacto: mayor
+
+  - id: r064
+    fecha: 2026-09-29
+    orden: 64
+    carril: etica
+    titulo: "Dos cuentas de servicio: quien dispara no es quien ejecuta"
+    detalle: >
+      `rastro-planificador` solo puede decir "ejecuta ese trabajo". `rastro-ingesta` es
+      la que lee el token y escribe en BigQuery. Y `rastro-ci` solo lee, para el
+      `terraform plan` de cada PR.
+    porque: >
+      Con una sola cuenta, quien pudiera disparar la ingesta tendria tambien acceso al
+      token de ESIOS y permiso de escritura en los datos. Separandolas, hacerse con la
+      del planificador solo permite lanzar una ingesta antes de tiempo.
+    consecuencia: >
+      El token ademas no viaja como variable de entorno en claro: se monta desde Secret
+      Manager, que evita que aparezca en la configuracion del servicio para cualquiera
+      que pueda verla.
+    estado: vigente
+    impacto: mayor
+    alternativas:
+      - opcion: Tres cuentas, una por papel
+        elegida: true
+        motivo: Hacerse con una no da los permisos de las otras
+      - opcion: Una sola cuenta para todo
+        elegida: false
+        motivo: Quien pueda disparar tendria tambien el token y la escritura
+
+  - id: r065
+    fecha: 2026-09-29
+    orden: 65
+    carril: metodo
+    titulo: "El CI se autentica sin ninguna clave, con federacion de identidades"
+    detalle: >
+      GitHub presenta el token que emite para cada ejecucion y Google devuelve
+      credenciales temporales. El proveedor lleva una condicion que exige que el token
+      venga de ESTE repositorio.
+    porque: >
+      La alternativa -una clave de cuenta de servicio en los secretos del repositorio-
+      es un JSON con acceso permanente al proyecto, que no caduca, que funciona desde
+      cualquier sitio del mundo y del que nadie se acuerda hasta que aparece en un
+      volcado. Veinte lineas mas de Terraform quitan esa clase de problema entera.
+    consecuencia: >
+      **Sin la condicion sobre el repositorio, CUALQUIER repositorio de GitHub podria
+      pedir credenciales del proyecto.** Es el fallo clasico al montar esto y el que
+      convierte una buena idea en un agujero; queda escrito junto al recurso.
+
+      La cuenta del CI es de SOLO LECTURA: `plan` necesita consultar el estado, no
+      cambiarlo. Aplicar sigue siendo una accion deliberada desde un portatil y no algo
+      que ocurra al fusionar una rama.
+
+      Y en un fork no hay credenciales -ni debe haberlas-, asi que ahi el trabajo se
+      queda en formato y validacion en lugar de fallar por algo que no es culpa de
+      quien manda el cambio.
+    estado: vigente
+    impacto: mayor
+    hito: metodo
+    alternativas:
+      - opcion: Federacion de identidades, sin claves
+        elegida: true
+        motivo: Credenciales temporales atadas a un repositorio concreto
+      - opcion: Una clave de cuenta de servicio en los secretos
+        elegida: false
+        motivo: Acceso permanente, desde cualquier sitio, que nadie rota
+
+  - id: r066
+    fecha: 2026-09-29
+    orden: 66
+    carril: metodo
+    tipo: hallazgo
+    titulo: "Madrid no tiene todos los servicios: ni Cloud Scheduler ni Cloud Build regional"
+    detalle: >
+      `europe-southwest1` no aparece en la lista de regiones de Cloud Scheduler, y el
+      endpoint regional de Cloud Build devuelve PERMISSION_DENIED incluso siendo
+      propietario del proyecto. El planificador se movio a europe-west1 y la
+      compilacion se hace en el ambito global.
+    porque: >
+      Salio al aplicar. Madrid es una region nueva y no todos los servicios han
+      llegado; el mensaje de Cloud Build ademas despista, porque un permiso denegado
+      suena a IAM y no a que el servicio no este.
+    consecuencia: >
+      **No rompe la decision de residencia del dato** (r017), y la distincion merece
+      quedar escrita: lo que tiene que estar en Madrid son los DATOS, y siguen ahi
+      -BigQuery, el registro de imagenes y el propio job-. El planificador solo manda
+      un POST que dice "ejecuta ese trabajo" y no ve ni un dato; la compilacion pasa
+      por el ambito global pero deja la imagen en el registro de Madrid.
+    estado: vigente
+    impacto: menor
+    causada_por: [r017]
+
+  - id: r067
+    fecha: 2026-09-29
+    orden: 67
+    carril: metodo
+    titulo: "La politica de limpieza del registro se declara junto al repositorio"
+    detalle: >
+      Dos politicas: borrar lo que perdio la etiqueta hace mas de 7 dias, y conservar
+      como mucho 3 versiones etiquetadas.
+    porque: >
+      Era el mayor riesgo de coste del proyecto: los 0,5 GB gratuitos se cuentan
+      sumando todos los proyectos de la cuenta, y cada compilacion deja la imagen
+      anterior sin etiqueta pero ocupando. Con imagenes de 100-200 MB, tres o cuatro
+      compilaciones agotan el tramo sin que nadie se entere.
+    consecuencia: >
+      Se declaran en el MISMO recurso que el repositorio, no en otro fichero, para que
+      no se pueda crear uno sin las otras. Tres versiones bastan para volver atras si
+      un despliegue sale mal.
+    estado: vigente
+    impacto: mayor
+    causada_por: [r034]
+    alternativas:
+      - opcion: Politicas de limpieza en el propio recurso del repositorio
+        elegida: true
+        motivo: No se puede crear el registro sin ellas
+      - opcion: Limpiar a mano de vez en cuando
+        elegida: false
+        motivo: Nadie se acuerda, y el aviso llega cuando ya se paso del tramo

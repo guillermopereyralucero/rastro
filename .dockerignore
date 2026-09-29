@@ -1,0 +1,17 @@
+# Lo que NO entra en la imagen. Cada fichero de mas es peso en un registro cuyo
+# tramo gratuito son 0,5 GB compartidos con los demas proyectos de la cuenta.
+.venv/
+.git/
+.github/
+datos/
+dbt/
+docs/
+evals/
+flowcrack/
+infra/
+tests/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.env
