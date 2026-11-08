@@ -62,7 +62,7 @@ def main(argv: list[str] | None = None) -> int:
 def _analizador() -> argparse.ArgumentParser:
     raiz = argparse.ArgumentParser(
         prog="rastro",
-        description="Que se rompe si toco esta tabla. De momento, la ingesta.",
+        description="Que se rompe si toco esta tabla. Linaje e impacto para BigQuery y dbt.",
     )
     subs = raiz.add_subparsers(dest="orden")
 

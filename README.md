@@ -6,9 +6,9 @@ Una herramienta de linaje e impacto para BigQuery y dbt, construida sobre una
 plataforma de datos real: la generación eléctrica española, tomada de la API de
 Red Eléctrica.
 
-> **Estado: en construcción.** La ingesta funciona y está probada. La
-> plataforma en la nube y la herramienta de grafo son las siguientes fases.
-> Ver [seguimiento](docs/seguimiento.md).
+> **Estado: funcionando en producción.** La ingesta corre sola en Cloud Run cada
+> hora, la herramienta de grafo está entera y el pipeline de flujo cierra el
+> circuito contra BigQuery. Lo que queda, en [seguimiento](docs/seguimiento.md).
 
 ---
 
@@ -87,7 +87,7 @@ source .venv/Scripts/activate      # Windows con Git Bash
 # source .venv/bin/activate        # Linux y macOS
 pip install -e ".[dev]"
 
-pytest                             # 165 tests, ninguno toca la red
+pytest                             # 190 tests, ninguno toca la red
 rastro buscar eolica               # busca en el catálogo local
 ```
 
